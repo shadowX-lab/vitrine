@@ -1,0 +1,325 @@
+---
+import Base from '../../layouts/Base.astro';
+import Telephone from '../../components/Telephone.astro';
+import AppelAction from '../../components/AppelAction.astro';
+import { lien } from '../../config';
+import { produits, ecran, type Produit } from '../../data/produits';
+
+export function getStaticPaths() {
+  return produits.map((produit) => ({
+    params: { slug: produit.slug },
+    props: { produit },
+  }));
+}
+
+interface Props { produit: Produit }
+const { produit } = Astro.props;
+
+const index = produits.findIndex((p) => p.slug === produit.slug);
+const suivant = produits[(index + 1) % produits.length]!;
+const reste = produit.galerie.filter((e) => e.fichier !== produit.heros);
+---
+
+<Base titre={`${produit.nom} — ${produit.baseline}`} description={produit.resume}>
+  <article
+    class="etude"
+    style={`--teinte:${produit.palette.accent};--voile:${produit.palette.voile};--contraste:${produit.palette.contraste}`}
+  >
+    <header class="ouverture">
+      <div class="page ouverture__interieur">
+        <div class="ouverture__texte">
+          <p class="fil"><a href={lien('/produits')}>Produits</a> <span aria-hidden="true">/</span> {produit.nom}</p>
+          <p class="etiquette">Produit maison</p>
+          <h1>{produit.nom}</h1>
+          <p class="ouverture__baseline">{produit.baseline}</p>
+          <p class="chapeau">{produit.resume}</p>
+
+          <dl class="fiche">
+            <div><dt>Domaine</dt><dd>{produit.domaine}</dd></div>
+            <div><dt>Plateforme</dt><dd>{produit.plateforme}</dd></div>
+            <div><dt>Année</dt><dd>{produit.annee}</dd></div>
+            <div>
+              <dt>Code</dt>
+              <dd>
+                {produit.depot
+                  ? <a href={produit.depot} target="_blank" rel="noopener">Dépôt public</a>
+                  : 'Dépôt privé'}
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="ouverture__visuel">
+          <Telephone
+            projet={produit.slug}
+            fichier={produit.heros}
+            alt={`${produit.nom} — écran principal`}
+            largeur={286}
+            charge="eager"
+          />
+        </div>
+      </div>
+    </header>
+
+    <div class="graduation graduation--haute" aria-hidden="true"></div>
+
+    <section class="section chiffres">
+      <div class="page">
+        <ul>
+          {produit.chiffres.map((c) => (
+            <li>
+              <span class="chiffre">{c.valeur}</span>
+              <span>{c.libelle}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section--creux">
+      <div class="page deux-colonnes">
+        <div>
+          <p class="eyebrow">Le point de départ</p>
+          <h2>Le problème</h2>
+        </div>
+        <div class="prose grand">
+          {produit.probleme.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="page">
+        <div class="deux-colonnes deux-colonnes--titre">
+          <div>
+            <p class="eyebrow">Ce qui a été tranché</p>
+            <h2>Les décisions</h2>
+          </div>
+          <p class="prose">
+            Chacune a été écrite et argumentée <strong>avant</strong> le premier
+            écran. C'est ce travail-là qui rend la suite rapide : quand une
+            question revient six mois plus tard, la réponse est déjà quelque
+            part, avec sa raison.
+          </p>
+        </div>
+
+        <ol class="decisions">
+          {produit.decisions.map((d, i) => (
+            <li class="apparait">
+              <span class="index">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <h3>{d.titre}</h3>
+                <p>{d.texte}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section galerie-section">
+      <div class="page">
+        <div class="deux-colonnes deux-colonnes--titre">
+          <div>
+            <p class="eyebrow">Les écrans</p>
+            <h2>Ce que ça donne</h2>
+          </div>
+          <p class="prose">
+            Dessinés au pixel avant la première ligne de code, en clair comme en
+            sombre. Chaque légende dit la décision que l'écran applique.
+          </p>
+        </div>
+
+        <div class="galerie">
+          {reste.map((e) => (
+            <figure class="apparait">
+              <Telephone projet={produit.slug} fichier={e.fichier} alt={`${produit.nom} — ${e.titre}`} largeur={260} />
+              <figcaption>
+                <strong>{e.titre}</strong>
+                <span>{e.legende}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--creux">
+      <div class="page deux-colonnes">
+        <div>
+          <p class="eyebrow">Ce qu'on a produit</p>
+          <h2>Livrables</h2>
+        </div>
+        <ul class="livrables">
+          {produit.livre.map((l) => (
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {l}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section suivant">
+      <div class="page">
+        <a href={lien(`/produits/${suivant.slug}`)} style={`--teinte:${suivant.palette.accent}`}>
+          <div>
+            <p class="eyebrow">Produit suivant</p>
+            <h2>{suivant.nom}</h2>
+            <p>{suivant.baseline}</p>
+          </div>
+          <svg width="34" height="24" viewBox="0 0 17 12" fill="none" aria-hidden="true">
+            <path d="M1 6h14M10.5 1L15.5 6l-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </section>
+  </article>
+
+  <AppelAction
+    titre="Un produit à cadrer ?"
+    texte="C'est exactement le travail qu'on vient de vous montrer, appliqué au vôtre. Le premier entretien ne vous engage à rien, et vous repartez avec une note écrite de ce qu'on a compris."
+  />
+</Base>
+
+<style>
+  .ouverture { padding-block: clamp(2.5rem, 6vw, 5rem) clamp(2.5rem, 5vw, 4rem); background: var(--voile); }
+  .ouverture__interieur {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  .fil { font-size: 0.85rem; color: var(--gris); margin-bottom: 1.6rem; }
+  .fil a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--trait); }
+  .fil a:hover { color: var(--encre); }
+  .fil span { margin-inline: 0.4rem; opacity: 0.5; }
+
+  .etiquette {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--contraste);
+    border: 1px solid color-mix(in srgb, var(--teinte) 40%, transparent);
+    border-radius: 100px;
+    padding: 0.32rem 0.8rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .ouverture h1 { color: var(--contraste); margin-bottom: 0.5rem; }
+  .ouverture__baseline {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    line-height: 1.2;
+    margin-bottom: 1.4rem;
+  }
+  .ouverture .chapeau { color: var(--encre-douce); max-width: 46ch; }
+
+  .fiche {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1.2rem;
+    margin: 2.4rem 0 0;
+    padding-top: 1.4rem;
+    border-top: 1px solid color-mix(in srgb, var(--teinte) 25%, transparent);
+  }
+  .fiche dt {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gris);
+    margin-bottom: 0.35rem;
+  }
+  .fiche dd { margin: 0; font-size: 0.92rem; font-weight: 500; }
+  .fiche a { color: var(--contraste); text-underline-offset: 3px; }
+
+  .ouverture__visuel { display: flex; justify-content: center; }
+
+  .chiffres { padding-block: clamp(2.5rem, 5vw, 3.5rem); }
+  .chiffres ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+  .chiffres li { display: grid; gap: 0.6rem; border-top: 1px solid var(--trait); padding-top: 1.2rem; }
+  .chiffres .chiffre { color: var(--contraste); }
+  .chiffres span:last-child { color: var(--gris); font-size: 0.9rem; max-width: 26ch; }
+
+  .deux-colonnes {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.3fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+  }
+  .deux-colonnes--titre { margin-bottom: clamp(2.5rem, 5vw, 3.5rem); align-items: end; }
+  .prose.grand { font-size: 1.08rem; }
+  .eyebrow::before { background: var(--teinte); }
+
+  .decisions { list-style: none; margin: 0; padding: 0; display: grid; }
+  .decisions li {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding-block: clamp(1.8rem, 3vw, 2.4rem);
+    border-top: 1px solid var(--trait);
+  }
+  .decisions li:last-child { border-bottom: 1px solid var(--trait); }
+  .decisions .index { color: var(--teinte); }
+  .decisions h3 { margin-bottom: 0.7rem; max-width: 24ch; }
+  .decisions p { color: var(--encre-douce); max-width: 66ch; margin: 0; }
+
+  .galerie-section { background: var(--voile); }
+  .galerie {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(1.8rem, 4vw, 3rem);
+  }
+  .galerie figure { flex: 0 1 262px; }
+  .galerie figure { margin: 0; display: grid; gap: 1.1rem; justify-items: center; }
+  .galerie figcaption { display: grid; gap: 0.35rem; text-align: center; max-width: 34ch; }
+  .galerie figcaption strong { font-size: 0.98rem; color: var(--contraste); }
+  .galerie figcaption span { font-size: 0.88rem; color: var(--encre-douce); line-height: 1.5; }
+
+  .livrables { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; align-content: start; }
+  .livrables li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--trait);
+    font-size: 1.02rem;
+  }
+  .livrables li:first-child { border-top: 1px solid var(--trait); }
+  .livrables svg { color: var(--teinte); flex: none; transform: translateY(2px); }
+
+  .suivant a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    text-decoration: none;
+    border-top: 1px solid var(--trait);
+    border-bottom: 1px solid var(--trait);
+    padding-block: clamp(2rem, 4vw, 3rem);
+    transition: color 0.22s;
+  }
+  .suivant a:hover { color: var(--teinte); }
+  .suivant h2 { margin-bottom: 0.4rem; }
+  .suivant p:last-child { color: var(--gris); }
+  .suivant svg { flex: none; transition: transform 0.24s cubic-bezier(0.2, 0.7, 0.3, 1); }
+  .suivant a:hover svg { transform: translateX(8px); }
+
+  @media (max-width: 900px) {
+    .ouverture__interieur, .deux-colonnes { grid-template-columns: 1fr; }
+    .decisions li { grid-template-columns: 1fr; gap: 0.8rem; }
+  }
+</style>

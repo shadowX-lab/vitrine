@@ -1,0 +1,222 @@
+---
+import Base from '../layouts/Base.astro';
+import AppelAction from '../components/AppelAction.astro';
+
+const temps = [
+  {
+    titre: 'Écouter',
+    resume: "Comprendre votre métier avant de proposer quoi que ce soit.",
+    texte: [
+      "Un entretien, sans grille de questions toute faite et sans démonstration commerciale. On veut comprendre ce que vous faites, qui s'en sert, ce qui coince aujourd'hui et ce que vous avez déjà essayé.",
+      "On en ressort une note écrite de ce qu'on a compris, dans les mots de votre métier — pas dans le nôtre. Vous la corrigez. Tant qu'elle n'est pas juste, rien ne commence, parce qu'un malentendu à cette étape se paie au centuple plus tard.",
+    ],
+    livrables: ['Note de cadrage écrite', 'Reformulation du problème', 'Premières questions ouvertes'],
+    delai: 'Sous une semaine',
+    engagement: "La note vous appartient, même si vous ne travaillez pas avec nous.",
+  },
+  {
+    titre: 'Cadrer',
+    resume: 'Réduire le problème à ce qui compte, et écrire pourquoi.',
+    texte: [
+      "C'est l'étape que la plupart des projets sautent, et c'est celle qui décide de tout. On regarde ce qui existe déjà sur votre marché, on identifie les décisions structurantes, et on tranche : ce qui entre dans la première version, ce qui attend, ce qui n'existera jamais.",
+      "Chaque arbitrage est écrit avec sa raison. Ça paraît bureaucratique jusqu'au jour où la question revient six mois plus tard, en réunion, et où la réponse est déjà quelque part — avec son argument.",
+    ],
+    livrables: ['Périmètre de la première version', 'Décisions de conception argumentées', 'Ce qui est explicitement reporté'],
+    delai: 'Une à deux semaines',
+    engagement: "Si le cadrage montre qu'il ne faut pas construire l'application, on vous le dit.",
+  },
+  {
+    titre: 'Valider',
+    resume: 'Des écrans réels, corrigés ensemble, avant la moindre ligne de code.',
+    texte: [
+      "Pas de boîtes grises, pas de schémas d'architecture en guise de maquette. Des écrans finis, à la bonne taille, avec vos vrais libellés et vos vraies données d'exemple. En clair et en sombre. Sur téléphone comme sur écran large.",
+      "On les regarde ensemble, vous les annotez, on corrige. Corriger un écran coûte une heure ; corriger la même chose après développement coûte une semaine et abîme la confiance. C'est tout l'intérêt de mettre l'effort ici.",
+    ],
+    livrables: ['Maquettes cliquables de chaque parcours', 'Parcours d’erreur et cas limites', 'Le périmètre visuel figé'],
+    delai: 'Quelques jours par parcours',
+    engagement: "Rien ne part en développement sans un écran que vous avez validé.",
+  },
+  {
+    titre: 'Fabriquer',
+    resume: 'Par tranches complètes, livrées une par une.',
+    texte: [
+      "Une tranche, c'est un parcours qui fonctionne de bout en bout : l'écran, la logique, les données, le déploiement. On la termine, on vous la livre, vous l'utilisez pour de vrai. Puis la suivante.",
+      "Ce qu'on ne fait jamais : ouvrir cinq chantiers en parallèle et vous montrer soixante pour cent de chacun. Un produit à soixante pour cent ne se montre pas, ne se teste pas, et ne se corrige pas.",
+    ],
+    livrables: ['Application déployée à chaque tranche', 'Code documenté et testé', 'Publication sur les stores'],
+    delai: 'Au rythme des tranches',
+    engagement: 'Chaque livraison est utilisable, pas seulement démontrable.',
+  },
+];
+
+const engagements = [
+  { mot: 'Écoute', texte: "Un entretien de cadrage avant tout devis, et une note écrite de ce qu'on a compris que vous pouvez corriger." },
+  { mot: 'Compréhension', texte: "On restitue votre problème dans les mots de votre métier. Si la note sonne faux à la lecture, c'est qu'on n'a pas compris." },
+  { mot: 'Rapidité', texte: 'Des maquettes cliquables en quelques jours. La vitesse vient du cadrage, pas de la précipitation.' },
+  { mot: 'Validation', texte: 'La maquette est le contrat. Vous ne découvrez rien à la livraison.' },
+  { mot: 'Efficacité', texte: "On construit le parcours qui porte la valeur et on reporte le reste — en le disant, et en écrivant pourquoi." },
+  { mot: 'Modernité', texte: 'Des interfaces qui tiennent la comparaison avec ce que vos utilisateurs manipulent tous les jours. Nos écrans sont en ligne, jugez-les.' },
+];
+---
+
+<Base
+  titre="Méthode"
+  description="Quatre temps : écouter, cadrer, valider, fabriquer. La méthode de Cadran, avec ses livrables et ses engagements."
+>
+  <section class="ouverture">
+    <div class="page">
+      <p class="eyebrow">Comment on travaille</p>
+      <h1>Quatre temps,<br />dans <em>cet ordre</em></h1>
+      <p class="chapeau">
+        La plupart des applications ratées ont été très bien développées. Elles
+        répondaient simplement à la mauvaise question. Voilà comment on s'assure
+        que ce ne sera pas la vôtre.
+      </p>
+    </div>
+  </section>
+
+  <div class="graduation graduation--haute" aria-hidden="true"></div>
+
+  <section class="section">
+    <div class="page temps">
+      {temps.map((t, i) => (
+        <article class="temps__bloc apparait">
+          <div class="temps__index">
+            <span class="chiffre">{String(i + 1).padStart(2, '0')}</span>
+            <span class="temps__delai">{t.delai}</span>
+          </div>
+
+          <div class="temps__corps">
+            <h2>{t.titre}</h2>
+            <p class="temps__resume">{t.resume}</p>
+            <div class="prose">
+              {t.texte.map((p) => <p>{p}</p>)}
+            </div>
+
+            <div class="temps__pied">
+              <div>
+                <h3>Ce que vous recevez</h3>
+                <ul>
+                  {t.livrables.map((l) => <li>{l}</li>)}
+                </ul>
+              </div>
+              <p class="temps__engagement">{t.engagement}</p>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section--creux">
+    <div class="page">
+      <div class="titre-section">
+        <div>
+          <p class="eyebrow">Nos engagements</p>
+          <h2>Six mots que tout le monde<br />revendique, et ce qu'ils nous coûtent</h2>
+        </div>
+      </div>
+      <dl class="engagements">
+        {engagements.map((e) => (
+          <div>
+            <dt>{e.mot}</dt>
+            <dd>{e.texte}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <AppelAction
+    titre="Commençons par écouter"
+    texte="Le premier entretien ne vous engage à rien. Vous repartez avec une note écrite de ce qu'on a compris de votre projet — et elle vous appartient, même si vous vous arrêtez là."
+  />
+</Base>
+
+<style>
+  .ouverture { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(2.5rem, 5vw, 4rem); }
+  .ouverture h1 { margin-bottom: 1.5rem; }
+  .ouverture h1 em { font-style: italic; color: var(--laiton); }
+
+  .temps { display: grid; gap: 0; }
+  .temps__bloc {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+    border-top: 1px solid var(--trait);
+  }
+  .temps__bloc:last-child { border-bottom: 1px solid var(--trait); }
+
+  .temps__index { display: grid; gap: 0.8rem; align-content: start; }
+  .temps__index .chiffre { color: var(--laiton); }
+  .temps__delai {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gris);
+  }
+
+  .temps__corps h2 { margin-bottom: 0.6rem; }
+  .temps__resume {
+    font-family: var(--serif);
+    font-size: clamp(1.25rem, 2.1vw, 1.6rem);
+    line-height: 1.25;
+    color: var(--encre-douce);
+    margin-bottom: 1.5rem;
+  }
+
+  .temps__pied {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    margin-top: 2rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--trait-fin);
+  }
+  .temps__pied h3 {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gris);
+    margin-bottom: 0.9rem;
+  }
+  .temps__pied ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+  .temps__pied li { display: flex; gap: 0.65rem; font-size: 0.95rem; }
+  .temps__pied li::before { content: '—'; color: var(--laiton); flex: none; }
+  .temps__engagement {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    line-height: 1.35;
+    color: var(--encre);
+    border-left: 2px solid var(--laiton);
+    padding-left: 1.2rem;
+    margin: 0;
+    align-self: center;
+  }
+
+  .titre-section { margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+
+  .engagements {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+    gap: 0 clamp(2rem, 4vw, 3.5rem);
+  }
+  .engagements div { padding-block: 1.5rem; border-top: 1px solid var(--trait); }
+  .engagements dt {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+  .engagements dd { margin: 0; color: var(--encre-douce); font-size: 0.97rem; }
+
+  @media (max-width: 820px) {
+    .temps__bloc { grid-template-columns: 1fr; }
+    .temps__index { display: flex; align-items: baseline; gap: 1.2rem; }
+    .temps__pied { grid-template-columns: 1fr; }
+    .temps__engagement { align-self: start; }
+  }
+</style>

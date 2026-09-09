@@ -1,0 +1,101 @@
+---
+import { lien, STUDIO } from '../config';
+
+const chemin = Astro.url.pathname.replace(/\/$/, '') || '/';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const actuel = chemin.replace(base, '') || '/';
+
+const liens = [
+  { href: '/methode', texte: 'Méthode' },
+  { href: '/produits', texte: 'Produits' },
+  { href: '/studio', texte: 'Studio' },
+];
+---
+
+<header class="entete">
+  <div class="page entete__interieur">
+    <a class="marque" href={lien('/')} aria-label={`${STUDIO.nom}, accueil`}>
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+        <circle cx="13" cy="13" r="12" fill="none" stroke="currentColor" stroke-width="1.2" />
+        <g stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+          <path d="M13 1.6v3.2M13 21.2v3.2M24.4 13h-3.2M4.8 13H1.6" />
+          <path d="M13 13V6.4" stroke-width="1.6" />
+          <path d="M13 13l4.6 3.1" stroke-width="1.6" />
+        </g>
+      </svg>
+      <span>{STUDIO.nom}</span>
+    </a>
+
+    <nav aria-label="Navigation principale">
+      <ul>
+        {liens.map((l) => (
+          <li>
+            <a href={lien(l.href)} aria-current={actuel.startsWith(l.href) ? 'page' : undefined}>
+              {l.texte}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a class="bouton entete__cta" href={lien('/contact')}>Parlons de votre projet</a>
+  </div>
+  <div class="graduation" aria-hidden="true"></div>
+</header>
+
+<style>
+  .entete {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--papier) 88%, transparent);
+    backdrop-filter: blur(14px) saturate(1.4);
+  }
+
+  .entete__interieur {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 4vw, 3rem);
+    min-height: 74px;
+  }
+
+  .marque {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    margin-right: auto;
+  }
+  .marque svg { color: var(--laiton); flex: none; }
+
+  nav ul {
+    display: flex;
+    gap: clamp(1rem, 2.4vw, 2rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav a {
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--encre-douce);
+    padding-block: 0.4rem;
+    border-bottom: 1px solid transparent;
+    transition: color 0.16s, border-color 0.16s;
+  }
+  nav a:hover { color: var(--encre); border-bottom-color: var(--laiton); }
+  nav a[aria-current='page'] { color: var(--encre); border-bottom-color: var(--laiton); }
+
+  .entete__cta { padding: 0.65rem 1.25rem; font-size: 0.9rem; }
+
+  @media (max-width: 720px) {
+    .entete__cta { display: none; }
+    .marque span { font-size: 1.25rem; }
+    nav ul { gap: 1.1rem; }
+    nav a { font-size: 0.9rem; }
+  }
+</style>

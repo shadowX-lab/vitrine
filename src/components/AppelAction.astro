@@ -1,0 +1,47 @@
+---
+import { lien, LIEN_RDV } from '../config';
+
+interface Props {
+  titre?: string;
+  texte?: string;
+}
+
+const {
+  titre = 'Racontez-nous ce que vous voulez construire',
+  texte =
+    "On vous répond sous deux jours ouvrés, et le premier entretien de cadrage ne vous engage à rien. Vous repartez avec une note écrite de ce qu'on a compris de votre projet — même si on s'arrête là.",
+} = Astro.props;
+---
+
+<section class="section section--encre appel">
+  <div class="page appel__interieur">
+    <div>
+      <p class="eyebrow">Prochaine étape</p>
+      <h2>{titre}</h2>
+    </div>
+    <div>
+      <p class="prose">{texte}</p>
+      <div class="appel__boutons">
+        <a class="bouton" href={lien('/contact')}>Décrire mon projet</a>
+        {LIEN_RDV && (
+          <a class="bouton bouton--fantome" href={LIEN_RDV} target="_blank" rel="noopener">
+            Réserver 30 minutes
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .appel__interieur {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: end;
+  }
+  .appel__boutons { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.8rem; }
+  @media (max-width: 800px) {
+    .appel__interieur { grid-template-columns: 1fr; align-items: start; }
+  }
+</style>

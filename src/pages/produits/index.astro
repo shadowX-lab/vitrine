@@ -1,0 +1,119 @@
+---
+import Base from '../../layouts/Base.astro';
+import Telephone from '../../components/Telephone.astro';
+import AppelAction from '../../components/AppelAction.astro';
+import { lien } from '../../config';
+import { produits } from '../../data/produits';
+---
+
+<Base
+  titre="Produits"
+  description="Pil'Poil, ChargeAir et Teamago : trois produits conçus et construits par Cadran, du problème jusqu'à l'application."
+>
+  <section class="ouverture">
+    <div class="page">
+      <p class="eyebrow">Nos produits</p>
+      <h1>Trois produits,<br />trois décisions</h1>
+      <p class="chapeau">
+        Ce ne sont pas des références clients. Ce sont nos produits — et c'est
+        précisément ce qui les rend utiles à regarder : on peut vous montrer les
+        arbitrages, les raisons, et ce qu'on a délibérément laissé de côté.
+      </p>
+    </div>
+  </section>
+
+  <div class="graduation graduation--haute" aria-hidden="true"></div>
+
+  <section class="section">
+    <div class="page liste">
+      {produits.map((p, i) => (
+        <article
+          class="produit apparait"
+          style={`--teinte:${p.palette.accent};--voile:${p.palette.voile};--contraste:${p.palette.contraste}`}
+        >
+          <div class="produit__visuel">
+            <Telephone projet={p.slug} fichier={p.heros} alt={`${p.nom} — écran principal`} largeur={228} charge={i === 0 ? 'eager' : 'lazy'} />
+            <Telephone projet={p.slug} fichier={p.galerie[1]!.fichier} alt="" largeur={196} />
+          </div>
+
+          <div class="produit__corps">
+            <span class="index">{String(i + 1).padStart(2, '0')}</span>
+            <h2>{p.nom}</h2>
+            <p class="produit__baseline">{p.baseline}</p>
+            <p class="prose">{p.resume}</p>
+
+            <ul class="produit__points">
+              {p.decisions.slice(0, 3).map((d) => <li>{d.titre}</li>)}
+            </ul>
+
+            <a class="bouton" href={lien(`/produits/${p.slug}`)}>Lire l'étude de cas</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <AppelAction />
+</Base>
+
+<style>
+  .ouverture { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(2.5rem, 5vw, 4rem); }
+  .ouverture h1 { margin-bottom: 1.5rem; }
+
+  .liste { display: grid; gap: clamp(3.5rem, 8vw, 6.5rem); }
+
+  .produit {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+  .produit:nth-child(even) .produit__visuel { order: 2; }
+
+  .produit__visuel {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: clamp(0.5rem, 2vw, 1.4rem);
+    background: var(--voile);
+    border-radius: var(--arrondi-l);
+    padding: clamp(2rem, 4vw, 3.2rem) 1rem 0;
+    overflow: hidden;
+  }
+  .produit__visuel :global(.tel):first-child { margin-bottom: -2.5rem; z-index: 2; }
+  .produit__visuel :global(.tel):last-child { margin-bottom: -4.5rem; opacity: 0.92; }
+
+  .produit .index { color: var(--teinte); margin-bottom: 1rem; }
+  .produit h2 { color: var(--contraste); margin-bottom: 0.4rem; }
+  .produit__baseline {
+    font-family: var(--serif);
+    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+    line-height: 1.2;
+    margin-bottom: 1.1rem;
+  }
+  .produit .prose { margin-bottom: 1.6rem; }
+
+  .produit__points { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; gap: 0; }
+  .produit__points li {
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--trait-fin);
+    font-size: 0.95rem;
+    color: var(--encre-douce);
+    display: flex;
+    gap: 0.7rem;
+  }
+  .produit__points li::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teinte);
+    flex: none;
+    transform: translateY(0.62rem);
+  }
+  .produit__points li:last-child { border-bottom: 1px solid var(--trait-fin); }
+
+  @media (max-width: 900px) {
+    .produit { grid-template-columns: 1fr; }
+    .produit:nth-child(even) .produit__visuel { order: 0; }
+  }
+</style>

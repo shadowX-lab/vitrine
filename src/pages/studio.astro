@@ -1,0 +1,179 @@
+---
+import Base from '../layouts/Base.astro';
+import AppelAction from '../components/AppelAction.astro';
+import { STUDIO } from '../config';
+
+const convictions = [
+  {
+    titre: 'Une décision écrite vaut mieux qu’une réunion',
+    texte: "Un arbitrage qu'on ne peut pas relire n'existe pas : il sera repris, retourné, et re-décidé différemment dans six mois. On écrit ce qu'on tranche et pourquoi. C'est le document le moins cher d'un projet et le seul qui garde de la valeur dans deux ans.",
+  },
+  {
+    titre: 'La contrainte se pose au début ou elle coûte une refonte',
+    texte: "Sur ChargeAir, décider que rien ne serait mesuré mais tout estimé a imposé une règle de vocabulaire à toute l'interface : « estimé », jamais « consommé ». Posée au cadrage, elle ne coûte rien. Découverte après le développement, elle coûte une reprise de chaque écran.",
+  },
+  {
+    titre: 'Une bonne abstraction supprime plus de code qu’elle n’en ajoute',
+    texte: "Sur Teamago, faire de l'association un compte comme un autre — qui avance, encaisse et rembourse — a fait disparaître le conducteur comme cas particulier. Ce n'était pas une décision technique : c'était une décision de modèle, prise avant d'ouvrir un éditeur.",
+  },
+  {
+    titre: 'La friction se met là où elle se justifie',
+    texte: "Sur Pil'Poil, signaler un animal trouvé ne demande aucun compte, parce que la personne qui rend service abandonnera à la première contrainte. Déclarer une perte en demande un, et on explique pourquoi à l'écran. Une règle qu'on justifie cesse d'être subie.",
+  },
+  {
+    titre: 'Une tranche finie vaut mieux que cinq à moitié',
+    texte: "Un produit à soixante pour cent ne se montre pas, ne se teste pas et ne se corrige pas. On livre des parcours complets, un par un, quitte à ce que la liste des fonctionnalités reste courte plus longtemps que vous ne l'aimeriez.",
+  },
+  {
+    titre: 'Le soin visible est une information sur le reste',
+    texte: "Un utilisateur ne peut pas juger votre architecture. Il juge le chargement, l'alignement, le texte d'erreur. Il en déduit — souvent avec raison — la qualité de ce qu'il ne voit pas.",
+  },
+];
+
+const stack = [
+  { titre: 'Mobile', outils: 'iOS natif (Swift, SwiftUI), Android, applications multiplateformes selon le besoin réel — pas selon la mode.' },
+  { titre: 'Web', outils: 'Astro, TypeScript, rendu statique quand c’est possible, framework quand c’est justifié. Ce site est en Astro, sans une ligne de JavaScript côté client.' },
+  { titre: 'Back-end', outils: 'API typées, modèle de domaine explicite, migrations versionnées, tests sur la logique métier plutôt que sur les accesseurs.' },
+  { titre: 'Conception', outils: 'Maquettes au pixel, clair et sombre, états d’erreur et cas limites inclus. Les écrans de nos produits ont tous été dessinés avant d’être codés.' },
+];
+---
+
+<Base
+  titre="Le studio"
+  description="Cadran : un cadran mesure avant que l'aiguille bouge. Les convictions et les outils d'un studio qui vend la décision produit avant la ligne de code."
+>
+  <section class="ouverture">
+    <div class="page ouverture__interieur">
+      <div>
+        <p class="eyebrow">Le studio</p>
+        <h1>Un cadran mesure<br />avant que <em>l'aiguille</em><br />ne bouge</h1>
+      </div>
+      <div class="prose grand">
+        <p>
+          C'est tout le nom, et c'est toute la promesse. On gradue le problème,
+          on le lit, on se met d'accord sur ce qu'on voit — <strong>ensuite
+          seulement on avance</strong>.
+        </p>
+        <p>
+          {STUDIO.nom} conçoit et développe des applications web et mobiles. Ce
+          qui nous distingue tient en une phrase : nous vendons le temps passé à
+          ne pas construire la mauvaise chose. Ce n'est pas une position morale,
+          c'est un calcul — une fonctionnalité mal cadrée coûte son
+          développement, puis son retrait, puis la confiance de ceux qui s'en
+          servaient.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="graduation graduation--haute" aria-hidden="true"></div>
+
+  <section class="section section--encre">
+    <div class="page">
+      <div class="citation">
+        <p>
+          « Nos produits ne sont pas des références clients, et on le dit. C'est
+          précisément ce qui nous permet de vous montrer les décisions, les
+          arbitrages, et ce qu'on a délibérément laissé de côté. »
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="page">
+      <div class="titre-section">
+        <div>
+          <p class="eyebrow">Ce en quoi on croit</p>
+          <h2>Six convictions,<br />chacune payée d'un exemple</h2>
+        </div>
+      </div>
+      <div class="convictions">
+        {convictions.map((c, i) => (
+          <article class="apparait">
+            <span class="index">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{c.titre}</h3>
+            <p>{c.texte}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--creux">
+    <div class="page deux-colonnes">
+      <div>
+        <p class="eyebrow">Nos outils</p>
+        <h2>Ce avec quoi<br />on construit</h2>
+        <p class="prose apres-titre">
+          Une technologie se choisit pour un problème, pas pour un curriculum.
+          Voilà ce qu'on utilise le plus souvent, et pourquoi.
+        </p>
+      </div>
+      <dl class="stack">
+        {stack.map((s) => (
+          <div>
+            <dt>{s.titre}</dt>
+            <dd>{s.outils}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <AppelAction />
+</Base>
+
+<style>
+  .ouverture { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(2.5rem, 5vw, 4rem); }
+  .ouverture__interieur {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: end;
+  }
+  .ouverture h1 em { font-style: italic; color: var(--laiton); }
+  .prose.grand { font-size: 1.08rem; }
+
+  .citation p {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+    line-height: 1.22;
+    letter-spacing: -0.015em;
+    max-width: 24ch;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .titre-section { margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+
+  .convictions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: clamp(1.8rem, 4vw, 3rem) clamp(2rem, 4vw, 3.5rem);
+  }
+  .convictions article { border-top: 1px solid var(--trait); padding-top: 1.4rem; }
+  .convictions h3 { font-size: 1.35rem; margin: 0.9rem 0 0.7rem; }
+  .convictions p { color: var(--encre-douce); font-size: 0.97rem; margin: 0; }
+
+  .deux-colonnes {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+  }
+  .apres-titre { margin-top: 1.4rem; }
+
+  .stack { margin: 0; display: grid; }
+  .stack div { padding-block: 1.4rem; border-top: 1px solid var(--trait); }
+  .stack div:last-child { border-bottom: 1px solid var(--trait); }
+  .stack dt {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    margin-bottom: 0.45rem;
+  }
+  .stack dd { margin: 0; color: var(--encre-douce); font-size: 0.97rem; }
+
+  @media (max-width: 860px) {
+    .ouverture__interieur, .deux-colonnes { grid-template-columns: 1fr; }
+  }
+</style>

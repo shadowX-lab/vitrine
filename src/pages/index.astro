@@ -1,0 +1,459 @@
+---
+import Base from '../layouts/Base.astro';
+import Telephone from '../components/Telephone.astro';
+import AppelAction from '../components/AppelAction.astro';
+import { lien, STUDIO } from '../config';
+import { produits } from '../data/produits';
+
+const etapes = [
+  {
+    titre: 'Écouter',
+    texte:
+      "Un entretien, sans grille de questions toute faite. On repart avec une note écrite de ce qu'on a compris — et vous la corrigez. Tant qu'elle n'est pas juste, rien ne commence.",
+    livrable: 'Note de cadrage',
+    delai: 'Sous une semaine',
+  },
+  {
+    titre: 'Cadrer',
+    texte:
+      "On réduit le problème à ce qui compte vraiment. Ce qui entre dans la première version, ce qui attend, et pourquoi. Chaque arbitrage est écrit avec sa raison, pour qu'on puisse y revenir dans six mois.",
+    livrable: 'Périmètre arbitré',
+    delai: 'Une à deux semaines',
+  },
+  {
+    titre: 'Valider',
+    texte:
+      "Des écrans réels, pas des boîtes grises. On les regarde ensemble, vous les corrigez, et rien ne part en développement avant que vous ayez dit oui. La maquette est le contrat.",
+    livrable: 'Maquettes cliquables',
+    delai: 'Quelques jours par parcours',
+  },
+  {
+    titre: 'Fabriquer',
+    texte:
+      "Par tranches complètes, livrées une par une. Chaque tranche fonctionne de bout en bout : on ne vous montre jamais soixante pour cent d'une fonctionnalité.",
+    livrable: 'Application déployée',
+    delai: 'Au rythme des tranches',
+  },
+];
+
+const heros = produits.map((p) => ({ ...p, hero: p.heros }));
+---
+
+<Base
+  titre={`${STUDIO.nom} — ${STUDIO.accroche}`}
+  description={STUDIO.description}
+  suffixe={false}
+>
+  <!-- ================= Hero ================= -->
+  <section class="hero">
+    <div class="page hero__interieur">
+      <div class="hero__texte">
+        <p class="eyebrow">Studio produit · web &amp; mobile</p>
+        <h1>Le produit<br />avant <em>le code</em>.</h1>
+        <p class="chapeau">
+          La plupart des applications ratées ont été très bien développées.
+          Elles répondaient simplement à la mauvaise question. On commence par
+          celle-là.
+        </p>
+        <div class="hero__boutons">
+          <a class="bouton" href={lien('/contact')}>Parlons de votre projet</a>
+          <a class="fleche" href={lien('/produits')}>
+            Voir ce qu'on construit
+            <svg width="17" height="12" viewBox="0 0 17 12" fill="none" aria-hidden="true">
+              <path d="M1 6h14M10.5 1L15.5 6l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero__ecrans" aria-hidden="false">
+        {heros.map((p, i) => (
+          <figure class={`hero__ecran hero__ecran--${i}`} style={`--teinte:${p.palette.accent}`}>
+            <Telephone
+              projet={p.slug}
+              fichier={p.hero}
+              alt={`Écran de ${p.nom} — ${p.baseline}`}
+              largeur={230}
+              charge="eager"
+            />
+            <figcaption>{p.nom}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Bandeau de preuve ================= -->
+  <div class="graduation graduation--haute" aria-hidden="true"></div>
+  <section class="section bandeau">
+    <div class="page">
+      <div class="bandeau__grille">
+        <p class="bandeau__phrase">
+          Trois produits, conçus et construits ici. Chacun a d'abord été une
+          décision, pas une fonctionnalité.
+        </p>
+        <ul class="bandeau__liste">
+          <li><span class="chiffre">45</span><span>écrans dessinés et validés</span></li>
+          <li><span class="chiffre">3</span><span>produits menés du problème à l'application</span></li>
+          <li><span class="chiffre">0</span><span>ligne écrite avant un écran validé</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= La conviction ================= -->
+  <section class="section section--creux">
+    <div class="page conviction">
+      <div>
+        <p class="eyebrow">Notre conviction</p>
+        <h2>Le code n'est pas le sujet.<br />Il est la conséquence.</h2>
+      </div>
+      <div class="prose conviction__texte">
+        <p>
+          Une fonctionnalité mal cadrée ne coûte pas seulement son
+          développement. Elle coûte son développement, puis son retrait, puis la
+          confiance de ceux qui s'en servaient. <strong>C'est le poste de dépense
+          le plus élevé d'un projet, et personne ne le facture.</strong>
+        </p>
+        <p>
+          Alors on prend le temps qu'il faut au début, là où il est bon marché.
+          On comprend votre métier avant de proposer quoi que ce soit. On tranche
+          ce qui entre dans la première version. On dessine les écrans, on les
+          fait corriger, et on ne construit que ce qui a été validé.
+        </p>
+        <p>
+          Ensuite, oui, ça va vite — parce que la question difficile a déjà été
+          réglée.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Méthode ================= -->
+  <section class="section">
+    <div class="page">
+      <div class="titre-section">
+        <div>
+          <p class="eyebrow">Comment on travaille</p>
+          <h2>Quatre temps, dans cet ordre</h2>
+        </div>
+        <a class="fleche" href={lien('/methode')}>
+          La méthode en détail
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none" aria-hidden="true">
+            <path d="M1 6h14M10.5 1L15.5 6l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <ol class="etapes">
+        {etapes.map((e, i) => (
+          <li class="etape apparait">
+            <span class="index">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{e.titre}</h3>
+            <p>{e.texte}</p>
+            <dl class="etape__meta">
+              <div><dt>Livrable</dt><dd>{e.livrable}</dd></div>
+              <div><dt>Délai</dt><dd>{e.delai}</dd></div>
+            </dl>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================= Produits ================= -->
+  <section class="section section--creux">
+    <div class="page">
+      <div class="titre-section">
+        <div>
+          <p class="eyebrow">Nos produits</p>
+          <h2>On construit les nôtres,<br />c'est là qu'on apprend</h2>
+        </div>
+        <a class="fleche" href={lien('/produits')}>
+          Les trois produits
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none" aria-hidden="true">
+            <path d="M1 6h14M10.5 1L15.5 6l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+      <p class="prose introduction">
+        Ce ne sont pas des références clients : ce sont nos produits, et on le
+        dit. C'est précisément ce qui les rend utiles à regarder — on peut vous
+        montrer les décisions, les arbitrages et ce qu'on a volontairement laissé
+        de côté. Un portfolio de prestations ne montre jamais ça.
+      </p>
+
+      <div class="cartes">
+        {produits.map((p) => (
+          <a class="carte apparait" href={lien(`/produits/${p.slug}`)} style={`--teinte:${p.palette.accent};--voile:${p.palette.voile}`}>
+            <div class="carte__visuel">
+              <Telephone projet={p.slug} fichier={p.galerie[1].fichier} alt="" largeur={200} />
+            </div>
+            <div class="carte__corps">
+              <p class="carte__domaine">{p.domaine}</p>
+              <h3>{p.nom}</h3>
+              <p class="carte__baseline">{p.baseline}</p>
+              <p class="carte__resume">{p.resume}</p>
+              <span class="carte__lien">
+                Lire l'étude de cas
+                <svg width="17" height="12" viewBox="0 0 17 12" fill="none" aria-hidden="true">
+                  <path d="M1 6h14M10.5 1L15.5 6l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Ce qu'on fait ================= -->
+  <section class="section">
+    <div class="page">
+      <div class="titre-section">
+        <div>
+          <p class="eyebrow">Ce qu'on prend en charge</p>
+          <h2>Du problème à l'application en ligne</h2>
+        </div>
+      </div>
+      <div class="grille trio services">
+        <article>
+          <h3>Cadrage produit</h3>
+          <p>Entretiens, analyse du domaine, étude des solutions existantes, arbitrage du périmètre. Le livrable est un document que vous pouvez lire, contester et garder.</p>
+        </article>
+        <article>
+          <h3>Conception d'interface</h3>
+          <p>Parcours et écrans dessinés au pixel, en clair et en sombre, sur mobile comme sur écran large. Vous validez ce que vous verrez à la livraison.</p>
+        </article>
+        <article>
+          <h3>Développement mobile</h3>
+          <p>Applications iOS et Android, avec le soin qu'on met aux détails qui font qu'une application paraît native plutôt que portée.</p>
+        </article>
+        <article>
+          <h3>Développement web</h3>
+          <p>Sites et applications rapides, accessibles, qui tiennent la charge et se référencent. Ce site en est lui-même un exemple.</p>
+        </article>
+        <article>
+          <h3>Back-end et données</h3>
+          <p>Modèle de domaine sérieux, API claires, migrations propres. La partie qu'on ne voit pas est celle qui décide de la suite.</p>
+        </article>
+        <article>
+          <h3>Mise en ligne et suite</h3>
+          <p>Déploiement, publication sur les stores, mesure et corrections. Un produit livré n'est pas un produit fini.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <AppelAction />
+</Base>
+
+<style>
+  /* ---------- hero ---------- */
+  .hero { padding-block: clamp(3.5rem, 8vw, 7rem) clamp(3rem, 6vw, 5rem); overflow: hidden; }
+
+  .hero__interieur {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  .hero h1 { margin-bottom: 1.6rem; }
+  .hero h1 em { font-style: italic; color: var(--laiton); }
+  .hero .chapeau { margin-bottom: 2.2rem; }
+
+  .hero__boutons { display: flex; align-items: center; gap: 1.6rem; flex-wrap: wrap; }
+
+  .hero__ecrans {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: clamp(0.5rem, 1.6vw, 1.2rem);
+  }
+  .hero__ecran { margin: 0; position: relative; }
+  .hero__ecran figcaption {
+    margin-top: 0.9rem;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teinte);
+  }
+  .hero__ecran--0 { transform: translateY(2.2rem) rotate(-4deg); z-index: 1; }
+  .hero__ecran--1 { z-index: 3; }
+  .hero__ecran--2 { transform: translateY(2.2rem) rotate(4deg); z-index: 2; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__ecran { transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1); }
+    .hero__ecrans:hover .hero__ecran--0 { transform: translateY(1.4rem) rotate(-7deg) translateX(-0.6rem); }
+    .hero__ecrans:hover .hero__ecran--2 { transform: translateY(1.4rem) rotate(7deg) translateX(0.6rem); }
+    .hero__ecrans:hover .hero__ecran--1 { transform: translateY(-0.6rem); }
+  }
+
+  /* ---------- bandeau ---------- */
+  .bandeau { padding-block: clamp(2.5rem, 5vw, 4rem); }
+  .bandeau__grille {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+  .bandeau__phrase {
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .bandeau__liste {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1rem, 3vw, 2rem);
+  }
+  .bandeau__liste li { display: grid; gap: 0.5rem; }
+  .bandeau__liste span:last-child {
+    font-size: 0.86rem;
+    color: var(--gris);
+    line-height: 1.4;
+    max-width: 20ch;
+  }
+
+  /* ---------- conviction ---------- */
+  .conviction {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+  }
+  .conviction__texte { font-size: 1.08rem; }
+
+  /* ---------- titres de section ---------- */
+  .titre-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .introduction { margin-top: -1.5rem; margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+
+  /* ---------- étapes ---------- */
+  /* Colonnes explicites : chaque étape porte sa propre bordure haute, ce qui
+     garde le trait de graduation correct quel que soit le nombre de colonnes. */
+  .etapes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+  }
+  .etape {
+    padding: 2rem clamp(1rem, 2vw, 1.8rem) 1.8rem 0;
+    border-top: 1px solid var(--trait);
+    border-right: 1px solid var(--trait);
+    position: relative;
+  }
+  .etape:nth-child(4n) { border-right: 0; }
+  .etape::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 0;
+    width: 42px; height: 3px;
+    background: var(--laiton);
+  }
+  .etape h3 { margin: 0.9rem 0 0.7rem; }
+  .etape p { color: var(--encre-douce); font-size: 0.97rem; }
+  .etape__meta { margin: 1.4rem 0 0; display: grid; gap: 0.55rem; }
+  .etape__meta div { display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--trait-fin); padding-top: 0.55rem; }
+  .etape__meta dt { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris-clair); }
+  .etape__meta dd { margin: 0; font-size: 0.82rem; font-weight: 550; text-align: right; }
+
+  /* ---------- cartes produits ---------- */
+  .cartes { display: grid; gap: clamp(1.2rem, 2.5vw, 1.8rem); }
+  .carte {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: center;
+    background: var(--papier-pur);
+    border: 1px solid var(--trait-fin);
+    border-radius: var(--arrondi-l);
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    text-decoration: none;
+    transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.28s, border-color 0.28s;
+  }
+  .carte:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ombre);
+    border-color: color-mix(in srgb, var(--teinte) 35%, transparent);
+  }
+  .carte__visuel {
+    display: flex;
+    justify-content: center;
+    background: var(--voile);
+    border-radius: var(--arrondi);
+    padding: clamp(1.5rem, 3vw, 2.2rem) 1rem 0;
+    overflow: hidden;
+  }
+  .carte__visuel :global(.tel) { margin-bottom: -3rem; }
+  .carte__domaine {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teinte);
+    margin-bottom: 0.8rem;
+  }
+  .carte h3 { margin-bottom: 0.35rem; }
+  .carte__baseline {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    color: var(--encre-douce);
+    margin-bottom: 0.9rem;
+  }
+  .carte__resume { color: var(--gris); font-size: 0.97rem; max-width: 54ch; }
+  .carte__lien {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--teinte);
+  }
+  .carte:hover .carte__lien svg { transform: translateX(5px); }
+  .carte__lien svg { transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.3, 1); }
+
+  /* ---------- services ---------- */
+  .services article { border-top: 1px solid var(--trait); padding-top: 1.3rem; }
+  .services h3 { font-size: 1.32rem; margin-bottom: 0.6rem; }
+  .services p { color: var(--encre-douce); font-size: 0.97rem; }
+
+  /* ---------- adaptation ---------- */
+  @media (max-width: 980px) {
+    .hero__interieur { grid-template-columns: 1fr; }
+    .hero__ecrans { margin-top: 1rem; }
+    .conviction, .bandeau__grille { grid-template-columns: 1fr; }
+    .carte { grid-template-columns: 1fr; }
+    .carte__visuel { padding-inline: 2rem; }
+    .etapes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .etape:nth-child(2n) { border-right: 0; }
+  }
+  @media (max-width: 620px) {
+    .etapes { grid-template-columns: 1fr; }
+    .etape { border-right: 0; padding-right: 0; }
+  }
+  @media (max-width: 560px) {
+    .hero__ecrans { gap: 0; }
+    .hero__ecran--0, .hero__ecran--2 { display: none; }
+    .bandeau__liste { grid-template-columns: 1fr; }
+    .bandeau__liste li { display: flex; align-items: baseline; gap: 1rem; }
+    .bandeau__liste span:last-child { max-width: none; }
+  }
+</style>

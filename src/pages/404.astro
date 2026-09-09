@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import { lien } from '../config';
+---
+
+<Base titre="Page introuvable" description="Cette page n'existe pas.">
+  <section class="section perdu">
+    <div class="page">
+      <span class="chiffre">404</span>
+      <h1>Cette page<br />n'existe pas</h1>
+      <p class="chapeau">
+        Un lien cassé, une adresse mal recopiée, ou une page qu'on a retirée.
+        Dans les trois cas, ce n'est pas votre faute.
+      </p>
+      <div class="perdu__boutons">
+        <a class="bouton" href={lien('/')}>Retour à l'accueil</a>
+        <a class="bouton bouton--fantome" href={lien('/produits')}>Voir nos produits</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .perdu { padding-block: clamp(4rem, 12vw, 9rem); }
+  .perdu .chiffre { color: var(--laiton); margin-bottom: 1rem; }
+  .perdu h1 { margin-bottom: 1.4rem; }
+  .perdu__boutons { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 2.2rem; }
+</style>

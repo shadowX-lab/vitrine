@@ -1,0 +1,49 @@
+---
+import '../styles/global.css';
+import Entete from '../components/Entete.astro';
+import PiedDePage from '../components/PiedDePage.astro';
+import { STUDIO } from '../config';
+
+interface Props {
+  titre: string;
+  description: string;
+  /** Ajouté tel quel après le titre. Laisser vide pour la page d'accueil. */
+  suffixe?: boolean;
+}
+
+const { titre, description, suffixe = true } = Astro.props;
+const titreComplet = suffixe ? `${titre} · ${STUDIO.nom}` : titre;
+const canonique = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titreComplet}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonique} />
+    <meta name="theme-color" content="#F7F4EE" />
+    <link rel="icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`} type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={STUDIO.nom} />
+    <meta property="og:title" content={titreComplet} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonique} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <slot name="tete" />
+  </head>
+
+  <body>
+    <a class="saut-contenu" href="#contenu">Aller au contenu</a>
+    <Entete />
+    <main id="contenu">
+      <slot />
+    </main>
+    <PiedDePage />
+  </body>
+</html>

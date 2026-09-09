@@ -1,0 +1,247 @@
+---
+import Base from '../layouts/Base.astro';
+import { CLE_FORMULAIRE, LIEN_RDV, lien } from '../config';
+
+const cleManquante = CLE_FORMULAIRE.startsWith('REMPLACER');
+const retour = new URL(lien('/merci'), Astro.site).href;
+
+const etapes = [
+  { titre: 'Vous écrivez', texte: 'Quelques phrases suffisent. On ne demande pas de cahier des charges — c’est souvent le travail qu’il reste à faire.' },
+  { titre: 'On répond sous deux jours ouvrés', texte: 'Avec une première lecture de votre problème et les questions qu’il soulève.' },
+  { titre: 'On se parle une heure', texte: 'Gratuitement, et sans engagement. Vous repartez avec une note écrite de ce qu’on a compris.' },
+];
+---
+
+<Base
+  titre="Contact"
+  description="Décrivez votre projet à Cadran. Réponse sous deux jours ouvrés, premier entretien de cadrage gratuit et sans engagement."
+>
+  <section class="ouverture">
+    <div class="page ouverture__interieur">
+      <div>
+        <p class="eyebrow">Contact</p>
+        <h1>Racontez-nous<br />ce que vous voulez<br /><em>construire</em></h1>
+        <p class="chapeau">
+          Pas besoin d'un cahier des charges. Un problème, une intuition, une
+          contrainte : c'est un bon point de départ, et c'est même le meilleur.
+        </p>
+
+        <ol class="parcours">
+          {etapes.map((e, i) => (
+            <li>
+              <span class="index">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <strong>{e.titre}</strong>
+                <span>{e.texte}</span>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        {LIEN_RDV && (
+          <div class="rdv">
+            <p>Vous préférez parler tout de suite ?</p>
+            <a class="bouton bouton--fantome" href={LIEN_RDV} target="_blank" rel="noopener">
+              Réserver 30 minutes
+            </a>
+          </div>
+        )}
+      </div>
+
+      <div class="panneau">
+        {cleManquante && (
+          <p class="alerte">
+            <strong>Formulaire non branché.</strong> Renseignez votre clé
+            Web3Forms dans <code>src/config.ts</code> pour recevoir les messages.
+          </p>
+        )}
+
+        <form action="https://web3forms.com/submit" method="POST" class="formulaire">
+          <input type="hidden" name="access_key" value={CLE_FORMULAIRE} />
+          <input type="hidden" name="subject" value="Nouveau projet — cadran.fr" />
+          <input type="hidden" name="from_name" value="Site Cadran" />
+          <input type="hidden" name="redirect" value={retour} />
+          <input type="checkbox" name="botcheck" class="invisible" tabindex="-1" autocomplete="off" />
+
+          <div class="duo-champs">
+            <p class="champ">
+              <label for="nom">Votre nom <span aria-hidden="true">*</span></label>
+              <input id="nom" name="nom" type="text" required autocomplete="name" />
+            </p>
+            <p class="champ">
+              <label for="organisation">Organisation</label>
+              <input id="organisation" name="organisation" type="text" autocomplete="organization" />
+            </p>
+          </div>
+
+          <p class="champ">
+            <label for="email">Adresse e-mail <span aria-hidden="true">*</span></label>
+            <input id="email" name="email" type="email" required autocomplete="email" />
+          </p>
+
+          <fieldset class="champ">
+            <legend>De quoi s'agit-il ?</legend>
+            <div class="pastilles">
+              {['Application mobile', 'Application web', 'Les deux', 'Cadrage seul', 'Je ne sais pas encore'].map((v) => (
+                <label class="pastille">
+                  <input type="radio" name="nature" value={v} />
+                  <span>{v}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <div class="duo-champs">
+            <p class="champ">
+              <label for="echeance">Échéance souhaitée</label>
+              <select id="echeance" name="echeance">
+                <option value="">À définir ensemble</option>
+                <option>Le plus tôt possible</option>
+                <option>Dans les trois mois</option>
+                <option>Dans les six mois</option>
+                <option>Plus tard, je prépare</option>
+              </select>
+            </p>
+            <p class="champ">
+              <label for="budget">Budget envisagé</label>
+              <select id="budget" name="budget">
+                <option value="">Je ne sais pas encore</option>
+                <option>Moins de 15 000 €</option>
+                <option>15 000 à 40 000 €</option>
+                <option>40 000 à 100 000 €</option>
+                <option>Plus de 100 000 €</option>
+              </select>
+            </p>
+          </div>
+
+          <p class="champ">
+            <label for="message">Votre projet <span aria-hidden="true">*</span></label>
+            <textarea
+              id="message"
+              name="message"
+              rows="6"
+              required
+              placeholder="Ce que vous faites, qui s'en sert, ce qui coince aujourd'hui. Quelques phrases suffisent."
+            ></textarea>
+          </p>
+
+          <button class="bouton" type="submit">Envoyer</button>
+          <p class="mention">
+            Vos informations servent uniquement à vous répondre. Elles ne sont ni
+            revendues, ni utilisées pour autre chose.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ouverture { padding-block: clamp(3rem, 7vw, 5rem) clamp(3.5rem, 8vw, 6rem); }
+  .ouverture__interieur {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: start;
+  }
+  .ouverture h1 { margin-bottom: 1.4rem; font-size: clamp(2.6rem, 5vw, 4.1rem); }
+  .ouverture h1 em { font-style: italic; color: var(--laiton); }
+
+  .parcours { list-style: none; margin: 2.8rem 0 0; padding: 0; display: grid; }
+  .parcours li {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 1.1rem;
+    border-top: 1px solid var(--trait);
+  }
+  .parcours li:last-child { border-bottom: 1px solid var(--trait); }
+  .parcours div { display: grid; gap: 0.25rem; }
+  .parcours strong { font-size: 1rem; }
+  .parcours span:last-child { color: var(--gris); font-size: 0.92rem; }
+
+  .rdv { margin-top: 2.2rem; display: grid; gap: 0.9rem; justify-items: start; }
+  .rdv p { color: var(--gris); font-size: 0.95rem; margin: 0; }
+
+  /* ---------- panneau formulaire ---------- */
+  .panneau {
+    background: var(--papier-pur);
+    border: 1px solid var(--trait-fin);
+    border-radius: var(--arrondi-l);
+    padding: clamp(1.5rem, 3.5vw, 2.6rem);
+    box-shadow: var(--ombre);
+  }
+
+  .alerte {
+    background: var(--laiton-voile);
+    border: 1px solid color-mix(in srgb, var(--laiton) 35%, transparent);
+    border-radius: var(--arrondi);
+    padding: 0.9rem 1.1rem;
+    font-size: 0.88rem;
+    color: var(--laiton-sombre);
+    margin-bottom: 1.6rem;
+  }
+  .alerte code { font-size: 0.85em; }
+
+  .formulaire { display: grid; gap: 1.3rem; }
+  .duo-champs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+
+  .champ { display: grid; gap: 0.5rem; margin: 0; border: 0; padding: 0; }
+  .champ > label, .champ > legend {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--encre-douce);
+    padding: 0;
+  }
+  .champ > label span, .champ > legend span { color: var(--laiton); }
+
+  input[type='text'], input[type='email'], select, textarea {
+    width: 100%;
+    background: var(--papier);
+    border: 1px solid var(--trait);
+    border-radius: 10px;
+    padding: 0.8rem 0.95rem;
+    font-size: 0.98rem;
+    transition: border-color 0.16s, background 0.16s;
+  }
+  input:hover, select:hover, textarea:hover { border-color: var(--gris-clair); }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--laiton);
+    background: var(--papier-pur);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--laiton) 18%, transparent);
+  }
+  textarea { resize: vertical; min-height: 8rem; font-family: inherit; }
+  select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--gris) 50%), linear-gradient(135deg, var(--gris) 50%, transparent 50%); background-position: right 1.05rem center, right 0.75rem center; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+
+  .pastilles { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.15rem; }
+  .pastille input { position: absolute; opacity: 0; pointer-events: none; }
+  .pastille span {
+    display: inline-block;
+    padding: 0.5rem 0.95rem;
+    border: 1px solid var(--trait);
+    border-radius: 100px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: border-color 0.16s, background 0.16s, color 0.16s;
+  }
+  .pastille:hover span { border-color: var(--gris-clair); }
+  .pastille input:checked + span {
+    background: var(--encre);
+    border-color: var(--encre);
+    color: var(--papier);
+  }
+  .pastille input:focus-visible + span { outline: 2px solid var(--laiton); outline-offset: 2px; }
+
+  .formulaire button { justify-self: start; margin-top: 0.3rem; }
+  .mention { font-size: 0.82rem; color: var(--gris); margin: 0; }
+
+  @media (max-width: 860px) {
+    .ouverture__interieur { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .duo-champs { grid-template-columns: 1fr; }
+  }
+</style>

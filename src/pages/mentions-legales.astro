@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import { STUDIO } from '../config';
+---
+
+<Base
+  titre="Mentions légales"
+  description="Mentions légales et politique de confidentialité du site de Cadran."
+>
+  <section class="section legales">
+    <div class="page">
+      <p class="eyebrow">Informations légales</p>
+      <h1>Mentions légales</h1>
+
+      <div class="prose">
+        <p class="rappel">
+          Ce site vient d'être mis en ligne : les informations ci-dessous sont à
+          compléter avec les données réelles de la structure avant toute
+          diffusion publique.
+        </p>
+
+        <h2>Éditeur du site</h2>
+        <p>
+          {STUDIO.nom} — <em>raison sociale à compléter</em><br />
+          Forme juridique et capital social : <em>à compléter</em><br />
+          Siège social : <em>à compléter</em><br />
+          SIREN / SIRET : <em>à compléter</em><br />
+          Numéro de TVA intracommunautaire : <em>à compléter</em><br />
+          Directeur de la publication : <em>à compléter</em>
+        </p>
+
+        <h2>Nous contacter</h2>
+        <p>
+          Toute demande passe par le formulaire de la page Contact. Aucune
+          adresse électronique n'est publiée sur ce site.
+        </p>
+
+        <h2>Hébergement</h2>
+        <p>
+          Le site est hébergé par GitHub Pages — GitHub, Inc., 88 Colin P. Kelly
+          Jr. Street, San Francisco, CA 94107, États-Unis.
+        </p>
+
+        <h2>Propriété intellectuelle</h2>
+        <p>
+          L'ensemble des contenus de ce site — textes, maquettes, captures
+          d'écran des applications Pil'Poil, ChargeAir et Teamago, identité
+          visuelle et code — est la propriété de {STUDIO.nom}, sauf mention
+          contraire. Toute reproduction ou représentation, totale ou partielle,
+          sans autorisation écrite préalable est interdite.
+        </p>
+
+        <h2>Données personnelles</h2>
+        <p>
+          Les informations transmises par le formulaire de contact (nom,
+          organisation, adresse électronique, nature du projet, échéance, budget
+          et message) servent exclusivement à répondre à votre demande. Elles ne
+          sont ni revendues, ni cédées, ni utilisées à des fins de prospection
+          par des tiers.
+        </p>
+        <p>
+          L'acheminement des messages est assuré par Web3Forms. Les données sont
+          conservées le temps nécessaire au traitement de la demande, et au
+          maximum trois ans après le dernier échange.
+        </p>
+        <p>
+          Conformément au règlement général sur la protection des données, vous
+          disposez d'un droit d'accès, de rectification, d'effacement, de
+          limitation, d'opposition et de portabilité de vos données. Ces droits
+          s'exercent par le formulaire de contact. Vous pouvez également
+          introduire une réclamation auprès de la CNIL.
+        </p>
+
+        <h2>Cookies et mesure d'audience</h2>
+        <p>
+          Ce site ne dépose aucun cookie et n'utilise aucun outil de mesure
+          d'audience ni de traçage publicitaire. Aucune bannière de consentement
+          n'est donc nécessaire.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legales { padding-block: clamp(3rem, 7vw, 5rem) clamp(4rem, 9vw, 7rem); }
+  .legales h1 { margin-bottom: 2.5rem; }
+  .legales .prose { max-width: 68ch; }
+  .legales h2 {
+    font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+    margin: 2.6rem 0 0.9rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--trait);
+    color: var(--encre);
+  }
+  .rappel {
+    background: var(--laiton-voile);
+    border-left: 2px solid var(--laiton);
+    padding: 1rem 1.2rem;
+    font-size: 0.93rem;
+    color: var(--laiton-sombre);
+  }
+  .rappel em { color: inherit; font-size: 1em; }
+</style>

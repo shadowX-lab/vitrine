@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import { lien } from '../config';
+---
+
+<Base
+  titre="Message reçu"
+  description="Votre message est bien arrivé chez Cadran."
+>
+  <section class="section merci">
+    <div class="page">
+      <p class="eyebrow">Message reçu</p>
+      <h1>C'est noté.<br />On vous lit <em>attentivement</em>.</h1>
+      <p class="chapeau">
+        Vous aurez une réponse sous deux jours ouvrés — une vraie réponse, écrite
+        par quelqu'un qui aura lu votre message, pas un accusé de réception.
+      </p>
+      <div class="merci__boutons">
+        <a class="bouton" href={lien('/produits')}>Voir nos produits</a>
+        <a class="bouton bouton--fantome" href={lien('/')}>Retour à l'accueil</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .merci { padding-block: clamp(4rem, 12vw, 9rem); }
+  .merci h1 { margin-bottom: 1.4rem; }
+  .merci h1 em { font-style: italic; color: var(--laiton); }
+  .merci__boutons { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 2.2rem; }
+</style>
