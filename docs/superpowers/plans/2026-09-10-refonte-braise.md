@@ -135,7 +135,7 @@ test('typographierHtml ne touche ni scripts, ni styles, ni attributs', () => {
 });
 
 test('typographierHtml resserre virgule et point des h1/h2, pas des décimales', () => {
-  assert.equal(typographierHtml('<h1>Ce que ça donne, et pourquoi</h1>'), '<h1>Ce que ça donne<span class="ponct">,</span> et pourquoi</h1>');
+  assert.equal(typographierHtml('<h1>Ça donne, et pourquoi</h1>'), '<h1>Ça donne<span class="ponct">,</span> et pourquoi</h1>');
   assert.equal(typographierHtml('<h2>0,00 €</h2>'), '<h2>0,00 €</h2>');
   assert.equal(typographierHtml('<h3>Fin.</h3>'), '<h3>Fin.</h3>');
 });
@@ -148,7 +148,7 @@ test('typographierHtml traite les entités &nbsp; comme des espaces déjà liée
 
 - [ ] **Step 2: Ajouter le script de test et vérifier l'échec**
 
-Dans `package.json`, `scripts` : `"test": "node --test tests/"`.
+Dans `package.json`, `scripts` : `"test": "node --test \"tests/*.test.mjs\""`.
 
 Run: `npm test`
 Expected: FAIL (`Cannot find module '../src/lib/typo.ts'`).
@@ -271,7 +271,7 @@ export function typographierHtml(html: string): string {
 }
 ```
 
-Attention : la ponctuation des titres insère des balises `<span>` dans un jeton texte **après** son éventuelle liaison (la liaison a lieu à la fermeture du bloc, sur les jetons déjà traités) ; les séparations ne sont jamais à l'intérieur de ces balises, donc l'ordre est sûr.
+Correction faite à l'exécution : la ponctuation des titres est d'abord marquée par des caractères à usage privé (`\ue000`, `\ue001`), remplacés par `<span class="ponct">` en toute fin ; sinon la liaison des mots remplaçait l'espace de `<span class=…>`. Le fichier `src/lib/typo.ts` fait foi.
 
 - [ ] **Step 4: Lancer les tests**
 
