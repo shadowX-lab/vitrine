@@ -7,22 +7,23 @@ import { produits } from '../../data/produits';
 ---
 
 <Base
-  titre="Produits"
-  description="Pil'Poil, ChargeAir et Teamago : trois produits conçus et construits par Cadran, du problème jusqu'à l'application."
+  titre="Réalisations"
+  description="Des applications conçues et construites de bout en bout : le problème, les décisions qui ont tout changé, et les écrans qui en sont sortis."
 >
   <section class="ouverture">
     <div class="page">
-      <p class="eyebrow">Nos produits</p>
-      <h1>Trois produits,<br />trois décisions</h1>
+      <p class="eyebrow">Réalisations</p>
+      <h1>Ce que ça donne,<br />et <em>pourquoi</em></h1>
       <p class="chapeau">
-        Ce ne sont pas des références clients. Ce sont nos produits — et c'est
-        précisément ce qui les rend utiles à regarder : on peut vous montrer les
-        arbitrages, les raisons, et ce qu'on a délibérément laissé de côté.
+        Ce ne sont pas des références clients : ce sont mes produits, et je le
+        dis. C'est précisément ce qui les rend utiles à regarder — je peux vous
+        montrer les arbitrages, leurs raisons, et ce que j'ai délibérément laissé
+        de côté. Une prestation ne montre jamais ça.
       </p>
     </div>
   </section>
 
-  <div class="graduation graduation--haute" aria-hidden="true"></div>
+  <div class="liseret" aria-hidden="true"></div>
 
   <section class="section">
     <div class="page liste">
@@ -32,21 +33,27 @@ import { produits } from '../../data/produits';
           style={`--teinte:${p.palette.accent};--voile:${p.palette.voile};--contraste:${p.palette.contraste}`}
         >
           <div class="produit__visuel">
-            <Telephone projet={p.slug} fichier={p.heros} alt={`${p.nom} — écran principal`} largeur={228} charge={i === 0 ? 'eager' : 'lazy'} />
-            <Telephone projet={p.slug} fichier={p.galerie[1]!.fichier} alt="" largeur={196} />
+            <Telephone
+              projet={p.slug}
+              fichier={p.heros}
+              alt={`${p.nom} — écran principal`}
+              largeur={224}
+              charge={i === 0 ? 'eager' : 'lazy'}
+            />
+            <Telephone projet={p.slug} fichier={p.parcours[0]!.fichier} alt="" largeur={192} />
           </div>
 
           <div class="produit__corps">
-            <span class="index">{String(i + 1).padStart(2, '0')}</span>
+            <p class="produit__domaine">{p.domaine}</p>
             <h2>{p.nom}</h2>
             <p class="produit__baseline">{p.baseline}</p>
             <p class="prose">{p.resume}</p>
 
             <ul class="produit__points">
-              {p.decisions.slice(0, 3).map((d) => <li>{d.titre}</li>)}
+              {p.decisions.map((d) => <li>{d.titre}</li>)}
             </ul>
 
-            <a class="bouton" href={lien(`/produits/${p.slug}`)}>Lire l'étude de cas</a>
+            <a class="bouton" href={lien(`/realisations/${p.slug}`)}>Lire l'étude de cas</a>
           </div>
         </article>
       ))}
@@ -58,9 +65,10 @@ import { produits } from '../../data/produits';
 
 <style>
   .ouverture { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(2.5rem, 5vw, 4rem); }
-  .ouverture h1 { margin-bottom: 1.5rem; }
+  .ouverture h1 { margin-bottom: 1.6rem; }
+  .ouverture h1 em { font-style: italic; color: var(--bronze); }
 
-  .liste { display: grid; gap: clamp(3.5rem, 8vw, 6.5rem); }
+  .liste { display: grid; gap: clamp(3.5rem, 8vw, 7rem); }
 
   .produit {
     display: grid;
@@ -81,34 +89,41 @@ import { produits } from '../../data/produits';
     overflow: hidden;
   }
   .produit__visuel :global(.tel):first-child { margin-bottom: -2.5rem; z-index: 2; }
-  .produit__visuel :global(.tel):last-child { margin-bottom: -4.5rem; opacity: 0.92; }
+  .produit__visuel :global(.tel):last-child { margin-bottom: -4.5rem; opacity: 0.9; }
 
-  .produit .index { color: var(--teinte); margin-bottom: 1rem; }
-  .produit h2 { color: var(--contraste); margin-bottom: 0.4rem; }
+  .produit__domaine {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--contraste);
+    margin-bottom: 1rem;
+  }
+  .produit h2 { color: var(--contraste); margin-bottom: 0.45rem; }
   .produit__baseline {
     font-family: var(--serif);
-    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
-    line-height: 1.2;
-    margin-bottom: 1.1rem;
+    font-optical-sizing: auto;
+    font-size: clamp(1.25rem, 2.1vw, 1.6rem);
+    line-height: 1.24;
+    margin-bottom: 1.2rem;
   }
-  .produit .prose { margin-bottom: 1.6rem; }
+  .produit .prose { margin-bottom: 1.7rem; }
 
   .produit__points { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; gap: 0; }
   .produit__points li {
-    padding-block: 0.75rem;
+    padding-block: 0.8rem;
     border-top: 1px solid var(--trait-fin);
-    font-size: 0.95rem;
+    font-size: 0.94rem;
     color: var(--encre-douce);
     display: flex;
-    gap: 0.7rem;
+    gap: 0.75rem;
   }
   .produit__points li::before {
     content: '';
-    width: 6px; height: 6px;
-    border-radius: 50%;
+    width: 5px; height: 5px;
     background: var(--teinte);
     flex: none;
-    transform: translateY(0.62rem);
+    transform: translateY(0.66rem) rotate(45deg);
   }
   .produit__points li:last-child { border-bottom: 1px solid var(--trait-fin); }
 

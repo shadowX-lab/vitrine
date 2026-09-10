@@ -1,42 +1,43 @@
-@import '@fontsource/instrument-serif/400.css';
-@import '@fontsource/instrument-serif/400-italic.css';
-@import '@fontsource-variable/inter';
+@import '@fontsource-variable/newsreader/index.css';
+@import '@fontsource-variable/newsreader/standard-italic.css';
+@import '@fontsource-variable/geist/index.css';
 
 /* ============================================================
-   Cadran — jetons
-   Un cadran mesure avant que l'aiguille bouge : le motif de
-   graduation est la signature, la couleur vient des écrans.
+   Moamind Solutions — jetons
+   Direction « éditorial » : Newsreader pour la voix, Geist pour le
+   propos. Haut de gamme par la retenue et l'espace, accessible par
+   la chaleur du papier. Aucun symbole : le nom porte la marque.
    ============================================================ */
 
 :root {
-  --papier: #f7f4ee;
-  --papier-creux: #efeae0;
-  --papier-pur: #fffdf9;
-  --encre: #14161a;
-  --encre-douce: #383d45;
-  --gris: #6b7280;
-  --gris-clair: #9aa0a8;
-  --laiton: #b8873b;
-  --laiton-sombre: #8f6726;
-  --laiton-voile: #f0e5d1;
-  --trait: rgba(20, 22, 26, 0.13);
-  --trait-fin: rgba(20, 22, 26, 0.07);
+  --papier: #fbf9f5;
+  --papier-creux: #f2eee6;
+  --papier-pur: #ffffff;
+  --encre: #11161c;
+  --encre-douce: #3d4653;
+  --gris: #6b7480;
+  --gris-clair: #99a1ac;
+  --bronze: #9a6b34;
+  --bronze-sombre: #7a5325;
+  --bronze-voile: #f4ece0;
+  --trait: rgba(17, 22, 28, 0.11);
+  --trait-fin: rgba(17, 22, 28, 0.06);
 
-  --accent: var(--laiton);
-  --accent-voile: var(--laiton-voile);
+  --accent: var(--bronze);
+  --accent-voile: var(--bronze-voile);
 
-  --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
-  --sans: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+  --serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
+  --sans: 'Geist Variable', system-ui, -apple-system, sans-serif;
 
   --page: 1180px;
   --etroit: 660px;
   --gouttiere: clamp(1.25rem, 4vw, 3rem);
-  --rythme: clamp(4.5rem, 11vw, 9rem);
+  --rythme: clamp(5rem, 12vw, 10rem);
 
-  --arrondi: 14px;
-  --arrondi-l: 24px;
-  --ombre: 0 1px 2px rgba(20, 22, 26, 0.04), 0 12px 32px -12px rgba(20, 22, 26, 0.16);
-  --ombre-haute: 0 2px 6px rgba(20, 22, 26, 0.06), 0 40px 80px -30px rgba(20, 22, 26, 0.35);
+  --arrondi: 8px;
+  --arrondi-l: 14px;
+  --ombre: 0 1px 2px rgba(17, 22, 28, 0.03), 0 18px 44px -22px rgba(17, 22, 28, 0.16);
+  --ombre-haute: 0 2px 8px rgba(17, 22, 28, 0.05), 0 48px 96px -40px rgba(17, 22, 28, 0.34);
 }
 
 /* ---------- socle ---------- */
@@ -55,7 +56,7 @@ body {
   color: var(--encre);
   font-family: var(--sans);
   font-size: 1.0625rem;
-  line-height: 1.65;
+  line-height: 1.68;
   font-synthesis-weight: none;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -68,9 +69,9 @@ button, input, textarea, select { font: inherit; color: inherit; }
 ::selection { background: var(--encre); color: var(--papier); }
 
 :focus-visible {
-  outline: 2px solid var(--laiton);
+  outline: 1.5px solid var(--bronze);
   outline-offset: 3px;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -84,58 +85,69 @@ button, input, textarea, select { font: inherit; color: inherit; }
 
 /* ---------- typographie ---------- */
 
+/* Newsreader a un axe optique : les grands titres se resserrent d'eux-mêmes,
+   les petits gardent leurs déliés. C'est ce qui évite l'effet « serif plaqué ». */
 h1, h2, h3, h4 {
   font-family: var(--serif);
   font-weight: 400;
-  line-height: 1.03;
-  letter-spacing: -0.018em;
+  font-optical-sizing: auto;
+  line-height: 1.06;
+  letter-spacing: -0.021em;
   margin: 0;
   text-wrap: balance;
 }
 
-h1 { font-size: clamp(2.9rem, 7.4vw, 5.6rem); }
-h2 { font-size: clamp(2.15rem, 4.6vw, 3.5rem); }
-h3 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+h1 { font-size: clamp(2.75rem, 6.6vw, 5rem); }
+h2 { font-size: clamp(2rem, 4.2vw, 3.25rem); }
+h3 { font-size: clamp(1.35rem, 2.3vw, 1.75rem); letter-spacing: -0.014em; }
 
 p { margin: 0 0 1.15em; text-wrap: pretty; }
 p:last-child { margin-bottom: 0; }
 
 .chapeau {
-  font-size: clamp(1.15rem, 2vw, 1.4rem);
-  line-height: 1.55;
+  font-size: clamp(1.1rem, 1.9vw, 1.3rem);
+  line-height: 1.62;
   color: var(--encre-douce);
-  max-width: 36ch;
+  max-width: 40ch;
+  letter-spacing: -0.008em;
 }
 
 .prose { max-width: 62ch; color: var(--encre-douce); }
 .prose strong { color: var(--encre); font-weight: 600; }
-.prose em { font-family: var(--serif); font-style: italic; font-size: 1.1em; color: var(--encre); }
+.prose em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.1em;
+  color: var(--encre);
+}
 
-/* Mention discrète, en petites capitales espacées : sert de graduation textuelle. */
+/* Mention discrète : petites capitales très espacées, filet bronze. */
 .eyebrow {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  font-size: 0.72rem;
+  gap: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gris);
-  margin: 0 0 1.4rem;
+  margin: 0 0 1.5rem;
 }
 .eyebrow::before {
   content: '';
-  width: 1.9rem;
+  width: 1.6rem;
   height: 1px;
-  background: var(--laiton);
+  background: var(--bronze);
   flex: none;
 }
 
 .chiffre {
   font-family: var(--serif);
-  font-size: clamp(3rem, 6vw, 4.6rem);
-  line-height: 0.9;
-  letter-spacing: -0.03em;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-size: clamp(2.8rem, 5.6vw, 4.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.028em;
   display: block;
 }
 
@@ -152,52 +164,51 @@ p:last-child { margin-bottom: 0; }
 .section--encre {
   background: var(--encre);
   color: var(--papier);
-  --trait: rgba(247, 244, 238, 0.16);
-  --trait-fin: rgba(247, 244, 238, 0.09);
-  --gris: #9ba1ab;
-  --encre-douce: #c9ccd2;
+  --trait: rgba(251, 249, 245, 0.15);
+  --trait-fin: rgba(251, 249, 245, 0.08);
+  --gris: #9aa2ad;
+  --encre-douce: #ccd1d8;
+  --bronze: #c79a5f;
+  --bronze-sombre: #c79a5f;
 }
 
 .filet { border: 0; height: 1px; background: var(--trait); margin: 0; }
 
-/* ---------- la graduation : signature de la marque ---------- */
+/* ---------- le liseré : filet qui s'efface, losange bronze au centre ---------- */
 
-/* Bande de traits de mesure, comme le bord d'un cadran gradué. */
-.graduation {
-  height: 12px;
-  background-image: repeating-linear-gradient(
-    to right,
-    var(--trait) 0 1px,
-    transparent 1px 11px
-  );
-  background-position: left bottom;
-  background-repeat: repeat-x;
-  border-bottom: 1px solid var(--trait-fin);
+.liseret {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--trait) 18%, var(--trait) 82%, transparent);
 }
-.graduation--haute {
-  height: 22px;
-  background-image:
-    repeating-linear-gradient(to right, var(--trait) 0 1px, transparent 1px 55px),
-    repeating-linear-gradient(to right, var(--trait-fin) 0 1px, transparent 1px 11px);
-  background-size: 100% 22px, 100% 11px;
+.liseret::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  background: var(--bronze);
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
-/* Numérotation d'étape, façon index de cadran. */
+/* Numérotation d'étape. */
 .index {
   font-family: var(--serif);
-  font-size: 0.95rem;
-  color: var(--laiton);
-  letter-spacing: 0.08em;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--bronze-sombre);
+  letter-spacing: 0.02em;
   display: inline-flex;
   align-items: baseline;
-  gap: 0.5rem;
+  gap: 0.55rem;
 }
 .index::after {
   content: '';
-  width: 2.2rem;
+  width: 1.8rem;
   height: 1px;
   background: currentColor;
-  opacity: 0.45;
+  opacity: 0.35;
   align-self: center;
 }
 
@@ -215,14 +226,17 @@ p:last-child { margin-bottom: 0; }
   color: var(--texte);
   border: 1px solid var(--fond);
   border-radius: 100px;
-  font-size: 0.95rem;
+  font-size: 0.925rem;
   font-weight: 550;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.006em;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.18s cubic-bezier(0.2, 0.7, 0.3, 1), background 0.18s, box-shadow 0.18s;
+  transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.3, 1), background 0.22s, box-shadow 0.22s;
 }
-.bouton:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -10px rgba(20, 22, 26, 0.5); }
+.bouton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -14px rgba(17, 22, 28, 0.5);
+}
 .bouton:active { transform: translateY(0); }
 
 .bouton--fantome {
@@ -230,19 +244,20 @@ p:last-child { margin-bottom: 0; }
   --texte: var(--encre);
   border-color: var(--trait);
 }
-.bouton--fantome:hover { background: rgba(20, 22, 26, 0.04); box-shadow: none; }
+.bouton--fantome:hover { background: rgba(17, 22, 28, 0.035); box-shadow: none; }
 
 .section--encre .bouton { --fond: var(--papier); --texte: var(--encre); }
-.section--encre .bouton--fantome { --fond: transparent; --texte: var(--papier); border-color: rgba(247,244,238,.3); }
-.section--encre .bouton--fantome:hover { background: rgba(247, 244, 238, 0.08); }
+.section--encre .bouton:hover { box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.65); }
+.section--encre .bouton--fantome { --fond: transparent; --texte: var(--papier); border-color: rgba(251, 249, 245, 0.28); }
+.section--encre .bouton--fantome:hover { background: rgba(251, 249, 245, 0.07); }
 
 /* Lien fléché qui s'allonge au survol. */
 .fleche {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.55rem;
   font-weight: 550;
-  font-size: 0.95rem;
+  font-size: 0.925rem;
   text-decoration: none;
   color: inherit;
 }
@@ -253,9 +268,9 @@ p:last-child { margin-bottom: 0; }
 
 .tel {
   position: relative;
-  border-radius: 34px;
+  border-radius: 32px;
   background: var(--encre);
-  padding: 7px;
+  padding: 6px;
   box-shadow: var(--ombre-haute);
   width: 100%;
   max-width: 268px;
@@ -264,11 +279,11 @@ p:last-child { margin-bottom: 0; }
 .tel::after {
   content: '';
   position: absolute;
-  top: 16px; left: 50%;
+  top: 15px; left: 50%;
   transform: translateX(-50%);
-  width: 62px; height: 5px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.22);
+  width: 58px; height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.18);
 }
 
 /* ---------- révélation à l'arrivée dans le champ ---------- */
@@ -276,7 +291,7 @@ p:last-child { margin-bottom: 0; }
 @media (prefers-reduced-motion: no-preference) {
   .apparait {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(18px);
     animation: apparait linear both;
     animation-timeline: view();
     animation-range: entry 5% cover 26%;
@@ -284,7 +299,6 @@ p:last-child { margin-bottom: 0; }
   @keyframes apparait {
     to { opacity: 1; transform: none; }
   }
-  /* Navigateurs sans animation-timeline : on n'applique rien. */
   @supports not (animation-timeline: view()) {
     .apparait { opacity: 1; transform: none; animation: none; }
   }
@@ -307,7 +321,7 @@ p:last-child { margin-bottom: 0; }
   background: var(--encre);
   color: var(--papier);
   padding: 0.8rem 1.2rem;
-  border-radius: 0 0 8px 0;
+  border-radius: 0 0 6px 0;
   z-index: 100;
 }
 .saut-contenu:focus { left: 0; }

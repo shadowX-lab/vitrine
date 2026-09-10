@@ -1,28 +1,40 @@
-# Cadran — Contexte du projet
+# Moamind Solutions — Contexte du projet
 
 > Fichier de référence du site vitrine. Toute affirmation publiée sur le site
 > doit pouvoir être retrouvée ici. Mis à jour le 9 septembre 2026.
 
 ## En une phrase
 
-Cadran est un studio de conception et de développement d'applications web et
-mobiles qui vend la décision produit avant la ligne de code. Accroche :
+Moamind Solutions est un studio de conception et de développement
+d'applications web et mobiles qui vend la décision produit avant la ligne de
+code. Accroche :
 **« Le produit avant le code. »**
 
 ## Le nom
 
-Un cadran mesure avant que l'aiguille ne bouge. C'est la promesse : on gradue le
-problème, on le lit, on se met d'accord sur ce qu'on voit — ensuite seulement on
-avance. Le mot porte aussi l'idée d'instrument de précision et de temps lisible
-d'un coup d'œil, deux choses que le studio revendique.
+Trois mots, et c'est tout le nom :
 
-Conséquence graphique : le motif de **graduation** (traits de mesure fins,
-numérotation des étapes) est la signature de la marque. Le cadran n'est jamais
-dessiné littéralement.
+- **MOA** — maîtrise d'ouvrage. **C'est le client**, pas nous : celui qui
+  commande, qui connaît son métier et qui sait pourquoi il veut ce produit. La
+  page Expérience le dit frontalement — « la maîtrise d'ouvrage, c'est vous ».
+- **Mind** — l'esprit : on réfléchit avant d'agir, et on écrit ce qu'on décide.
+- **Solutions** — la réalisation : une réflexion qui ne se livre pas ne vaut rien.
+
+Les trois mots se superposent aux temps de la méthode : écouter et cadrer (MOA),
+valider (Mind), construire (Solutions).
+
+**Aucun symbole.** Le logo est le mot-marque seul — « Moamind » en Newsreader,
+« SOLUTIONS » en petites capitales bronze. Une version antérieure à trois
+cercles a été écartée : elle évoquait une enseigne d'optique.
+
+**Historique.** Le site a d'abord été conçu sous le nom « Cadran » (direction
+« papier et graduations », serif éditorial fin), puis sous une première version
+Moamind à trois cercles et typographie Fraunces. Le 10 septembre 2026, la
+direction devient « éditoriale » et le discours passe du portfolio au service.
 
 ## Positionnement
 
-Le marché est saturé d'agences qui vendent des jours-homme. Cadran vend
+Le marché est saturé d'agences qui vendent des jours-homme. Moamind Solutions vend
 l'inverse : le temps passé à ne pas construire la mauvaise chose. L'argument
 n'est pas moral, il est économique — une fonctionnalité mal cadrée coûte le
 développement, plus le retrait, plus la confiance perdue.
@@ -35,9 +47,21 @@ démonstration de méthode, pas un portfolio de prestations.
 
 ## Voix
 
-« Nous », sans jamais afficher d'effectif ni de taille d'équipe. Ton direct,
-phrases courtes, aucun jargon d'agence. On ne dit pas « accompagner la
-transformation digitale » ; on dit ce qu'on fait.
+Règle stricte, valable sur **toutes** les pages :
+
+- **« on » désigne toujours le client et Xavier ensemble.** « On cadre le
+  problème », « on regarde les écrans ensemble », « on tranche ».
+- **« je » désigne le studio quand il agit seul.** « Je dessine les écrans »,
+  « je construis », « je vous réponds sous deux jours ».
+- **« nous » n'est jamais employé** pour désigner le studio, et le site ne dit
+  jamais combien de personnes y travaillent — ni qu'il n'y en a qu'une.
+- **Sur la page d'accueil, aucune première personne du tout.** Ni « je », ni
+  « j'ai », ni « mon ». On y emploie « on », « vous », ou des tournures sans
+  sujet (« les écrans sont dessinés », « rien ne se construit avant »). Seule
+  exception : « Décrire mon projet », où c'est le visiteur qui parle de son
+  propre projet. Les autres pages peuvent dire « je ».
+
+Ton direct, phrases courtes, aucun jargon d'agence.
 
 ## Les mots-clés, traduits en engagements
 
@@ -66,7 +90,62 @@ revendique ne convainc personne. Chacun devient un engagement mesurable.
 4. **Fabriquer** — développement par tranches complètes, livrées une par une.
    Chaque tranche fonctionne de bout en bout.
 
-## Les trois produits
+## Règles de contenu
+
+Décidées le 10 septembre 2026, elles s'appliquent à toute évolution du site.
+
+1. **Aucune autre société n'apparaît nulle part.** Pas de concurrent cité dans
+   les études de cas, pas d'employeur nommé sur la page Expérience — les postes
+   sont décrits par secteur et par taille.
+2. **Page d'accueil : ni nom d'application, ni écran entier.** Les écrans y sont
+   montrés **dans leur cadre de téléphone**, mais en éventail dans le hero et en
+   rangée chevauchée plus bas : les appareils se recouvrent et le bas est coupé
+   net, de sorte qu'aucun écran n'est jamais donné en entier. Aucune légende,
+   aucune marque. Le suspens est le moteur du clic vers les réalisations.
+
+   **Piège à connaître :** certains artboards affichent le nom de leur
+   application dans le contenu. `chargeair/Main` et `chargeair/Reservation`
+   (« Frais de service ChargeAir ») ainsi que `pilpoil/Main` et `pilpoil/Profil`
+   sont donc interdits sur l'accueil. Les occurrences de « Teamago » dans les
+   artboards Teamago sont dans des commentaires CSS : elles ne se voient pas.
+   Vérifier avant d'ajouter un écran à `eventail` ou `rangee`
+   (`src/data/produits.ts`).
+3. **Ne jamais s'appuyer sur le nombre de projets.** Aucune formule du type
+   « nos trois produits » : le catalogue est appelé à grossir.
+4. **Études de cas : trois ou quatre écrans, pas davantage.** Des flèches
+   légendées entre les écrans donnent l'usage principal. On ne récite pas les
+   fonctionnalités ; on montre la qualité et on raconte des décisions.
+5. **Rester humain.** Les textes partent d'une situation vécue, pas d'une liste
+   de caractéristiques.
+6. **Pas de rattachement géographique mis en avant.** Le travail se fait pour
+   toute la France et au-delà. Bordeaux n'apparaît qu'à deux endroits, en
+   petit : la ligne de copyright du pied de page (« Basé à Bordeaux, au travail
+   partout ») et la fiche de la page Expérience (« Bordeaux — les projets, eux,
+   n'ont pas de frontière »). Jamais dans un titre, jamais dans le hero.
+7. **Le parcours ne se présente jamais comme un CV.** Pas de dates, pas
+   d'employeurs nommés, pas de listes de tâches. La page Expérience montre des
+   **terrains** : un milieu, sa durée quand elle dit quelque chose, ses
+   mots-clés toujours visibles, et un récit d'enjeu replié derrière un
+   `<details>` que le visiteur ouvre s'il le souhaite. Les mots-clés doivent se
+   lire d'un coup d'œil, sans rien déplier.
+
+## Structure du site
+
+| Page | Rôle |
+|---|---|
+| `/` | Promesse, chiffres, conviction, méthode, écrans en éventail puis en rangée, teaser expérience, périmètre |
+| `/methode` | Les quatre temps, avec livrables, délais et engagements |
+| `/realisations` | Index des produits |
+| `/realisations/<slug>` | Étude de cas : problème, parcours en quatre écrans, décisions, livrables |
+| `/experience` | Le nom, ce que quinze ans changent, les terrains dépliables, les convictions, les outils |
+| `/contact` | Formulaire de brief |
+| `/merci`, `/mentions-legales`, 404 | Pages de service |
+
+## Les produits
+
+> Les noms de sociétés tierces qui apparaissent ci-dessous relèvent de la
+> **recherche interne**. Ils ne doivent jamais se retrouver sur le site : voir
+> la règle 1 des règles de contenu.
 
 ### Pil'Poil — le réseau des animaux perdus et retrouvés
 
@@ -134,13 +213,23 @@ Accroche du produit : « Everything but the game. »
 
 ## Direction artistique du site
 
-- **Fond** ivoire `#F7F4EE`, **encre** `#14161A`, **accent** laiton `#B8873B`.
-- **Typographie** : Instrument Serif pour les titres, Inter Variable pour le texte.
-- **Signature** : graduations — traits de mesure fins en bordure de section,
-  étapes numérotées, filets sous les titres.
+Direction « éditoriale » : haut de gamme par la retenue et l'espace, accessible
+par la chaleur du papier. Elle doit parler autant à un particulier qu'à une
+entreprise.
+
+- **Fond** crème `#FBF9F5`, **encre** `#11161C`, **accent** bronze `#9A6B34`
+  (bronze sombre `#7A5325` pour les petits textes, question de contraste).
+- **Typographie** : Newsreader Variable pour les titres (axe optique actif, donc
+  les grands titres se resserrent d'eux-mêmes) ; Geist Variable pour le texte.
+- **Formes** : rayons courts (8 et 14 px), boutons pilule, filets fins,
+  ombres discrètes, halo bronze très dilué derrière le hero.
+- **Signature** : le liseré — un filet qui s'efface aux extrémités, avec un
+  petit losange bronze au centre.
+- **Écrans** : toujours dans un cadre de téléphone, jamais recadrés dans
+  l'écran. Sur l'accueil ils se chevauchent ; sur les études de cas ils sont
+  entiers et alignés.
 - **Couleurs projet** : chaque étude de cas reprend l'accent de son produit
-  (teal, terracotta, citron). Le site sert d'écrin neutre ; la couleur vient des
-  écrans.
+  (teal, terracotta, citron). Le site sert d'écrin ; la couleur vient des écrans.
 
 ## Décisions techniques
 
@@ -162,5 +251,9 @@ Accroche du produit : « Everything but the game. »
 - L'URL de prise de rendez-vous Cal.com ou Calendly (`src/config.ts` → `LIEN_RDV`).
 - Les informations légales réelles (raison sociale, SIREN, hébergeur) dans
   `src/pages/mentions-legales.astro`.
-- Décision sur l'affichage public d'une adresse e-mail : aucune n'est publiée
-  pour l'instant, le formulaire est le seul canal.
+- Arbitrage à confirmer : les employeurs de la page Expérience sont décrits par
+  secteur et non nommés, par cohérence avec la règle « aucune autre société ».
+  À valider — les nommer renforcerait la preuve, mais exposerait l'employeur
+  actuel sur un site commercial.
+- Décision maintenue : aucune adresse e-mail publiée, le formulaire est le seul
+  canal.

@@ -1,6 +1,6 @@
-# Cadran — site vitrine
+# Moamind Solutions — site vitrine
 
-Site vitrine du studio **Cadran**. *Le produit avant le code.*
+Site vitrine du studio **Moamind Solutions**. *Le produit avant le code.*
 
 Astro 5, statique, sans framework côté client. Publié automatiquement sur
 GitHub Pages à chaque `push` sur `main`.
@@ -46,15 +46,15 @@ est à jour. Les trois dossiers projet doivent être présents à côté de celu
 ## Structure
 
 ```
-context/CONTEXT-CADRAN.md   Source unique du contenu — positionnement, méthode,
+context/CONTEXT-MOAMIND.md  Source unique du contenu — positionnement, méthode,
                             fiche de chaque produit. À lire en premier.
 src/config.ts               Réglages du site (clés, liens, helper de base URL)
 src/data/produits.ts        Contenu des trois études de cas
-src/styles/global.css       Jetons de design et motif de graduation
+src/styles/global.css       Jetons de design, liseré, bandes d’écran
 src/layouts/                Gabarit de page
 src/components/             En-tête, pied de page, téléphone, appel à l'action
-src/pages/                  Une page par fichier ; [slug].astro génère les
-                            trois études de cas
+src/pages/                  Une page par fichier ; realisations/[slug].astro
+                            génère une étude de cas par produit
 scripts/render-ecrans.mjs   Rendu des maquettes en images
 ```
 

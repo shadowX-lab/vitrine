@@ -1,29 +1,22 @@
 ---
 import { lien, STUDIO } from '../config';
 
-const chemin = Astro.url.pathname.replace(/\/$/, '') || '/';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const chemin = Astro.url.pathname.replace(/\/$/, '') || '/';
 const actuel = chemin.replace(base, '') || '/';
 
 const liens = [
   { href: '/methode', texte: 'Méthode' },
-  { href: '/produits', texte: 'Produits' },
-  { href: '/studio', texte: 'Studio' },
+  { href: '/realisations', texte: 'Réalisations' },
+  { href: '/experience', texte: 'Expérience' },
 ];
 ---
 
 <header class="entete">
   <div class="page entete__interieur">
     <a class="marque" href={lien('/')} aria-label={`${STUDIO.nom}, accueil`}>
-      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
-        <circle cx="13" cy="13" r="12" fill="none" stroke="currentColor" stroke-width="1.2" />
-        <g stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
-          <path d="M13 1.6v3.2M13 21.2v3.2M24.4 13h-3.2M4.8 13H1.6" />
-          <path d="M13 13V6.4" stroke-width="1.6" />
-          <path d="M13 13l4.6 3.1" stroke-width="1.6" />
-        </g>
-      </svg>
-      <span>{STUDIO.nom}</span>
+      <span class="marque__nom">{STUDIO.nomCourt}</span>
+      <span class="marque__suffixe">{STUDIO.nomSuffixe}</span>
     </a>
 
     <nav aria-label="Navigation principale">
@@ -40,7 +33,6 @@ const liens = [
 
     <a class="bouton entete__cta" href={lien('/contact')}>Parlons de votre projet</a>
   </div>
-  <div class="graduation" aria-hidden="true"></div>
 </header>
 
 <style>
@@ -48,54 +40,67 @@ const liens = [
     position: sticky;
     top: 0;
     z-index: 50;
-    background: color-mix(in srgb, var(--papier) 88%, transparent);
-    backdrop-filter: blur(14px) saturate(1.4);
+    background: color-mix(in srgb, var(--papier) 86%, transparent);
+    backdrop-filter: blur(16px) saturate(1.5);
+    border-bottom: 1px solid var(--trait-fin);
   }
 
   .entete__interieur {
     display: flex;
     align-items: center;
     gap: clamp(1rem, 4vw, 3rem);
-    min-height: 74px;
+    min-height: 78px;
   }
 
+  /* Le nom porte la marque : pas de symbole. */
   .marque {
     display: inline-flex;
-    align-items: center;
+    align-items: baseline;
     gap: 0.6rem;
-    font-family: var(--serif);
-    font-size: 1.4rem;
-    letter-spacing: -0.01em;
     text-decoration: none;
     margin-right: auto;
   }
-  .marque svg { color: var(--laiton); flex: none; }
+  .marque__nom {
+    font-family: var(--serif);
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: 1.5rem;
+    letter-spacing: -0.014em;
+  }
+  .marque__suffixe {
+    font-size: 0.63rem;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--bronze-sombre);
+  }
 
   nav ul {
     display: flex;
-    gap: clamp(1rem, 2.4vw, 2rem);
+    gap: clamp(1rem, 2.4vw, 2.1rem);
     list-style: none;
     margin: 0;
     padding: 0;
   }
   nav a {
     text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 0.925rem;
+    font-weight: 450;
     color: var(--encre-douce);
     padding-block: 0.4rem;
     border-bottom: 1px solid transparent;
     transition: color 0.16s, border-color 0.16s;
   }
-  nav a:hover { color: var(--encre); border-bottom-color: var(--laiton); }
-  nav a[aria-current='page'] { color: var(--encre); border-bottom-color: var(--laiton); }
+  nav a:hover { color: var(--encre); border-bottom-color: var(--bronze); }
+  nav a[aria-current='page'] { color: var(--encre); border-bottom-color: var(--bronze); }
 
-  .entete__cta { padding: 0.65rem 1.25rem; font-size: 0.9rem; }
+  .entete__cta { padding: 0.62rem 1.25rem; font-size: 0.875rem; }
 
-  @media (max-width: 720px) {
+  @media (max-width: 780px) {
     .entete__cta { display: none; }
-    .marque span { font-size: 1.25rem; }
+    .marque__nom { font-size: 1.32rem; }
+    .marque__suffixe { display: none; }
     nav ul { gap: 1.1rem; }
-    nav a { font-size: 0.9rem; }
+    nav a { font-size: 0.875rem; }
   }
 </style>

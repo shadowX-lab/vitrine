@@ -6,24 +6,32 @@ const cleManquante = CLE_FORMULAIRE.startsWith('REMPLACER');
 const retour = new URL(lien('/merci'), Astro.site).href;
 
 const etapes = [
-  { titre: 'Vous écrivez', texte: 'Quelques phrases suffisent. On ne demande pas de cahier des charges — c’est souvent le travail qu’il reste à faire.' },
-  { titre: 'On répond sous deux jours ouvrés', texte: 'Avec une première lecture de votre problème et les questions qu’il soulève.' },
-  { titre: 'On se parle une heure', texte: 'Gratuitement, et sans engagement. Vous repartez avec une note écrite de ce qu’on a compris.' },
+  { titre: 'Vous écrivez', texte: "Quelques phrases suffisent. Je ne demande pas de cahier des charges — c'est souvent le travail qu'il reste à faire." },
+  { titre: 'Je réponds sous deux jours ouvrés', texte: "Avec une première lecture de votre problème et les questions qu'il soulève." },
+  { titre: 'On se parle une heure', texte: "Gratuitement, et sans engagement. Vous repartez avec une note écrite de ce que j'ai compris." },
+];
+
+const paliers = [
+  'Je ne sais pas encore',
+  'Moins de 5 000 €',
+  '5 000 € à 15 000 €',
+  '15 000 € à 50 000 €',
+  'Plus de 50 000 €',
 ];
 ---
 
 <Base
   titre="Contact"
-  description="Décrivez votre projet à Cadran. Réponse sous deux jours ouvrés, premier entretien de cadrage gratuit et sans engagement."
+  description="Décrivez votre projet. Réponse sous deux jours ouvrés, premier entretien de cadrage gratuit et sans engagement."
 >
   <section class="ouverture">
     <div class="page ouverture__interieur">
       <div>
         <p class="eyebrow">Contact</p>
-        <h1>Racontez-nous<br />ce que vous voulez<br /><em>construire</em></h1>
+        <h1>Dites-moi ce que<br />vous voulez <em>construire</em></h1>
         <p class="chapeau">
           Pas besoin d'un cahier des charges. Un problème, une intuition, une
-          contrainte : c'est un bon point de départ, et c'est même le meilleur.
+          contrainte : c'est un bon point de départ. C'est même le meilleur.
         </p>
 
         <ol class="parcours">
@@ -56,21 +64,36 @@ const etapes = [
           </p>
         )}
 
-        <form action="https://web3forms.com/submit" method="POST" class="formulaire">
+        <form action="https://web3forms.com/submit" method="POST" class="formulaire" id="brief">
           <input type="hidden" name="access_key" value={CLE_FORMULAIRE} />
-          <input type="hidden" name="subject" value="Nouveau projet — cadran.fr" />
-          <input type="hidden" name="from_name" value="Site Cadran" />
+          <input type="hidden" name="subject" value="Nouveau projet — Moamind Solutions" />
+          <input type="hidden" name="from_name" value="Site Moamind Solutions" />
           <input type="hidden" name="redirect" value={retour} />
           <input type="checkbox" name="botcheck" class="invisible" tabindex="-1" autocomplete="off" />
+
+          <!-- Le profil commande la question du budget, plus bas. -->
+          <fieldset class="champ">
+            <legend>Vous êtes <span aria-hidden="true">*</span></legend>
+            <div class="pastilles">
+              <label class="pastille">
+                <input type="radio" name="profil" value="Un particulier" required data-profil="particulier" />
+                <span>Un particulier</span>
+              </label>
+              <label class="pastille">
+                <input type="radio" name="profil" value="Un professionnel" data-profil="professionnel" />
+                <span>Un professionnel</span>
+              </label>
+            </div>
+          </fieldset>
 
           <div class="duo-champs">
             <p class="champ">
               <label for="nom">Votre nom <span aria-hidden="true">*</span></label>
               <input id="nom" name="nom" type="text" required autocomplete="name" />
             </p>
-            <p class="champ">
+            <p class="champ" id="bloc-organisation" hidden>
               <label for="organisation">Organisation</label>
-              <input id="organisation" name="organisation" type="text" autocomplete="organization" />
+              <input id="organisation" name="organisation" type="text" autocomplete="organization" disabled />
             </p>
           </div>
 
@@ -102,15 +125,23 @@ const etapes = [
                 <option>Plus tard, je prépare</option>
               </select>
             </p>
-            <p class="champ">
-              <label for="budget">Budget envisagé</label>
-              <select id="budget" name="budget">
-                <option value="">Je ne sais pas encore</option>
-                <option>Moins de 15 000 €</option>
-                <option>15 000 à 40 000 €</option>
-                <option>40 000 à 100 000 €</option>
-                <option>Plus de 100 000 €</option>
+
+            <!-- Paliers pour un professionnel, champ libre pour un particulier. -->
+            <p class="champ" id="bloc-budget-pro" hidden>
+              <label for="budget-pro">Budget envisagé</label>
+              <select id="budget-pro" name="budget" disabled>
+                {paliers.map((p) => <option>{p}</option>)}
               </select>
+            </p>
+            <p class="champ" id="bloc-budget-particulier" hidden>
+              <label for="budget-particulier">Budget envisagé <span class="facultatif">facultatif</span></label>
+              <input
+                id="budget-particulier"
+                name="budget"
+                type="text"
+                placeholder="Je ne sais pas encore"
+                disabled
+              />
             </p>
           </div>
 
@@ -136,6 +167,35 @@ const etapes = [
   </section>
 </Base>
 
+<script>
+  // Un champ masqué reste soumis : on le désactive aussi, sinon deux valeurs
+  // « budget » partiraient dans le même envoi.
+  const form = document.getElementById('brief');
+  if (form) {
+    const blocs = {
+      organisation: document.getElementById('bloc-organisation'),
+      pro: document.getElementById('bloc-budget-pro'),
+      particulier: document.getElementById('bloc-budget-particulier'),
+    };
+
+    const basculer = (bloc: HTMLElement | null, visible: boolean) => {
+      if (!bloc) return;
+      bloc.hidden = !visible;
+      bloc.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select')
+        .forEach((champ) => { champ.disabled = !visible; });
+    };
+
+    form.addEventListener('change', (evenement) => {
+      const cible = evenement.target as HTMLInputElement;
+      if (cible.name !== 'profil') return;
+      const pro = cible.dataset.profil === 'professionnel';
+      basculer(blocs.organisation, pro);
+      basculer(blocs.pro, pro);
+      basculer(blocs.particulier, !pro);
+    });
+  }
+</script>
+
 <style>
   .ouverture { padding-block: clamp(3rem, 7vw, 5rem) clamp(3.5rem, 8vw, 6rem); }
   .ouverture__interieur {
@@ -144,26 +204,26 @@ const etapes = [
     gap: clamp(2.5rem, 6vw, 5rem);
     align-items: start;
   }
-  .ouverture h1 { margin-bottom: 1.4rem; font-size: clamp(2.6rem, 5vw, 4.1rem); }
-  .ouverture h1 em { font-style: italic; color: var(--laiton); }
+  .ouverture h1 { margin-bottom: 1.5rem; font-size: clamp(2.4rem, 4.4vw, 3.6rem); }
+  .ouverture h1 em { font-style: italic; color: var(--bronze); }
 
   .parcours { list-style: none; margin: 2.8rem 0 0; padding: 0; display: grid; }
   .parcours li {
     display: grid;
     grid-template-columns: 4rem minmax(0, 1fr);
     gap: 1rem;
-    padding-block: 1.1rem;
+    padding-block: 1.2rem;
     border-top: 1px solid var(--trait);
   }
   .parcours li:last-child { border-bottom: 1px solid var(--trait); }
   .parcours div { display: grid; gap: 0.25rem; }
-  .parcours strong { font-size: 1rem; }
-  .parcours span:last-child { color: var(--gris); font-size: 0.92rem; }
+  .parcours strong { font-size: 1rem; font-weight: 550; }
+  .parcours span:last-child { color: var(--gris); font-size: 0.9rem; }
 
   .rdv { margin-top: 2.2rem; display: grid; gap: 0.9rem; justify-items: start; }
-  .rdv p { color: var(--gris); font-size: 0.95rem; margin: 0; }
+  .rdv p { color: var(--gris); font-size: 0.93rem; margin: 0; }
 
-  /* ---------- panneau formulaire ---------- */
+  /* ---------- panneau ---------- */
   .panneau {
     background: var(--papier-pur);
     border: 1px solid var(--trait-fin);
@@ -173,57 +233,71 @@ const etapes = [
   }
 
   .alerte {
-    background: var(--laiton-voile);
-    border: 1px solid color-mix(in srgb, var(--laiton) 35%, transparent);
+    background: var(--bronze-voile);
+    border: 1px solid color-mix(in srgb, var(--bronze) 32%, transparent);
     border-radius: var(--arrondi);
     padding: 0.9rem 1.1rem;
-    font-size: 0.88rem;
-    color: var(--laiton-sombre);
+    font-size: 0.87rem;
+    color: var(--bronze-sombre);
     margin-bottom: 1.6rem;
   }
-  .alerte code { font-size: 0.85em; }
 
-  .formulaire { display: grid; gap: 1.3rem; }
-  .duo-champs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+  .formulaire { display: grid; gap: 1.35rem; }
+  .formulaire [hidden] { display: none; }
+  .duo-champs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; align-items: start; }
 
-  .champ { display: grid; gap: 0.5rem; margin: 0; border: 0; padding: 0; }
+  .champ { display: grid; gap: 0.5rem; margin: 0; border: 0; padding: 0; min-width: 0; }
   .champ > label, .champ > legend {
-    font-size: 0.8rem;
+    font-size: 0.76rem;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.09em;
     text-transform: uppercase;
     color: var(--encre-douce);
     padding: 0;
   }
-  .champ > label span, .champ > legend span { color: var(--laiton); }
+  .champ > label > span, .champ > legend > span { color: var(--bronze); }
+  .facultatif {
+    color: var(--gris-clair) !important;
+    font-weight: 450;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
 
   input[type='text'], input[type='email'], select, textarea {
     width: 100%;
     background: var(--papier);
     border: 1px solid var(--trait);
-    border-radius: 10px;
+    border-radius: var(--arrondi);
     padding: 0.8rem 0.95rem;
-    font-size: 0.98rem;
-    transition: border-color 0.16s, background 0.16s;
+    font-size: 0.96rem;
+    transition: border-color 0.16s, background 0.16s, box-shadow 0.16s;
   }
   input:hover, select:hover, textarea:hover { border-color: var(--gris-clair); }
   input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: var(--laiton);
+    border-color: var(--bronze);
     background: var(--papier-pur);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--laiton) 18%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--bronze) 15%, transparent);
   }
   textarea { resize: vertical; min-height: 8rem; font-family: inherit; }
-  select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--gris) 50%), linear-gradient(135deg, var(--gris) 50%, transparent 50%); background-position: right 1.05rem center, right 0.75rem center; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+  select {
+    appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--gris) 50%),
+      linear-gradient(135deg, var(--gris) 50%, transparent 50%);
+    background-position: right 1.05rem center, right 0.75rem center;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+  }
 
   .pastilles { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.15rem; }
   .pastille input { position: absolute; opacity: 0; pointer-events: none; }
   .pastille span {
     display: inline-block;
-    padding: 0.5rem 0.95rem;
+    padding: 0.52rem 1rem;
     border: 1px solid var(--trait);
     border-radius: 100px;
-    font-size: 0.88rem;
+    font-size: 0.87rem;
     cursor: pointer;
     transition: border-color 0.16s, background 0.16s, color 0.16s;
   }
@@ -233,10 +307,10 @@ const etapes = [
     border-color: var(--encre);
     color: var(--papier);
   }
-  .pastille input:focus-visible + span { outline: 2px solid var(--laiton); outline-offset: 2px; }
+  .pastille input:focus-visible + span { outline: 1.5px solid var(--bronze); outline-offset: 2px; }
 
   .formulaire button { justify-self: start; margin-top: 0.3rem; }
-  .mention { font-size: 0.82rem; color: var(--gris); margin: 0; }
+  .mention { font-size: 0.8rem; color: var(--gris); margin: 0; }
 
   @media (max-width: 860px) {
     .ouverture__interieur { grid-template-columns: 1fr; }

@@ -13,7 +13,13 @@ export function ecran(projet: string, nom: string): ImageMetadata {
   return module.default;
 }
 
-export type Ecran = { fichier: string; titre: string; legende: string };
+/** Une étape du parcours principal. `suite` est la flèche vers l'écran suivant. */
+export type Etape = {
+  fichier: string;
+  titre: string;
+  texte: string;
+  suite?: string;
+};
 
 export type Produit = {
   slug: string;
@@ -29,7 +35,7 @@ export type Produit = {
   decisions: { titre: string; texte: string }[];
   chiffres: { valeur: string; libelle: string }[];
   heros: string;
-  galerie: Ecran[];
+  parcours: Etape[];
   livre: string[];
 };
 
@@ -39,63 +45,69 @@ export const produits: Produit[] = [
     nom: 'ChargeAir',
     baseline: 'La recharge électrique entre voisins',
     resume:
-      "Place de marché de location de bornes de recharge domestiques. Un conducteur sans borne chez lui réserve un créneau chez un particulier du quartier.",
-    domaine: 'Mobilité électrique · Place de marché',
+      "Réserver un créneau sur la borne d'un particulier du quartier, quand on roule à l'électrique sans prise chez soi.",
+    domaine: 'Mobilité électrique',
     annee: '2026',
     plateforme: 'Application mobile iOS et Android',
     palette: { accent: '#AF5236', voile: '#F7E7E0', contraste: '#7A3822' },
     depot: 'https://github.com/shadowX-lab/ChargeAir',
     probleme: [
-      "Un conducteur d'électrique sans borne à domicile n'a qu'une option : la charge rapide. Pour 31 kWh, comptez environ 21 €. La même énergie chez un particulier revient à 12,40 €. L'écart est réel, la borne du voisin est inutilisée quatre-vingts pour cent du temps, et pourtant rien ne les met en relation.",
-      "Le piège du sujet, c'est de le traiter comme un Airbnb de la prise électrique. C'est exactement ce qu'il ne faut pas faire, et le cadrage a servi à le démontrer avant d'écrire une ligne.",
+      "Vous roulez à l'électrique, vous n'avez pas de prise chez vous, et chaque recharge vous coûte presque le double de ce qu'elle devrait. Pendant ce temps, la borne du voisin de palier dort vingt-deux heures sur vingt-quatre. Entre les deux, il n'y a rien.",
+      "Le piège de ce sujet, c'est de le traiter comme une location de courte durée ordinaire : une annonce, un calendrier, un paiement. En creusant, on tombe très vite sur trois murs — le droit de l'électricité, la physique de la charge lente, et l'économie réelle d'un hôte. Aucun des trois ne se voit depuis un cahier des charges. Tous les trois ont changé le produit.",
     ],
     decisions: [
       {
-        titre: "C'est de la recharge à destination, pas une station-service",
+        titre: 'On vend un créneau, jamais de l’énergie',
         texte:
-          "Une borne domestique délivre 3 à 11 kW, soit trois à six heures à l'arrêt. Personne ne s'immobilise aussi longtemps au hasard. Le service ne s'adresse donc qu'à des conducteurs déjà immobilisés — chez eux, chez leur hébergeur, au travail. Conséquence directe sur l'interface : la réservation est toujours planifiée, jamais opportuniste, et l'unité vendue est un créneau long.",
+          "Facturer au kilowattheure supposerait un compteur certifié et ferait basculer l'hôte dans la revente d'électricité, avec tout ce que ça implique. On vend donc une mise à disposition, tarifée à l'heure. Le montant est connu au moment de réserver et ne bouge plus : plus de compteur, plus de litige de relevé, plus de mauvaise surprise. C'est une contrainte juridique retournée en argument commercial.",
       },
       {
-        titre: 'On facture un créneau, jamais de l’énergie',
+        titre: 'Personne ne s’arrête six heures par hasard',
         texte:
-          "Facturer au kilowattheure exigerait un compteur certifié et relèverait juridiquement de la revente d'électricité. On vend une mise à disposition, tarifée à l'heure. Trois conséquences : aucune contrainte de métrologie, aucun litige de relevé, et un montant connu dès la réservation. Comme le conducteur, lui, raisonne en €/kWh, l'équivalent estimé est affiché partout à côté du prix horaire.",
-      },
-      {
-        titre: 'Aucun matériel, aucun QR code, aucun OCPP',
-        texte:
-          "Puisque le montant est déjà fixé, la confirmation de branchement ne sert jamais à facturer. Elle sert au no-show, à la notification de fin de charge et à la preuve en cas de litige. Un bouton dans l'application avec vérification de position rend ces trois services sans rien poser sur la borne. Le seul verrou physique réel reste le code du portail, communiqué une heure avant le créneau.",
+          "Une borne domestique met trois à six heures à remplir une voiture. Ça disqualifie d'emblée le conducteur de passage : le service ne peut s'adresser qu'à quelqu'un de déjà immobilisé — chez lui, chez ses hôtes, à son travail. Toute l'application en découle. On ne cherche pas une borne libre maintenant, on planifie une nuit ou une journée.",
       },
       {
         titre: '« Estimé », jamais « consommé »',
         texte:
-          "Corollaire du choix précédent : aucune énergie réellement livrée n'est connue du système. Chaque kilowattheure et chaque kilomètre affiché est calculé à partir du modèle de véhicule et de la puissance de la borne. C'est devenu une règle de vocabulaire imposée à toute l'interface — le genre de contrainte qui ne coûte rien si elle est posée au cadrage, et qui coûte une refonte si elle arrive après.",
-      },
-      {
-        titre: 'Le produit doit fabriquer de la récurrence',
-        texte:
-          "Un hôte a besoin de quinze à vingt sessions par mois pour dégager une centaine d'euros nets. Aucun flux de passage ne produit ce volume : seuls un ou deux conducteurs réguliers y parviennent. C'est l'inverse d'Airbnb, où l'on ne revient presque jamais chez le même hôte. D'où le compteur de visites côté hôte, la reprogrammation proposée en fin de session, et un badge qui récompense la fidélité à un même hôte plutôt que le volume.",
+          "Puisque rien n'est branché sur la borne, l'application ne mesure aucune énergie : elle l'estime, à partir du modèle de voiture et de la puissance déclarée. Ça pourrait rester un détail d'ingénierie. C'est devenu une règle de vocabulaire imposée à chaque écran, parce qu'un chiffre présenté comme mesuré alors qu'il est calculé, c'est une promesse qu'on ne peut pas tenir.",
       },
     ],
     chiffres: [
-      { valeur: '12,40 €', libelle: 'contre 21 € en charge rapide, pour 31 kWh' },
-      { valeur: '7', libelle: 'écrans, un parcours complet des deux côtés du marché' },
-      { valeur: '5', libelle: 'décisions fondatrices écrites avant le premier écran' },
+      { valeur: '12,40 €', libelle: 'la même charge, contre 21 € sur une borne rapide' },
+      { valeur: '3 à 6 h', libelle: "le temps réel d'une charge à domicile — tout part de là" },
+      { valeur: 'Aucun', libelle: 'matériel à installer, à scanner ou à coller sur la borne' },
     ],
     heros: 'Session',
-    galerie: [
-      { fichier: 'Main', titre: 'Recherche', legende: "La carte affiche le prix horaire de chaque borne et le filtre de compatibilité s'appuie sur le véhicule déclaré." },
-      { fichier: 'Borne', titre: 'Fiche de borne', legende: "Compatibilité, durée de charge et gain estimé sont calculés pour votre voiture, pas donnés dans l'absolu." },
-      { fichier: 'Reservation', titre: 'Réservation', legende: "Le total est fixé ici, et la comparaison avec la borne rapide est affichée parce qu'elle est le seul argument vraiment décisif." },
-      { fichier: 'Session', titre: 'Session en cours', legende: "Le décompte porte sur le créneau réservé, pas sur la charge réelle. La notification de fin est prévue avant même le branchement." },
-      { fichier: 'FinSession', titre: 'Fin de session', legende: "L'énergie est annoncée comme estimée, l'économie réalisée est chiffrée, et la reprogrammation est proposée dans la foulée." },
-      { fichier: 'Vehicule', titre: 'Mon véhicule', legende: "La brique de domaine centrale : ce profil alimente le filtre de compatibilité, l'estimation de charge et la prévision de fin." },
-      { fichier: 'Hote', titre: 'Espace hôte', legende: '148 € sur dix-neuf sessions : l’ordre de grandeur réel est affiché tel quel, sans promesse gonflée.' },
+    parcours: [
+      {
+        fichier: 'Main',
+        titre: 'Trouver, près de chez soi',
+        texte: "Les bornes du quartier, leur prix à l'heure, et celles qui acceptent votre voiture.",
+        suite: 'On choisit un créneau',
+      },
+      {
+        fichier: 'Reservation',
+        titre: 'Réserver, prix connu',
+        texte: "Le total s'affiche avant de confirmer. Il ne changera plus, quoi qu'il arrive ensuite.",
+        suite: 'Le soir venu, on branche',
+      },
+      {
+        fichier: 'Session',
+        titre: 'Charger tranquille',
+        texte: "Le décompte tourne, la fin est annoncée à l'avance. Rien à surveiller.",
+        suite: 'Et on repart',
+      },
+      {
+        fichier: 'FinSession',
+        titre: 'Repartir, et revenir',
+        texte: "L'économie réalisée est chiffrée, et le prochain créneau se reprogramme en un geste.",
+      },
     ],
     livre: [
       'Analyse du domaine et note de cadrage',
-      'Les cinq décisions fondatrices, écrites et argumentées',
-      'Sept écrans maquettés, parcours conducteur et espace hôte',
-      'Spécification de conception et modèle de domaine',
+      'Les décisions fondatrices, écrites et argumentées',
+      'Parcours conducteur et espace hôte maquettés',
+      'Modèle de domaine et spécification de conception',
     ],
   },
   {
@@ -103,64 +115,69 @@ export const produits: Produit[] = [
     nom: 'Pil’Poil',
     baseline: 'Le réseau des animaux perdus et retrouvés',
     resume:
-      "Réseau temps réel de signalement d'animaux perdus et trouvés : géolocalisation, correspondances automatiques et mise en relation entre propriétaires et personnes qui ont vu l'animal.",
-    domaine: 'Réseau d’entraide · Temps réel',
+      "Signaler un animal trouvé en trente secondes, retrouver le sien, et se parler sans livrer ses coordonnées à tout le monde.",
+    domaine: 'Entraide de voisinage',
     annee: '2026',
     plateforme: 'Application mobile iOS',
     palette: { accent: '#0E7C6B', voile: '#E7F3F0', contraste: '#0A5D50' },
     depot: 'https://github.com/shadowX-lab/pilpoil',
     probleme: [
-      "Quand un animal disparaît, la détresse est immédiate et la fenêtre utile se compte en heures. L'étude de huit applications existantes — Filalapat, 30 Millions d'amis, PiP my pet, CPasPerdu et les autres — a fait ressortir toujours le même défaut : il faut créer un compte avant de pouvoir signaler quoi que ce soit, et parfois même posséder un numéro d'identification.",
-      "Or la personne qui croise un chien errant dans la rue n'est pas celle qui a un problème. Elle rend service. Lui demander de s'inscrire, c'est perdre le signalement.",
+      "Un chien disparaît. Dans l'heure qui suit, son propriétaire est incapable de réfléchir clairement, et la fenêtre pendant laquelle on peut encore le retrouver se referme. C'est un moment où l'on ne pardonne aucune friction.",
+      "En regardant ce qui existe déjà, un défaut revient partout : il faut créer un compte avant de pouvoir signaler quoi que ce soit. Or la personne qui croise un chien errant dans la rue n'a aucun problème à résoudre — elle rend service, elle est pressée, et elle abandonnera au premier formulaire. Lui demander de s'inscrire, c'est perdre le signalement. Tout le produit part de ce constat.",
     ],
     decisions: [
       {
-        titre: 'L’application s’ouvre sur « j’ai trouvé un animal »',
+        titre: 'Aucun compte pour signaler un animal trouvé',
         texte:
-          "Pas sur un écran de connexion, pas sur un catalogue d'annonces. Le premier geste proposé est celui de la personne qui rend service, parce que c'est le geste le plus fragile : elle est pressée, elle ne connaît pas l'application, elle abandonnera à la première friction. Signaler un animal trouvé ne demande donc aucun compte.",
+          "L'application s'ouvre sur le geste de celui qui rend service, pas sur un écran de connexion. C'est le geste le plus fragile de toute la chaîne : il fallait qu'il tienne en trente secondes, appareil photo compris. Le compte n'est exigé que pour déclarer une perte — et on explique à l'écran pourquoi : c'est ce qui permettra à quelqu'un de vous joindre.",
       },
       {
-        titre: 'Le compte n’est exigé que pour déclarer une perte',
+        titre: 'Le même formulaire des deux côtés',
         texte:
-          "Et pour une raison qui se dit en une phrase à l'utilisateur : c'est ce qui permet à quelqu'un de vous joindre quand votre animal est retrouvé. Une contrainte qu'on explique cesse d'être une contrainte. C'est le même arbitrage que partout ailleurs dans le produit — on ne supprime pas les règles, on les rend compréhensibles au moment où elles s'appliquent.",
+          "Espèce, couleurs, signes distinctifs, lieu, heure : perdu ou trouvé, ce sont les mêmes champs. Ce n'est pas une économie de développement, c'est ce qui rend le rapprochement automatique possible. On ne peut comparer deux fiches que si elles sont écrites dans la même langue — et les couleurs se choisissent en deux gestes plutôt qu'en texte libre, pour la même raison.",
       },
       {
-        titre: 'Un seul formulaire pour la perte et pour la découverte',
+        titre: 'On voit ce que l’autre verra, avant d’envoyer',
         texte:
-          "Espèce, race, couleurs, tatouage, signes distinctifs, lieu, heure : ce sont les mêmes champs des deux côtés. Les tenir identiques n'est pas une économie de développement, c'est ce qui rend la correspondance automatique possible. On ne peut rapprocher deux fiches que si elles sont écrites dans la même langue.",
-      },
-      {
-        titre: 'La mise en relation montre d’abord ce que l’autre verra',
-        texte:
-          "Avant d'envoyer une demande, on affiche exactement ce que la personne d'en face recevra de vous. Les coordonnées ne circulent qu'après acceptation, et jamais dans les deux sens. Une demande ne peut être acceptée ou refusée qu'une seule fois. Ce sont trois règles de conception qui coûtent une demi-journée à décider et qui font toute la différence entre un service qu'on utilise et un service qu'on redoute.",
-      },
-      {
-        titre: 'Le filtrage des correspondances est un enjeu de crédibilité',
-        texte:
-          "Ne jamais proposer un lapin à quelqu'un qui cherche un chien. L'utilisateur définit le périmètre dans lequel il accepte d'être alerté, et les correspondances sont classées par force de ressemblance. Une notification inutile suffit à faire désinstaller une application qu'on n'ouvre que dans les mauvais moments.",
+          "Avant qu'une demande de mise en relation ne parte, l'écran montre exactement ce que la personne d'en face recevra de vous. Les coordonnées ne circulent qu'après acceptation, jamais dans les deux sens, et une demande ne se tranche qu'une fois. Trois règles décidées en une demi-journée, et c'est tout ce qui sépare un service qu'on utilise d'un service qu'on redoute.",
       },
     ],
     chiffres: [
-      { valeur: '0', libelle: 'compte requis pour signaler un animal trouvé' },
-      { valeur: '24', libelle: 'écrans maquettés, du signalement à la clôture' },
-      { valeur: '8', libelle: 'applications concurrentes analysées avant de dessiner' },
+      { valeur: '30 s', libelle: 'pour signaler un animal trouvé, sans créer de compte' },
+      { valeur: 'Jamais', libelle: 'de coordonnées échangées sans accord explicite' },
+      { valeur: 'Un seul', libelle: 'formulaire pour les pertes et pour les découvertes' },
     ],
     heros: 'Main',
-    galerie: [
-      { fichier: 'Main', titre: 'Accueil', legende: "Le geste le plus fragile est mis en premier et en grand. Les animaux trouvés près de vous sont visibles sans se connecter." },
-      { fichier: 'Carte', titre: 'Autour de moi', legende: 'Les signalements sont posés sur la carte avec le rayon choisi. Le filtre par espèce est immédiat.' },
-      { fichier: 'SignalementCouleurs', titre: 'Signaler — l’animal', legende: "Les couleurs se choisissent en deux gestes plutôt qu'en champ libre : c'est ce qui rend deux fiches comparables." },
-      { fichier: 'Correspondances', titre: 'Correspondances', legende: 'Les animaux trouvés qui pourraient être le vôtre, classés par force de ressemblance et par proximité.' },
-      { fichier: 'MiseEnRelation', titre: 'Mise en relation', legende: "Avant l'envoi, on montre au demandeur ce que l'autre personne verra de lui. Rien ne circule sans acceptation." },
-      { fichier: 'FicheAnnonce', titre: 'Fiche d’annonce', legende: "La fiche dit tout de suite si l'animal a été recueilli et si quelqu'un est joignable." },
-      { fichier: 'DeclarationLancee', titre: 'L’avis est lancé', legende: "Un écran qui explique ce qui va se passer maintenant, plutôt qu'une confirmation vide." },
-      { fichier: 'MesAnimaux', titre: 'Mes animaux', legende: "L'état de chaque animal et le nombre de correspondances en attente, dès l'ouverture." },
+    parcours: [
+      {
+        fichier: 'Main',
+        titre: 'Vous venez de trouver un animal',
+        texte: "C'est le premier geste proposé, en grand, sans connexion préalable.",
+        suite: 'On le décrit en deux gestes',
+      },
+      {
+        fichier: 'SignalementCouleurs',
+        titre: 'Le décrire, vite',
+        texte: 'Espèce, couleurs, lieu. Des choix à taper du doigt plutôt que du texte à saisir.',
+        suite: 'Le rapprochement se fait seul',
+      },
+      {
+        fichier: 'Correspondances',
+        titre: 'Les rapprochements arrivent',
+        texte: 'De son côté, le propriétaire voit les animaux qui pourraient être le sien.',
+        suite: 'Reste à se parler',
+      },
+      {
+        fichier: 'MiseEnRelation',
+        titre: 'Se parler, en confiance',
+        texte: "Chacun voit ce qu'il partage avant de le partager. Rien ne circule sans accord.",
+      },
     ],
     livre: [
-      'Analyse de huit applications concurrentes',
+      'Étude du terrain et des usages existants',
       'Règles de gestion et modèle de données',
-      'Vingt-quatre écrans maquettés, parcours complets',
-      'Application iOS et interface d’administration des fiches',
+      'Parcours complets maquettés, du signalement à la clôture',
+      "Application iOS et interface de vérification des fiches",
     ],
   },
   {
@@ -168,62 +185,67 @@ export const produits: Produit[] = [
     nom: 'Teamago',
     baseline: 'L’argent et la logistique autour du match',
     resume:
-      "Gestion des déplacements et de la trésorerie des clubs sportifs amateurs : répartition des frais, position de chaque conducteur, bouclage au centime.",
-    domaine: 'Sport amateur · Trésorerie associative',
+      "Organiser un déplacement de club amateur et faire tomber les comptes juste, au centime, sans y passer ses dimanches.",
+    domaine: 'Sport amateur',
     annee: '2026',
     plateforme: 'Application mobile iOS',
     palette: { accent: '#4C6116', voile: '#EFF6D9', contraste: '#3A4A10' },
     probleme: [
-      "Ce projet part d'une pièce à conviction : un classeur Excel réel, construit par un dirigeant de club pour organiser les déplacements de son équipe en 2019. Sept onglets, cinq contrôles de cohérence, un reçu imprimable par conducteur. Ce n'est pas une maquette, c'est un outil qui a tourné pour de vrai.",
-      "Sur le cas de référence — Le Lioran, 700 km aller-retour, huit payeurs, 581 € à répartir — le contrôle de bouclage de ce classeur affiche « Incohérence du montant des remboursements ». Autrement dit : même quelqu'un qui fabrique son propre outil de gestion n'arrive pas à faire tomber les comptes juste à la main. C'est l'argument produit tout entier, et il était dans le fichier avant qu'on dessine quoi que ce soit.",
+      "Ce projet commence par une pièce à conviction : le tableur d'un dirigeant de club, construit à la main pour organiser les déplacements de son équipe. Sept onglets, cinq contrôles de cohérence, un reçu imprimable par conducteur. Ce n'est pas une maquette d'école, c'est un outil qui a tourné pendant des saisons.",
+      "Et sur le déplacement de référence — sept cents kilomètres, huit payeurs, 581 € à répartir — le contrôle final affiche : incohérence du montant des remboursements. Quelqu'un de méthodique, qui a fabriqué son propre outil, n'arrive toujours pas à faire tomber les comptes juste. C'est là qu'il y avait un produit, et il était visible avant qu'on dessine le moindre écran.",
     ],
     decisions: [
       {
-        titre: 'On divise par les voyageurs, pas par les voitures',
+        titre: 'On divise par les gens, pas par les voitures',
         texte:
-          "L'assiette du trajet — frais kilométriques, péages, location du minibus — est divisée par le nombre de personnes transportées. Conséquence voulue : on paie le même prix quelle que soit la voiture dans laquelle on monte, conducteur compris. C'est la règle qui évite les discussions de parking, et elle vient telle quelle du classeur d'origine, où elle avait déjà fait ses preuves.",
+          "Essence, péages, location du minibus : le tout est réparti entre les personnes transportées, pas entre les véhicules. Conséquence voulue — on paie le même prix quelle que soit la voiture dans laquelle on monte, le conducteur compris. C'est la règle qui met fin aux discussions de parking, et elle vient telle quelle du tableur d'origine, où elle avait déjà fait ses preuves.",
       },
       {
-        titre: 'L’association est un compte comme un autre',
+        titre: 'Le club est un compte comme un autre',
         texte:
-          "Elle avance, elle encaisse, elle rembourse. Son solde doit tomber à 0,00 €, et c'est ce zéro qui fait office de contrôle de bouclage. Le bénéfice de conception est ailleurs que dans la comptabilité : le conducteur cesse d'être un cas particulier codé en dur, il devient simplement quelqu'un qui a avancé de l'argent. Une abstraction bien choisie supprime plus de code qu'elle n'en ajoute.",
+          "Il avance, il encaisse, il rembourse, et son solde doit tomber à zéro. Ce zéro sert de preuve : si les comptes bouclent, il s'affiche. Le vrai gain n'est pas comptable, il est ailleurs — le conducteur cesse d'être un cas particulier codé à part, il devient simplement quelqu'un qui a avancé de l'argent. Une bonne abstraction supprime plus de code qu'elle n'en ajoute.",
       },
       {
-        titre: 'Participant et voyageur ne sont pas la même chose',
+        titre: 'La vérification s’affiche, elle ne se cache pas',
         texte:
-          "Quelqu'un qui rejoint le match par ses propres moyens participe à l'inscription et à l'hôtel, mais pas au trajet. Un parent venu avec deux enfants ne remplit qu'une ligne, avec des parts d'accompagnants rattachées à lui. Cette distinction, invisible dans un tableur, structure tout le modèle de données.",
-      },
-      {
-        titre: 'Le bouclage est affiché, pas caché dans un onglet',
-        texte:
-          "« Ça boucle », en haut de l'écran de décompte, avec la phrase qui l'explique : les participations couvrent exactement les frais. Le classeur avait la même vérification, enfouie dans une cellule que personne ne regardait. Sortir un contrôle de l'ombre et en faire l'élément le plus visible de l'écran, c'est une décision produit, pas une décision technique.",
-      },
-      {
-        titre: 'Ce qui a été volontairement reporté',
-        texte:
-          "Covoiturage nominatif, notes de frais photo, attestation fiscale d'abandon de frais, solde de saison consolidé, multi-utilisateur. Tout cela était dans l'intention de départ. Rien n'est dans la première version, parce que le noyau comptable devait tomber juste avant qu'on empile quoi que ce soit dessus. Une première version qui fait une chose entièrement vaut mieux que cinq à moitié.",
+          "« Ça boucle », en haut de l'écran, avec la phrase qui l'explique. Le tableur faisait déjà ce contrôle — enfoui dans une cellule que personne ne regardait, et qui affichait une erreur depuis des mois. Sortir une vérification de l'ombre et en faire l'élément le plus visible de l'écran : ce n'est pas une décision technique, c'est une décision de produit.",
       },
     ],
     chiffres: [
-      { valeur: '0,00 €', libelle: 'le solde de l’association : c’est ça, le bouclage' },
-      { valeur: '581 €', libelle: 'du cas de référence, répartis au centime entre 8 payeurs' },
-      { valeur: '14', libelle: 'écrans, de la création du déplacement au règlement' },
+      { valeur: '0,00 €', libelle: 'le solde du club — la preuve que tout est juste' },
+      { valeur: '581 €', libelle: 'du déplacement de référence, répartis au centime' },
+      { valeur: 'Zéro', libelle: 'dimanche perdu à refaire les comptes à la main' },
     ],
     heros: 'Decompte',
-    galerie: [
-      { fichier: 'Decompte', titre: 'Décompte', legende: "Le contrôle de bouclage est l'élément le plus visible de l'écran, pas une cellule cachée en bas d'un onglet." },
-      { fichier: 'Main', titre: 'La saison', legende: 'Reste à encaisser et à rembourser en un coup d’œil, déplacement par déplacement.' },
-      { fichier: 'Deplacement', titre: 'Le déplacement', legende: 'Distance et durée calculées sur l’itinéraire ; le péage est repris du dernier trajet identique puis corrigé au ticket.' },
-      { fichier: 'FicheParticipant', titre: 'Fiche participant', legende: "Joueur, voyageur, conducteur : trois qualités indépendantes. La position nette peut être négative — le club doit alors de l'argent." },
-      { fichier: 'Participants', titre: 'Participants', legende: 'Une ligne par payeur, le conducteur en négatif, le total du déplacement en haut.' },
-      { fichier: 'Reglement', titre: 'Règlement', legende: 'Quatre réglés sur huit, ce qui reste à encaisser, ce qui reste à rembourser. Le suivi est le vrai travail du trésorier.' },
-      { fichier: 'Argent', titre: 'Paramètres financiers', legende: 'Barème, inscription, séjour, arrondi : tout ce qui change le calcul est réuni sur un seul écran.' },
-      { fichier: 'Mail', titre: 'Récapitulatif', legende: "Le message part depuis votre boîte, un destinataire à la fois. Rien n'est envoyé sans que vous l'ayez vu." },
+    parcours: [
+      {
+        fichier: 'Infos',
+        titre: 'Créer le déplacement',
+        texte: "Destination, date, heure de départ. La distance et le péage se remplissent seuls.",
+        suite: 'On dit qui vient',
+      },
+      {
+        fichier: 'Participants',
+        titre: 'Qui vient, qui conduit',
+        texte: 'Joueurs, accompagnants, conducteurs. Chacun a sa part, calculée au fur et à mesure.',
+        suite: 'Le calcul tombe juste',
+      },
+      {
+        fichier: 'Decompte',
+        titre: 'Ça boucle',
+        texte: "Les participations couvrent exactement les frais. Le club ne gagne ni ne perd un centime.",
+        suite: 'Reste à encaisser',
+      },
+      {
+        fichier: 'Reglement',
+        titre: 'Suivre les règlements',
+        texte: "Qui a payé, qui doit être remboursé, et le récapitulatif prêt à envoyer.",
+      },
     ],
     livre: [
-      'Reprise du classeur de 2019 comme spécification de référence',
-      'Règles de répartition et contrôles de bouclage',
-      'Quatorze écrans maquettés, clair et sombre',
+      "Reprise du tableur existant comme spécification de référence",
+      'Règles de répartition et contrôles de cohérence',
+      'Parcours organisateur maquetté, en clair et en sombre',
       'Modèle de domaine et périmètre de première version arbitré',
     ],
   },
@@ -234,3 +256,23 @@ export const parSlug = (slug: string): Produit => {
   if (!produit) throw new Error(`Produit inconnu : ${slug}`);
   return produit;
 };
+
+/** Écrans montrés sur la page d'accueil, dans leur cadre de téléphone.
+ *  Aucun de ces écrans ne porte le nom de son application : la marque
+ *  n'apparaît nulle part avant la page réalisations. */
+
+/** L'éventail du hero : gauche, avant, droite. */
+export const eventail = [
+  { projet: 'pilpoil', fichier: 'Carte' },
+  { projet: 'chargeair', fichier: 'Session' },
+  { projet: 'teamago', fichier: 'Decompte' },
+];
+
+/** La rangée plus bas dans la page, volontairement chevauchée. */
+export const rangee = [
+  // Reservation est écarté : il affiche « Frais de service ChargeAir ».
+  { projet: 'chargeair', fichier: 'Borne' },
+  { projet: 'teamago', fichier: 'Participants' },
+  { projet: 'pilpoil', fichier: 'MiseEnRelation' },
+  { projet: 'chargeair', fichier: 'Hote' },
+];

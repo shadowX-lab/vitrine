@@ -7,12 +7,15 @@ export const CLE_FORMULAIRE = 'REMPLACER-PAR-VOTRE-CLE-WEB3FORMS';
 export const LIEN_RDV = '';
 
 export const STUDIO = {
-  nom: 'Cadran',
+  nom: 'Moamind Solutions',
+  /** Les deux moitiés du nom, pour le mot-marque. */
+  nomCourt: 'Moamind',
+  nomSuffixe: 'Solutions',
   accroche: 'Le produit avant le code',
   description:
-    "Studio de conception et de développement d'applications web et mobiles. " +
-    'On cadre le problème, on valide les écrans, ensuite on construit.',
-  ville: 'France',
+    "Conception et développement d'applications web et mobiles. On cadre le " +
+    'problème, vous validez les écrans, rien ne se construit avant.',
+  ville: 'Bordeaux',
 } as const;
 
 /** Préfixe les liens internes avec la base du site (nécessaire sous /vitrine). */
