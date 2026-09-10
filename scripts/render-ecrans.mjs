@@ -10,6 +10,7 @@
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { anonymiser } from './anonymiser.mjs';
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const RACINE = resolve(import.meta.dirname, '..');
@@ -23,8 +24,10 @@ const SOURCES = {
 };
 
 /** Extrait le contenu utile d'un artboard et le remonte dans un document standard. */
-function documentAutonome(source) {
-  const brut = readFileSync(source, 'utf8');
+function documentAutonome(source, projet) {
+  const lu = readFileSync(source, 'utf8');
+  // Les maquettes Teamago reprennent un vrai fichier de club : personnes et club deviennent fictifs.
+  const brut = projet === 'teamago' ? anonymiser(lu) : lu;
   const helmet = brut.match(/<helmet>([\s\S]*?)<\/helmet>/i)?.[1] ?? '';
   const corps = brut
     .match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1]
@@ -39,14 +42,16 @@ ${helmet}
 </head><body>${corps}</body></html>`;
 }
 
-function photographier(source, destination) {
+function photographier(source, destination, projet) {
   const temporaire = join(dirname(source), `.rendu-${Date.now()}.html`);
-  writeFileSync(temporaire, documentAutonome(source));
+  writeFileSync(temporaire, documentAutonome(source, projet));
   try {
     execFileSync(CHROME, [
       '--headless=new', '--disable-gpu', '--hide-scrollbars',
       '--window-size=390,844', '--force-device-scale-factor=2',
       '--default-background-color=00000000',
+      // Thème clair imposé : sinon Chrome suit l'apparence du Mac, sombre le soir.
+      '--blink-settings=preferredColorScheme=1',
       '--virtual-time-budget=4000',
       `--screenshot=${destination}`,
       `file://${temporaire}`,
@@ -57,7 +62,10 @@ function photographier(source, destination) {
 }
 
 let total = 0;
+// `npm run ecrans -- teamago` ne rend que les projets nommés.
+const filtre = process.argv.slice(2);
 for (const [projet, dossier] of Object.entries(SOURCES)) {
+  if (filtre.length && !filtre.includes(projet)) continue;
   const manifeste = JSON.parse(readFileSync(join(dossier, 'canvas.json'), 'utf8'));
   const cible = join(SORTIE, projet);
   mkdirSync(cible, { recursive: true });
@@ -65,7 +73,7 @@ for (const [projet, dossier] of Object.entries(SOURCES)) {
   for (const artboard of manifeste.artboards) {
     const nom = artboard.file.replace(/\.dc\.html$/, '');
     const destination = join(cible, `${nom}.png`);
-    photographier(join(dossier, artboard.file), destination);
+    photographier(join(dossier, artboard.file), destination, projet);
     console.log(`  ${projet}/${nom}.png  — ${artboard.title}`);
     total++;
   }

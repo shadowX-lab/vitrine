@@ -588,6 +588,8 @@ for (const [projet, dossier] of Object.entries(SOURCES)) {
   if (filtre.length && !filtre.includes(projet)) continue;
 ```
 
+Ajout fait à l'exécution : option Chrome `--blink-settings=preferredColorScheme=1` dans `photographier`, sinon le rendu suit l'apparence du Mac (écrans sombres le soir).
+
 - [ ] **Step 6: Régénérer et contrôler**
 
 Run: `npm run ecrans -- teamago`
