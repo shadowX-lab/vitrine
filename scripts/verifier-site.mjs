@@ -66,7 +66,8 @@ const MOTS_ISOLES = `(() => {
     }
     for (const mots of segments) {
       const lignes = [...new Set(mots.map((m) => m.y))];
-      if (lignes.length < 2) continue;
+      // Un titre de deux mots sur deux lignes n'est pas un mot isolé.
+      if (lignes.length < 2 || mots.length < 3) continue;
       const largeurLigne = (y) => { const l = mots.filter((m) => m.y === y); return Math.max(...l.map((m) => m.d)) - Math.min(...l.map((m) => m.g)); };
       const derniere = mots.filter((m) => m.y === lignes.at(-1));
       const ratio = largeurLigne(lignes.at(-1)) / Math.max(...lignes.map(largeurLigne));

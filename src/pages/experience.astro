@@ -1,7 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
-import AppelAction from '../components/AppelAction.astro';
-import { lien, STUDIO } from '../config';
+import Bande from '../components/Bande.astro';
+import AppelFinal from '../components/AppelFinal.astro';
+import Icone from '../components/Icone.astro';
+import { STUDIO } from '../config';
 
 /* Des terrains, pas un curriculum : ni dates, ni employeurs nommés. La durée
    n'apparaît que lorsqu'elle dit quelque chose. Les mots-clés restent visibles
@@ -10,472 +12,194 @@ const terrains = [
   {
     duree: '3 ans',
     milieu: 'Opérateur cloud européen',
-    enjeu:
-      "Des déploiements sur des parcs de plusieurs milliers de postes, coordonnés entre plusieurs sites. Des normes de sécurité à faire valider par des auditeurs externes, où ce qui n'est pas écrit n'existe pas. Un backlog à tenir pour une équipe de huit développeurs, et un run de niveau 2 qui ne s'arrête jamais.",
+    enjeu: "Des déploiements sur des parcs de plusieurs milliers de postes, coordonnés entre plusieurs sites. Des normes de sécurité à faire valider par des auditeurs externes, où ce qui n'est pas écrit n'existe pas. Un backlog à tenir pour une équipe de huit développeurs, et un run de niveau 2 qui ne s'arrête jamais.",
     cles: ['Passage à l’échelle', 'Sécurité auditée', 'Backlog produit', 'Pilotage d’équipe', 'Processus métier'],
   },
   {
     milieu: 'Groupe bancaire européen',
-    enjeu:
-      "Automatiser le travail répétitif de milliers d'utilisateurs sans casser leurs habitudes. Des stratégies de tests de bout en bout et de non-régression, parce qu'à cette échelle une régression ne se mesure pas en tickets : elle se mesure en appels au support.",
+    enjeu: "Automatiser le travail répétitif de milliers d'utilisateurs sans casser leurs habitudes. Des stratégies de tests de bout en bout et de non-régression, parce qu'à cette échelle une régression ne se mesure pas en tickets : elle se mesure en appels au support.",
     cles: ['Automatisation', 'Expérience utilisateur', 'Tests de bout en bout', 'Non-régression'],
   },
   {
     duree: '3 ans',
     milieu: 'Commerce international',
-    enjeu:
-      "Un logiciel de vente dont les règles de gestion des stocks changent d'un pays à l'autre, au gré des réglementations. Le genre de domaine où la difficulté n'est jamais le code : c'est de comprendre la règle, et de la faire énoncer clairement par quelqu'un qui la connaît trop bien pour la formuler.",
+    enjeu: "Un logiciel de vente dont les règles de gestion des stocks changent d'un pays à l'autre, au gré des réglementations. Le genre de domaine où la difficulté n'est jamais le code : c'est de comprendre la règle, et de la faire énoncer clairement par quelqu'un qui la connaît trop bien pour la formuler.",
     cles: ['Règles métier', 'Réglementation', 'Déploiement continu', 'Non-régression'],
   },
   {
     duree: '2 ans',
     milieu: 'Entité numérique d’un opérateur télécom',
-    enjeu:
-      "Recueillir des besoins clients et les transformer en exigences technico-fonctionnelles tenables. Puis migrer l'application vers une architecture distribuée sans interrompre ceux qui s'en servaient tous les jours.",
+    enjeu: "Recueillir des besoins clients et les transformer en exigences technico-fonctionnelles tenables. Puis migrer l'application vers une architecture distribuée sans interrompre ceux qui s'en servaient tous les jours.",
     cles: ['Exigences', 'Architecture distribuée', 'Migration', 'Support production'],
   },
   {
     milieu: 'Éditeur de gestion documentaire',
-    enjeu:
-      "Transformer des besoins métier flous en périmètre livrable, décider ce qui entre dans chaque version, et défendre les arbitrages devant ceux qui voulaient tout, tout de suite. La feuille de route et les critères d'acceptation pour seuls garde-fous.",
+    enjeu: "Transformer des besoins métier flous en périmètre livrable, décider ce qui entre dans chaque version, et défendre les arbitrages devant ceux qui voulaient tout, tout de suite. La feuille de route et les critères d'acceptation pour seuls garde-fous.",
     cles: ['Besoins métier', 'Feuille de route', 'Critères d’acceptation', 'Stratégie de tests'],
   },
   {
     milieu: 'Service de mobilité électrique',
-    enjeu:
-      "Concevoir des API et fixer les contrats d'interface d'une architecture distribuée — c'est-à-dire décider, avant d'écrire une ligne, ce que chaque service promet aux autres et ce qu'il ne promet pas.",
+    enjeu: "Concevoir des API et fixer les contrats d'interface d'une architecture distribuée, c'est-à-dire décider, avant d'écrire une ligne, ce que chaque service promet aux autres et ce qu'il ne promet pas.",
     cles: ['Contrats d’API', 'Architecture distribuée', 'Tests automatisés', 'Formation'],
   },
   {
     duree: '5 ans',
     milieu: 'Clients directs, en indépendant',
-    enjeu:
-      "Des projets menés de bout en bout : le budget, les parcours, les maquettes, le développement, la formation et le support. Un interlocuteur unique, souvent non technique, qui paie de sa poche et à qui il faut rendre des comptes en français.",
-    cles: ['Budget & arbitrage', 'Parcours utilisateur', 'Maquettes', 'Formation', 'Support'],
+    enjeu: "Des projets menés de bout en bout : le budget, les parcours, les maquettes, le développement, la formation et le support. Un interlocuteur unique, souvent non technique, qui paie de sa poche et à qui il faut rendre des comptes en français.",
+    cles: ['Budget et arbitrage', 'Parcours utilisateur', 'Maquettes', 'Formation', 'Support'],
   },
 ];
 
 const apports = [
-  {
-    titre: 'Je parle les deux langues',
-    texte:
-      "J'ai écrit du code pendant des années avant de piloter des produits. Vous n'aurez pas à traduire votre métier en jargon technique, ni à faire confiance sur parole quand on vous dira que « c'est compliqué ».",
-  },
-  {
-    titre: 'Je vois les risques avant qu’ils coûtent',
-    texte:
-      "Une dépendance oubliée, une règle réglementaire qui change tout, une donnée que personne ne sait où trouver : ce sont les sujets qui font déraper un projet. Quinze ans de terrain, c'est surtout une bibliothèque de ces pièges-là.",
-  },
-  {
-    titre: 'J’ai tenu des budgets, pas seulement des tickets',
-    texte:
-      "En indépendant, l'argent était celui du client, en face de moi. En grand groupe, il fallait défendre un arbitrage devant des gens qui n'avaient pas le temps. Les deux apprennent à dire non, et à expliquer pourquoi.",
-  },
-  {
-    titre: 'J’ai été audité',
-    texte:
-      "Faire valider des normes de sécurité par des auditeurs externes change le rapport à la rigueur. Ce qui n'est pas écrit n'existe pas, et ce qui n'est pas prouvé n'est pas acquis. Ça se retrouve dans chaque note de cadrage que je rends.",
-  },
-];
+  { icone: 'code', titre: 'Je parle les deux langues', texte: "J'ai écrit du code pendant des années avant de piloter des produits. Vous n'aurez pas à traduire votre métier en jargon technique, ni à faire confiance sur parole quand on vous dira que « c'est compliqué »." },
+  { icone: 'risque', titre: 'Je vois les risques avant qu’ils coûtent', texte: "Une dépendance oubliée, une règle réglementaire qui change tout, une donnée que personne ne sait où trouver : ce sont les sujets qui font déraper un projet. Quinze ans de terrain, c'est surtout une bibliothèque de ces pièges-là." },
+  { icone: 'budget', titre: 'J’ai tenu des budgets, pas seulement des tickets', texte: "En indépendant, l'argent était celui du client, en face de moi. En grand groupe, il fallait défendre un arbitrage devant des gens qui n'avaient pas le temps. Les deux apprennent à dire non, et à expliquer pourquoi." },
+  { icone: 'audit', titre: 'J’ai été audité', texte: "Faire valider des normes de sécurité par des auditeurs externes change le rapport à la rigueur. Ce qui n'est pas écrit n'existe pas, et ce qui n'est pas prouvé n'est pas acquis. Ça se retrouve dans chaque note de cadrage que je rends." },
+] as const;
 
 const convictions = [
-  {
-    titre: 'Une décision écrite vaut mieux qu’une réunion',
-    texte:
-      "Un arbitrage qu'on ne peut pas relire n'existe pas : il sera repris, retourné, et re-décidé autrement dans six mois. J'écris ce qu'on tranche et pourquoi. C'est le document le moins cher d'un projet, et le seul qui vaudra encore quelque chose dans deux ans.",
-  },
-  {
-    titre: 'La contrainte se pose au début, ou elle coûte une refonte',
-    texte:
-      "Décider qu'un chiffre serait toujours présenté comme estimé, jamais comme mesuré, ne coûte rien au cadrage. Découvert après le développement, le même point impose de reprendre chaque écran.",
-  },
-  {
-    titre: 'Une bonne abstraction supprime plus de code qu’elle n’en ajoute',
-    texte:
-      "Faire d'un club une caisse comme une autre — qui avance, encaisse et rembourse — a fait disparaître le conducteur comme cas particulier. Ce n'était pas une décision technique, c'était une décision de modèle, prise avant d'ouvrir un éditeur.",
-  },
-  {
-    titre: 'La friction se met là où elle se justifie',
-    texte:
-      "Signaler un animal trouvé ne demande aucun compte, parce que la personne qui rend service abandonnerait à la première contrainte. Déclarer une perte en demande un, et l'écran explique pourquoi. Une règle qu'on justifie cesse d'être subie.",
-  },
-  {
-    titre: 'Une tranche finie vaut mieux que cinq à moitié',
-    texte:
-      "Un produit à soixante pour cent ne se montre pas, ne se teste pas et ne se corrige pas. Je livre des parcours complets, un par un, quitte à ce que la liste des fonctionnalités reste courte plus longtemps que vous ne l'aimeriez.",
-  },
-  {
-    titre: 'Le soin visible renseigne sur le reste',
-    texte:
-      "Un utilisateur ne peut pas juger une architecture. Il juge le chargement, l'alignement, le texte d'erreur. Il en déduit — souvent avec raison — la qualité de ce qu'il ne voit pas.",
-  },
+  { titre: 'Une décision écrite vaut mieux qu’une réunion', texte: "Un arbitrage qu'on ne peut pas relire n'existe pas : il sera repris, retourné, et re-décidé autrement dans six mois. J'écris ce qu'on tranche et pourquoi." },
+  { titre: 'La contrainte se pose au début, ou elle coûte une refonte', texte: "Décider qu'un chiffre serait toujours présenté comme estimé ne coûte rien au cadrage. Découvert après le développement, le même point impose de reprendre chaque écran." },
+  { titre: 'Une bonne abstraction supprime plus de code qu’elle n’en ajoute', texte: "Faire d'un club une caisse comme une autre, qui avance, encaisse et rembourse, a fait disparaître le conducteur comme cas particulier." },
+  { titre: 'La friction se met là où elle se justifie', texte: "Signaler un animal trouvé ne demande aucun compte. Déclarer une perte en demande un, et l'écran explique pourquoi. Une règle qu'on justifie cesse d'être subie." },
+  { titre: 'Une tranche finie vaut mieux que cinq à moitié', texte: 'Un produit à soixante pour cent ne se montre pas, ne se teste pas et ne se corrige pas. Je livre des parcours complets, un par un.' },
+  { titre: 'Le soin visible renseigne sur le reste', texte: "Un utilisateur ne peut pas juger une architecture. Il juge le chargement, l'alignement, le texte d'erreur, et il en déduit la qualité de ce qu'il ne voit pas." },
 ];
 
 const outils = [
-  { titre: 'Mobile', texte: 'iOS natif (Swift, SwiftUI), Android, multiplateforme quand le besoin le justifie — pas quand la mode le suggère.' },
-  { titre: 'Web', texte: "Astro, TypeScript, rendu statique quand c'est possible, framework quand c'est justifié. Ce site en est un exemple : aucune ligne de JavaScript côté client sur la plupart des pages." },
-  { titre: 'Back-end et données', texte: 'API typées, contrats d’interface explicites, modèle de domaine lisible, migrations versionnées, tests sur la logique métier.' },
-  { titre: 'Conduite de projet', texte: 'Découpage en tranches livrables, priorisation argumentée, recette fonctionnelle et validation avec vous. Certifié PSPO I.' },
+  { titre: 'Mobile', texte: 'iOS natif (Swift, SwiftUI), Android, multiplateforme quand le besoin le justifie.' },
+  { titre: 'Web', texte: "Astro, TypeScript, rendu statique quand c'est possible. Ce site en est un exemple." },
+  { titre: 'Back-end et données', texte: 'API typées, contrats d’interface explicites, migrations versionnées, tests sur la logique métier.' },
+  { titre: 'Conduite de projet', texte: 'Découpage en tranches livrables, priorisation argumentée, recette avec vous. Certifié PSPO I.' },
 ];
 ---
-
-<Base
-  titre="Expérience"
-  description="Quinze ans à concevoir et construire des produits, du développement au pilotage, en petite structure comme en grand groupe. Et ce que ça change concrètement pour votre projet."
->
-  <!-- ================= Ouverture : le nom, puis la personne ================= -->
-  <section class="ouverture">
-    <div class="page ouverture__interieur">
+<Base titre="Expérience" description="Quinze ans à concevoir et construire des produits, du développement au pilotage, en petite structure comme en grand groupe. Et ce que ça change concrètement pour votre projet.">
+  <Bande hauteur="640px" biais="52%" reserve="0px">
+    <div class="ouv w">
       <div>
-        <p class="eyebrow">À qui vous parlez</p>
-        <h1>Trois mots,<br />et c'est <em>tout le nom</em></h1>
-        <div class="prose grand">
-          <p>
-            {STUDIO.nom} conçoit et développe des applications web et mobiles.
-            Ce qui distingue la maison tient en une phrase : ce que je vends,
-            c'est le temps passé à ne pas construire la mauvaise chose. Ce n'est
-            pas une posture, c'est un calcul.
-          </p>
-        </div>
+        <span class="etiq">À qui vous parlez</span>
+        <h1>Trois mots,<br /><span class="leger">c'est tout le nom</span></h1>
+        <p class="sous"><span translate="no">{STUDIO.nom}</span> conçoit et développe des applications web et mobiles. Ce qui distingue la maison tient en une phrase : ce que je vends, c'est le temps passé à ne pas construire la mauvaise chose.</p>
       </div>
-
       <dl class="triade">
-        <div>
-          <dt>MOA</dt>
-          <dd>
-            <strong>La maîtrise d'ouvrage — c'est vous.</strong> Celui qui
-            commande, qui connaît son métier et qui sait pourquoi il veut ce
-            produit. Mon premier travail est de me mettre à votre place, et de
-            vous rendre votre problème écrit dans vos mots.
-          </dd>
-        </div>
-        <div>
-          <dt>Mind</dt>
-          <dd>
-            <strong>L'esprit.</strong> On réfléchit avant d'agir. Chaque décision
-            s'écrit avec sa raison, pour qu'on puisse y revenir sans avoir à la
-            reprendre de zéro.
-          </dd>
-        </div>
-        <div>
-          <dt>Solutions</dt>
-          <dd>
-            <strong>La réalisation.</strong> Une réflexion qui ne se livre pas ne
-            vaut rien. Je construis, je mets en ligne, on mesure — par tranches
-            complètes.
-          </dd>
-        </div>
+        <div class="mot"><dt translate="no">MOA</dt><dd><strong>La maîtrise d'ouvrage, c'est vous.</strong> Celui qui commande, qui connaît son métier et qui sait pourquoi il veut ce produit. Mon premier travail est de me mettre à votre place.</dd></div>
+        <div class="mot"><dt translate="no">Mind</dt><dd><strong>L'esprit.</strong> On réfléchit avant d'agir. Chaque décision s'écrit avec sa raison, pour qu'on puisse y revenir sans la reprendre de zéro.</dd></div>
+        <div class="mot"><dt translate="no">Solutions</dt><dd><strong>La réalisation.</strong> Une réflexion qui ne se livre pas ne vaut rien. Je construis, je mets en ligne, on mesure, par tranches complètes.</dd></div>
       </dl>
     </div>
+  </Bande>
+
+  <section class="sec w">
+    <div class="deux">
+      <h2 class="t2">Quinze ans de terrain. Ce que ça change pour votre projet</h2>
+      <p class="lead">Développeur d'abord, puis chef de projets, puis Product Owner et Business Analyst. En clientèle directe, chez des éditeurs, et dans des groupes où un déploiement se compte en milliers de postes.</p>
+    </div>
+    <div class="grille-2">
+      {apports.map((a) => <article class="carte"><div class="ico"><Icone nom={a.icone} /></div><h3>{a.titre}</h3><p class="long">{a.texte}</p></article>)}
+    </div>
   </section>
 
-  <div class="liseret" aria-hidden="true"></div>
+  <section class="sec w creme">
+    <div class="deux">
+      <h2 class="t2">Les terrains. Où ça s'est joué</h2>
+      <p class="lead">Des parcs de plusieurs milliers de postes. Des normes de sécurité validées par des auditeurs externes. Des règles métier qui changent d'un pays à l'autre. Et, à l'autre bout, des clients qui paient de leur poche.</p>
+    </div>
+    <ul class="terrains">
+      {terrains.map((t, i) => (
+        <li>
+          <details class="terrain" open={i === 0}>
+            <summary>
+              <span class="duree">{t.duree ?? ''}</span>
+              <h3>{t.milieu}</h3>
+              <span class="mots">{t.cles.map((c) => <span>{c}</span>)}</span>
+              <span class="plus" aria-hidden="true"></span>
+            </summary>
+            <p class="enjeu long">{t.enjeu}</p>
+          </details>
+        </li>
+      ))}
+    </ul>
+    <dl class="fiche">
+      <div><dt>Formation</dt><dd>Diplôme d'ingénieur informatique</dd></div>
+      <div><dt>Certification</dt><dd>Professional Scrum Product Owner I</dd></div>
+      <div><dt>Base</dt><dd>Bordeaux et des projets sans frontière.</dd></div>
+    </dl>
+  </section>
 
-  <!-- ================= Ce que ça change pour vous ================= -->
-  <section class="section">
-    <div class="page">
-      <div class="titre-section">
-        <div>
-          <p class="eyebrow">Quinze ans de terrain</p>
-          <h2>Ce que ça change<br />pour votre projet</h2>
-        </div>
-        <p class="prose">
-          Développeur d'abord, puis chef de projets, puis Product Owner. En
-          clientèle directe, chez des éditeurs, et dans des groupes où un
-          déploiement se compte en milliers de postes.
-        </p>
-      </div>
+  <section class="sec w sombre">
+    <div class="tete"><h2 class="t2">Six convictions, chacune payée d'un exemple</h2></div>
+    <div class="grille-3">
+      {convictions.map((c) => <article class="carte"><h3>{c.titre}</h3><p>{c.texte}</p></article>)}
+    </div>
+  </section>
 
-      <div class="apports">
-        {apports.map((a) => (
-          <article class="apparait">
-            <h3>{a.titre}</h3>
-            <p>{a.texte}</p>
-          </article>
-        ))}
+  <section class="sec w">
+    <div class="outils">
+      <div><h2 class="t2">Ce avec quoi je construis</h2><p class="lead">Une technologie se choisit pour un problème, pas pour un curriculum. Voilà ce que j'utilise le plus souvent, et pourquoi.</p></div>
+      <div class="grille-2">
+        {outils.map((o) => <article class="carte carte--bord"><h3>{o.titre}</h3><p>{o.texte}</p></article>)}
       </div>
     </div>
   </section>
 
-  <!-- ================= Les terrains ================= -->
-  <section class="section section--creux">
-    <div class="page">
-      <div class="titre-section">
-        <div>
-          <p class="eyebrow">Les terrains</p>
-          <h2>Où ça s'est joué</h2>
-        </div>
-        <p class="prose">
-          Des parcs de plusieurs milliers de postes. Des normes de sécurité
-          validées par des auditeurs externes. Des règles métier qui changent
-          d'un pays à l'autre. Et, à l'autre bout, des clients qui paient de
-          leur poche.
-        </p>
-      </div>
-
-      <ol class="terrains">
-        {terrains.map((t) => (
-          <li class="apparait">
-            <details>
-              <summary>
-                <span class="terrains__duree">{t.duree ?? ''}</span>
-                <span class="terrains__titre">
-                  <h3>{t.milieu}</h3>
-                  <ul class="cles">
-                    {t.cles.map((c) => <li>{c}</li>)}
-                  </ul>
-                </span>
-                <span class="terrains__signe" aria-hidden="true"></span>
-              </summary>
-              <p class="terrains__enjeu">{t.enjeu}</p>
-            </details>
-          </li>
-        ))}
-      </ol>
-
-      <dl class="formation">
-        <div>
-          <dt>Formation</dt>
-          <dd>Diplôme d'ingénieur informatique</dd>
-        </div>
-        <div>
-          <dt>Certification</dt>
-          <dd>Professional Scrum Product Owner I</dd>
-        </div>
-        <div>
-          <dt>Base</dt>
-          <dd>Bordeaux — les projets, eux, n'ont pas de frontière</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <!-- ================= Convictions ================= -->
-  <section class="section">
-    <div class="page">
-      <div class="titre-section">
-        <div>
-          <p class="eyebrow">Ce que j'ai fini par croire</p>
-          <h2>Six convictions,<br />chacune payée d'un exemple</h2>
-        </div>
-      </div>
-      <div class="convictions">
-        {convictions.map((c, i) => (
-          <article class="apparait">
-            <span class="index">{String(i + 1).padStart(2, '0')}</span>
-            <h3>{c.titre}</h3>
-            <p>{c.texte}</p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= Outils ================= -->
-  <section class="section section--creux">
-    <div class="page deux-colonnes">
-      <div>
-        <p class="eyebrow">Les outils</p>
-        <h2>Ce avec quoi<br />je construis</h2>
-        <p class="prose apres-titre">
-          Une technologie se choisit pour un problème, pas pour un curriculum.
-          Voilà ce que j'utilise le plus souvent, et pourquoi.
-        </p>
-      </div>
-      <dl class="outils">
-        {outils.map((o) => (
-          <div>
-            <dt>{o.titre}</dt>
-            <dd>{o.texte}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
-  </section>
-
-  <AppelAction
-    titre="On en parle ?"
-    texte="Décrivez-moi votre projet en quelques phrases. Je vous réponds sous deux jours ouvrés, et le premier entretien ne vous engage à rien."
-  />
+  <AppelFinal titre="On en parle ?" texte="Décrivez-moi votre projet en quelques phrases. Je vous réponds sous deux jours ouvrés, et le premier entretien ne vous engage à rien." />
 </Base>
 
 <style>
-  .ouverture { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(2.5rem, 5vw, 4rem); }
-  .ouverture__interieur {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: clamp(2rem, 5vw, 4.5rem);
-    align-items: start;
-  }
-  .ouverture h1 { margin-bottom: 1.7rem; }
-  .ouverture h1 em { font-style: italic; color: var(--bronze); }
-  .prose.grand { font-size: 1.06rem; }
+  /* ---------- ouverture : les trois mots du nom, en cartes qui sortent du bandeau ---------- */
+  .ouv { display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); gap: 70px; padding-top: 56px; }
+  .triade { display: grid; gap: 14px; margin: 10px 0 0; }
+  .mot { background: #fff; color: var(--encre); border-radius: 24px; padding: 24px 26px; display: grid; grid-template-columns: 150px 1fr; gap: 20px; box-shadow: 0 30px 60px -30px rgba(30,10,4,.5); }
+  .mot dt { font-size: 36px; letter-spacing: -.04em; font-weight: 800; color: var(--f2); line-height: 1; }
+  .mot dd { margin: 0; font-size: 15px; line-height: 1.55; color: var(--encre-2); }
+  .mot strong { color: var(--encre); }
 
-  .triade { margin: 0; display: grid; }
-  .triade div {
-    display: grid;
-    grid-template-columns: 7.5rem minmax(0, 1fr);
-    gap: 1.2rem;
-    padding-block: 1.6rem;
-    border-top: 1px solid var(--trait);
-  }
-  .triade div:last-child { border-bottom: 1px solid var(--trait); }
-  .triade dt {
-    font-family: var(--serif);
-    font-optical-sizing: auto;
-    font-size: 1.7rem;
-    letter-spacing: -0.018em;
-    color: var(--bronze-sombre);
-    line-height: 1.1;
-  }
-  .triade dd { margin: 0; color: var(--encre-douce); font-size: 0.95rem; }
-  .triade strong { color: var(--encre); font-weight: 600; }
+  .deux { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 56px; }
+  .deux .lead { margin: 0; }
 
-  .titre-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: clamp(2rem, 5vw, 4rem);
-    flex-wrap: wrap;
-    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
-  }
+  /* ---------- terrains : mots-clés toujours visibles, récit dépliable ---------- */
+  .terrains { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .terrain { background: #fff; border: 1px solid var(--trait); border-radius: 24px; padding: 26px 30px; transition: border-color .2s, box-shadow .2s; }
+  /* Le résumé ne contient qu'un titre et du texte en ligne : le contenu permis d'un <summary>. */
+  .terrain summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 110px minmax(0, 1fr) 44px; grid-template-areas: 'duree titre plus' 'duree mots plus'; column-gap: 24px; align-items: start; }
+  .duree { grid-area: duree; }
+  .terrain h3 { grid-area: titre; }
+  .mots { grid-area: mots; display: flex; flex-wrap: wrap; gap: 8px; }
+  .mots span { font-size: 13.5px; font-weight: 600; padding: 8px 13px; border-radius: 99px; background: var(--creme); border: 1px solid var(--trait); }
+  .plus { grid-area: plus; }
+  .terrain summary::-webkit-details-marker { display: none; }
+  .terrain summary:hover .plus { border-color: var(--f2); color: var(--f2); }
+  .terrain summary:hover h3 { color: var(--f1); }
+  .duree { font-size: 14px; font-weight: 700; color: var(--f2); padding-top: 6px; }
+  .terrain h3 { font-size: 22px; letter-spacing: -.025em; font-weight: 800; margin-bottom: 14px; transition: color .15s; }
+  .plus { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--trait); display: grid; place-items: center; font-size: 20px; color: var(--gris); }
+  .plus::before { content: '+'; }
+  .terrain[open] { border-color: #F2C9B4; box-shadow: 0 20px 40px -30px rgba(110,34,19,.5); }
+  .terrain[open] .plus { background: var(--encre); color: #fff; border-color: var(--encre); }
+  .terrain[open] .plus::before { content: '−'; }
+  .enjeu { margin: 16px 0 0 134px; font-size: 16px; line-height: 1.7; color: var(--encre-2); max-width: 72ch; }
 
-  /* ---------- apports ---------- */
-  .apports {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    gap: clamp(1.8rem, 4vw, 3rem) clamp(2rem, 4vw, 3.5rem);
-  }
-  .apports article { border-top: 1px solid var(--trait); padding-top: 1.4rem; }
-  .apports h3 { margin-bottom: 0.7rem; }
-  .apports p { color: var(--encre-douce); font-size: 0.95rem; margin: 0; }
+  .fiche { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 40px 0 0; }
+  .fiche div { border-radius: 22px; padding: 22px 24px; background: #fff; border: 1px solid var(--trait); }
+  .fiche dt { font-size: 12.5px; font-weight: 700; color: var(--f2); margin-bottom: 6px; }
+  .fiche dd { margin: 0; font-size: 17px; font-weight: 700; }
 
-  /* ---------- les terrains ----------
-     Un <details> par terrain : les mots-clés restent lus d'un coup d'œil,
-     le récit ne s'ouvre que si on le demande. Aucun script. */
-  .terrains { list-style: none; margin: 0 0 clamp(2.5rem, 5vw, 4rem); padding: 0; display: grid; }
-  .terrains > li { border-top: 1px solid var(--trait); }
-  .terrains > li:last-child { border-bottom: 1px solid var(--trait); }
+  .outils { display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px; }
 
-  .terrains summary {
-    display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr) 1.5rem;
-    gap: clamp(1rem, 2.5vw, 2rem);
-    align-items: start;
-    padding-block: clamp(1.4rem, 2.6vw, 1.9rem);
-    cursor: pointer;
-    list-style: none;
+  /* ---------- adaptation ---------- */
+  @media (max-width: 1100px) {
+    .ouv, .deux, .outils { grid-template-columns: 1fr; gap: 32px; }
+    .deux { margin-bottom: 40px; }
+    .triade { padding-bottom: 40px; }
+    .fiche { grid-template-columns: 1fr; }
   }
-  .terrains summary::-webkit-details-marker { display: none; }
-  .terrains summary:hover .terrains__titre h3 { color: var(--bronze-sombre); }
-
-  .terrains__duree {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1.05rem;
-    color: var(--bronze-sombre);
-    padding-top: 0.15rem;
-  }
-  .terrains__titre h3 {
-    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
-    margin-bottom: 0.8rem;
-    transition: color 0.16s;
-  }
-
-  /* Les mots-clés : toujours visibles, jamais à déplier. */
-  .cles { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
-  .cles li {
-    font-size: 0.76rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    color: var(--encre-douce);
-    background: var(--papier);
-    border: 1px solid var(--trait);
-    border-radius: 100px;
-    padding: 0.3rem 0.75rem;
-  }
-
-  /* Un « + » qui devient « − » à l'ouverture, dessiné en CSS. */
-  .terrains__signe {
-    position: relative;
-    width: 1.1rem;
-    height: 1.1rem;
-    justify-self: end;
-    margin-top: 0.35rem;
-    color: var(--gris);
-  }
-  .terrains__signe::before,
-  .terrains__signe::after {
-    content: '';
-    position: absolute;
-    inset: 50% 0 auto 0;
-    height: 1px;
-    background: currentColor;
-    transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.3, 1);
-  }
-  .terrains__signe::after { transform: rotate(90deg); }
-  .terrains details[open] .terrains__signe::after,
-  .terrains > li details[open] .terrains__signe::after { transform: rotate(0deg); }
-
-  .terrains__enjeu {
-    grid-column: 2;
-    margin: 0 0 clamp(1.4rem, 2.6vw, 1.9rem);
-    padding-left: calc(5.5rem + clamp(1rem, 2.5vw, 2rem));
-    padding-right: clamp(1rem, 2.5vw, 2rem);
-    max-width: 78ch;
-    color: var(--encre-douce);
-    font-size: 0.97rem;
-  }
-
-  .formation {
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-    gap: clamp(1.5rem, 4vw, 3rem);
-    padding-top: 1.6rem;
-    border-top: 1px solid var(--trait);
-  }
-  .formation dt {
-    font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--gris); margin-bottom: 0.45rem;
-  }
-  .formation dd { margin: 0; font-size: 1rem; }
-
-  /* ---------- convictions ---------- */
-  .convictions {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    gap: clamp(1.8rem, 4vw, 3rem) clamp(2rem, 4vw, 3.5rem);
-  }
-  .convictions article { border-top: 1px solid var(--trait); padding-top: 1.4rem; }
-  .convictions h3 { margin: 0.9rem 0 0.7rem; }
-  .convictions p { color: var(--encre-douce); font-size: 0.95rem; margin: 0; }
-
-  /* ---------- outils ---------- */
-  .deux-colonnes {
-    display: grid;
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-    gap: clamp(2rem, 5vw, 4.5rem);
-  }
-  .apres-titre { margin-top: 1.5rem; }
-  .outils { margin: 0; display: grid; }
-  .outils div { padding-block: 1.5rem; border-top: 1px solid var(--trait); }
-  .outils div:last-child { border-bottom: 1px solid var(--trait); }
-  .outils dt {
-    font-family: var(--serif);
-    font-optical-sizing: auto;
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  .outils dd { margin: 0; color: var(--encre-douce); font-size: 0.95rem; }
-
-  @media (max-width: 860px) {
-    .ouverture__interieur, .deux-colonnes { grid-template-columns: 1fr; }
-    .triade div { grid-template-columns: 1fr; gap: 0.4rem; }
-    .terrains summary { grid-template-columns: minmax(0, 1fr) 1.5rem; }
-    .terrains__duree { grid-column: 1; margin-bottom: 0.2rem; }
-    .terrains__titre { grid-column: 1; }
-    .terrains__signe { grid-column: 2; grid-row: 1; }
-    .terrains__enjeu { grid-column: 1; padding-left: 0; }
+  @media (max-width: 700px) {
+    .mot { grid-template-columns: 1fr; gap: 8px; }
+    .terrain { padding: 22px; }
+    .terrain h3 { font-size: 19px; }
+    .terrain summary { grid-template-columns: minmax(0, 1fr) 44px; grid-template-areas: 'duree plus' 'titre plus' 'mots mots'; column-gap: 12px; }
+    .duree { padding-top: 0; margin-bottom: 6px; }
+    .duree:empty { display: none; }
+    .enjeu { margin-left: 0; }
   }
 </style>

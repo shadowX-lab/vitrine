@@ -29,9 +29,9 @@ test('typographierHtml remplace une suite d’espaces et de retours à la ligne 
   assert.equal(typographierHtml(html), `<p>Les écrans sont dessinés, vous les\n        corrigez, et rien ne se${NBSP}construit.</p>`.replace(`ne se${NBSP}`, `ne${NBSP}se${NBSP}`));
 });
 
-test('typographierHtml ignore les blocs qui contiennent d’autres blocs', () => {
+test('typographierHtml ne lie pas un bloc qui contient d’autres blocs, mais lie ses enfants', () => {
   const html = '<li><h3>Opérateur cloud européen</h3><ul><li>Passage à l’échelle</li></ul></li>';
-  assert.equal(typographierHtml(html), html);
+  assert.equal(typographierHtml(html), `<li><h3>Opérateur cloud${NBSP}européen</h3><ul><li>Passage à l’échelle</li></ul></li>`);
 });
 
 test('typographierHtml ne touche ni scripts, ni styles, ni attributs', () => {
@@ -53,6 +53,16 @@ test('typographierHtml ne lie pas les mots des titres, qui restent sécables sur
 test('typographierHtml lie la fin d’un paragraphe contenant de la ponctuation de titre', () => {
   const sortie = typographierHtml('<li>Des comptes justes, en toute simplicité pour le club</li>');
   assert.equal(sortie, `<li>Des comptes justes, en toute simplicité pour${NBSP}le${NBSP}club</li>`);
+});
+
+test('lierFin ne compte pas la ponctuation isolée comme un mot', () => {
+  const sortie = typographierHtml('<p>Vous n’aurez pas à croire sur parole quand on vous dira que « c’est compliqué ».</p>');
+  assert.equal(sortie, `<p>Vous n’aurez pas à croire sur parole quand on vous dira que${NBSP}«${NBSP}c’est${NBSP}compliqué${NBSP}».</p>`);
+});
+
+test('typographierHtml lie les deux derniers mots d’un h3 d’au moins trois mots', () => {
+  assert.equal(typographierHtml('<h3>Groupe bancaire européen</h3>'), `<h3>Groupe bancaire${NBSP}européen</h3>`);
+  assert.equal(typographierHtml('<h3>Commerce international</h3>'), '<h3>Commerce international</h3>');
 });
 
 test('typographierHtml traite les entités &nbsp; comme des espaces déjà liées', () => {
