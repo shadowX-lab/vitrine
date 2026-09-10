@@ -1,134 +1,80 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Telephone from '../../components/Telephone.astro';
-import AppelAction from '../../components/AppelAction.astro';
+import Bande from '../../components/Bande.astro';
+import Iphone3D from '../../components/Iphone3D.astro';
+import AppelFinal from '../../components/AppelFinal.astro';
 import { lien } from '../../config';
+import { ecran } from '../../lib/ecrans';
 import { produits } from '../../data/produits';
+
+/** Le citron de Teamago porte les boutons ; les autres produits gardent un bouton blanc. */
+const boutonClair = new Set(['teamago']);
 ---
-
-<Base
-  titre="Réalisations"
-  description="Des applications conçues et construites de bout en bout : le problème, les décisions qui ont tout changé, et les écrans qui en sont sortis."
->
-  <section class="ouverture">
-    <div class="page">
-      <p class="eyebrow">Réalisations</p>
-      <h1>Ce que ça donne,<br />et <em>pourquoi</em></h1>
-      <p class="chapeau">
-        Ce ne sont pas des références clients : ce sont mes produits, et je le
-        dis. C'est précisément ce qui les rend utiles à regarder — je peux vous
-        montrer les arbitrages, leurs raisons, et ce que j'ai délibérément laissé
-        de côté. Une prestation ne montre jamais ça.
-      </p>
+<Base titre="Réalisations" description="Des applications conçues et développées de bout en bout : le problème de départ, ce qu'elles changent pour ceux qui s'en servent, et les écrans qui en sont sortis.">
+  <Bande hauteur="620px" biais="62%" reserve="0px">
+    <div class="ouv w">
+      <span class="etiq">Réalisations</span>
+      <h1>Ce que ça donne,<br /><span class="leger">et pourquoi</span></h1>
+      <p class="sous">Des applications conçues et développées de bout en bout, du premier entretien à la mise en ligne. Pour chacune : le problème de départ, ce qu'elle change pour ceux qui s'en servent, et les écrans qui en sont sortis.</p>
     </div>
-  </section>
+  </Bande>
 
-  <div class="liseret" aria-hidden="true"></div>
+  <div class="liste">
+    {produits.map((p, i) => (
+      <article
+        class:list={['produit', { 'produit--clair': boutonClair.has(p.slug) }]}
+        style={`--p1:${p.palette.p1};--p2:${p.palette.p2};--p3:${p.palette.p3};--accent:${p.palette.accent};--lueur:${p.palette.lueur};--c:${p.palette.contraste};--clair:${p.palette.clair};--fonce:${p.palette.fonce}`}
+      >
+        <div class="texte">
+          <span class="domaine">{p.domaine} · {p.plateforme}</span>
+          <h2 translate="no">{p.nom}</h2>
+          <p class="base">{p.baseline}</p>
+          <p class="res">{p.resume}</p>
+          <ul class="choix">{p.benefices.map((b) => <li>{b.titre}</li>)}</ul>
+          <a class="btn" href={lien(`/realisations/${p.slug}`)}><span>Lire l'étude de cas <span translate="no">{p.nom}</span> →</span></a>
+        </div>
+        <div class="scene" aria-hidden="true">
+          <Iphone3D ecran={ecran(p.slug, p.heros[0].fichier)} largeur={230} haut={p.heros[0].haut} statut={p.heros[0].statut} priorite={i === 0} style="left:20px;top:-150px;transform:rotateY(22deg) rotateX(8deg) rotateZ(-8deg)" />
+          <Iphone3D ecran={ecran(p.slug, p.heros[1].fichier)} largeur={262} haut={p.heros[1].haut} statut={p.heros[1].statut} priorite={i === 0} style="left:220px;top:-110px;transform:rotateY(-18deg) rotateX(10deg) rotateZ(6deg);z-index:3" />
+        </div>
+      </article>
+    ))}
+  </div>
 
-  <section class="section">
-    <div class="page liste">
-      {produits.map((p, i) => (
-        <article
-          class="produit apparait"
-          style={`--teinte:${p.palette.accent};--voile:${p.palette.voile};--contraste:${p.palette.contraste}`}
-        >
-          <div class="produit__visuel">
-            <Telephone
-              projet={p.slug}
-              fichier={p.heros}
-              alt={`${p.nom} — écran principal`}
-              largeur={224}
-              charge={i === 0 ? 'eager' : 'lazy'}
-            />
-            <Telephone projet={p.slug} fichier={p.parcours[0]!.fichier} alt="" largeur={192} />
-          </div>
-
-          <div class="produit__corps">
-            <p class="produit__domaine">{p.domaine}</p>
-            <h2>{p.nom}</h2>
-            <p class="produit__baseline">{p.baseline}</p>
-            <p class="prose">{p.resume}</p>
-
-            <ul class="produit__points">
-              {p.decisions.map((d) => <li>{d.titre}</li>)}
-            </ul>
-
-            <a class="bouton" href={lien(`/realisations/${p.slug}`)}>Lire l'étude de cas</a>
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <AppelAction />
+  <AppelFinal titre="Décrivez ce que vous voulez construire" texte="Réponse sous deux jours ouvrés. Le premier entretien ne vous engage à rien, et vous repartez avec une note écrite de votre problème, telle qu'on l'a comprise." />
 </Base>
 
 <style>
-  .ouverture { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(2.5rem, 5vw, 4rem); }
-  .ouverture h1 { margin-bottom: 1.6rem; }
-  .ouverture h1 em { font-style: italic; color: var(--bronze); }
+  .ouv { padding-top: 56px; padding-bottom: 40px; }
+  .ouv h1 { max-width: 680px; }
+  .ouv .sous { max-width: 640px; }
 
-  .liste { display: grid; gap: clamp(3.5rem, 8vw, 7rem); }
+  /* Chaque produit : une grande carte dans sa couleur, dont les téléphones débordent par le haut. */
+  .liste { display: grid; gap: 120px; padding: 240px var(--gouttiere) 130px; margin-top: -110px; }
+  .produit { position: relative; border-radius: 40px; color: #fff; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 64px; min-height: 540px;
+    background: radial-gradient(60% 80% at 90% 10%, var(--lueur), transparent 60%), linear-gradient(118deg, var(--p1), var(--accent) 60%, var(--p3)); }
+  .produit:nth-child(even) .scene { order: -1; }
+  .scene { position: relative; perspective: 1700px; width: 500px; min-height: 420px; justify-self: center; }
+  .domaine { display: inline-block; font-size: 13px; font-weight: 700; padding: 8px 13px; border-radius: 99px; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.24); margin-bottom: 20px; }
+  h2 { font-size: clamp(3.25rem, 6vw, 4.5rem); letter-spacing: -.05em; font-weight: 800; line-height: .95; margin-bottom: 12px; }
+  .base { font-size: clamp(1.25rem, 2vw, 1.5rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.25; margin-bottom: 16px; }
+  .res { font-size: 17px; line-height: 1.6; color: rgba(255,255,255,.86); margin-bottom: 26px; max-width: 480px; }
+  .choix { list-style: none; margin: 0 0 32px; padding: 0; display: grid; gap: 10px; }
+  .choix li { display: flex; gap: 12px; align-items: center; font-size: 15px; font-weight: 600; }
+  .choix li::before { content: '✓'; flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.18); font-size: 12px; }
+  .btn { background: #fff; color: var(--c); box-shadow: 0 18px 40px -18px rgba(0,0,0,.5); }
+  .produit--clair .choix li::before { background: var(--clair); color: var(--fonce); }
+  .produit--clair .btn { background: var(--clair); color: var(--fonce); }
 
-  .produit {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(2rem, 5vw, 4.5rem);
-    align-items: center;
+  @media (max-width: 1100px) {
+    .liste { padding-top: 200px; gap: 170px; }
+    .produit { grid-template-columns: 1fr; padding: 48px 32px 40px; }
+    .scene { order: -1; zoom: .8; min-height: 330px; }
   }
-  .produit:nth-child(even) .produit__visuel { order: 2; }
-
-  .produit__visuel {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: clamp(0.5rem, 2vw, 1.4rem);
-    background: var(--voile);
-    border-radius: var(--arrondi-l);
-    padding: clamp(2rem, 4vw, 3.2rem) 1rem 0;
-    overflow: hidden;
+  @media (max-width: 700px) {
+    .liste { padding-top: 170px; gap: 140px; }
+    .produit { padding: 36px 24px 32px; border-radius: 30px; }
+    .scene { zoom: .56; min-height: 300px; }
   }
-  .produit__visuel :global(.tel):first-child { margin-bottom: -2.5rem; z-index: 2; }
-  .produit__visuel :global(.tel):last-child { margin-bottom: -4.5rem; opacity: 0.9; }
-
-  .produit__domaine {
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--contraste);
-    margin-bottom: 1rem;
-  }
-  .produit h2 { color: var(--contraste); margin-bottom: 0.45rem; }
-  .produit__baseline {
-    font-family: var(--serif);
-    font-optical-sizing: auto;
-    font-size: clamp(1.25rem, 2.1vw, 1.6rem);
-    line-height: 1.24;
-    margin-bottom: 1.2rem;
-  }
-  .produit .prose { margin-bottom: 1.7rem; }
-
-  .produit__points { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; gap: 0; }
-  .produit__points li {
-    padding-block: 0.8rem;
-    border-top: 1px solid var(--trait-fin);
-    font-size: 0.94rem;
-    color: var(--encre-douce);
-    display: flex;
-    gap: 0.75rem;
-  }
-  .produit__points li::before {
-    content: '';
-    width: 5px; height: 5px;
-    background: var(--teinte);
-    flex: none;
-    transform: translateY(0.66rem) rotate(45deg);
-  }
-  .produit__points li:last-child { border-bottom: 1px solid var(--trait-fin); }
-
-  @media (max-width: 900px) {
-    .produit { grid-template-columns: 1fr; }
-    .produit:nth-child(even) .produit__visuel { order: 0; }
-  }
+  @media (max-width: 380px) { .scene { zoom: .46; } }
 </style>
