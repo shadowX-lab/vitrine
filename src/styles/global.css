@@ -1,333 +1,78 @@
-@import '@fontsource-variable/newsreader/index.css';
-@import '@fontsource-variable/newsreader/standard-italic.css';
+@import '@fontsource-variable/plus-jakarta-sans/index.css';
 @import '@fontsource-variable/geist/index.css';
 
-/* ============================================================
-   Moamind Solutions — jetons
-   Direction « éditorial » : Newsreader pour la voix, Geist pour le
-   propos. Haut de gamme par la retenue et l'espace, accessible par
-   la chaleur du papier. Aucun symbole : le nom porte la marque.
-   ============================================================ */
-
+/* Moamind Solutions — système « Braise » (validé le 10 septembre 2026). */
 :root {
-  --papier: #fbf9f5;
-  --papier-creux: #f2eee6;
-  --papier-pur: #ffffff;
-  --encre: #11161c;
-  --encre-douce: #3d4653;
-  --gris: #6b7480;
-  --gris-clair: #99a1ac;
-  --bronze: #9a6b34;
-  --bronze-sombre: #7a5325;
-  --bronze-voile: #f4ece0;
-  --trait: rgba(17, 22, 28, 0.11);
-  --trait-fin: rgba(17, 22, 28, 0.06);
-
-  --accent: var(--bronze);
-  --accent-voile: var(--bronze-voile);
-
-  --serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
-  --sans: 'Geist Variable', system-ui, -apple-system, sans-serif;
-
-  --page: 1180px;
-  --etroit: 660px;
-  --gouttiere: clamp(1.25rem, 4vw, 3rem);
-  --rythme: clamp(5rem, 12vw, 10rem);
-
-  --arrondi: 8px;
-  --arrondi-l: 14px;
-  --ombre: 0 1px 2px rgba(17, 22, 28, 0.03), 0 18px 44px -22px rgba(17, 22, 28, 0.16);
-  --ombre-haute: 0 2px 8px rgba(17, 22, 28, 0.05), 0 48px 96px -40px rgba(17, 22, 28, 0.34);
+  --f1: #6E2213; --f2: #C24A26; --f3: #F08A45; --lueur: rgba(255, 200, 120, .4);
+  --encre: #15121F; --encre-2: #4B4453; --gris: #6E6674; --trait: #EDE6E1;
+  --creme: #FBF6F2; --voile: #FBEDE6; --voile2: #FFF1E3;
+  --titre: 'Plus Jakarta Sans Variable', system-ui, -apple-system, sans-serif;
+  --ui: 'Geist Variable', system-ui, -apple-system, sans-serif;
+  --gouttiere: 72px;
+  --entete: 88px;
 }
-
-/* ---------- socle ---------- */
+@media (max-width: 1100px) { :root { --gouttiere: 40px; } }
+@media (max-width: 700px) { :root { --gouttiere: 20px; --entete: 72px; } }
 
 *, *::before, *::after { box-sizing: border-box; }
-
-html {
-  -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
-  scroll-padding-top: 6rem;
-}
-
-body {
-  margin: 0;
-  background: var(--papier);
-  color: var(--encre);
-  font-family: var(--sans);
-  font-size: 1.0625rem;
-  line-height: 1.68;
-  font-synthesis-weight: none;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-img, svg, picture { display: block; max-width: 100%; }
-a { color: inherit; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 24px; }
+body { margin: 0; background: #fff; color: var(--encre); font-family: var(--titre); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+a, button, summary, label { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 button, input, textarea, select { font: inherit; color: inherit; }
-
-::selection { background: var(--encre); color: var(--papier); }
-
-:focus-visible {
-  outline: 1.5px solid var(--bronze);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
-
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--f2); outline-offset: 3px; border-radius: 4px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
 
-/* ---------- typographie ---------- */
+/* Aucun mot seul en fin de ligne : textes courts équilibrés, paragraphes longs soignés.
+   Les trois derniers mots sont liés au rendu (src/lib/typo.ts). */
+h1, h2, h3, h4 { margin: 0; text-wrap: balance; }
+p, li, dd, small, label, figcaption { text-wrap: balance; }
+.long, .long p { text-wrap: pretty; }
+p { margin: 0; }
+.ponct { margin-left: -0.09em; }
+.leger { font-weight: 400; }
 
-/* Newsreader a un axe optique : les grands titres se resserrent d'eux-mêmes,
-   les petits gardent leurs déliés. C'est ce qui évite l'effet « serif plaqué ». */
-h1, h2, h3, h4 {
-  font-family: var(--serif);
-  font-weight: 400;
-  font-optical-sizing: auto;
-  line-height: 1.06;
-  letter-spacing: -0.021em;
-  margin: 0;
-  text-wrap: balance;
-}
+.w { padding-inline: var(--gouttiere); }
+.sec { padding-block: clamp(72px, 10vw, 120px); }
+.creme { background: var(--creme); }
+.t2 { font-size: clamp(2rem, 4vw, 2.875rem); line-height: 1.06; letter-spacing: -.035em; font-weight: 800; }
+.lead { font-size: clamp(1.0625rem, 1.4vw, 1.125rem); line-height: 1.6; color: var(--encre-2); max-width: 620px; margin-top: 18px; }
+.tete { display: flex; justify-content: space-between; align-items: end; gap: 40px; margin-bottom: clamp(36px, 5vw, 56px); flex-wrap: wrap; }
+.lien { font-weight: 700; font-size: 15px; color: var(--f2); white-space: nowrap; }
+.lien:hover { text-decoration: underline; text-underline-offset: 4px; }
 
-h1 { font-size: clamp(2.75rem, 6.6vw, 5rem); }
-h2 { font-size: clamp(2rem, 4.2vw, 3.25rem); }
-h3 { font-size: clamp(1.35rem, 2.3vw, 1.75rem); letter-spacing: -0.014em; }
+.btn { display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; padding: 15px 24px; border-radius: 14px; transition: transform .2s ease, box-shadow .2s ease, background .2s ease; }
+.btn:hover { transform: translateY(-2px); }
+.btn--plein { background: #fff; color: var(--f1); box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .5); }
+.btn--contour { color: #fff; border: 1.5px solid rgba(255, 255, 255, .42); }
+.btn--contour:hover { background: rgba(255, 255, 255, .1); }
+.boutons { display: flex; flex-wrap: wrap; gap: 10px; }
 
-p { margin: 0 0 1.15em; text-wrap: pretty; }
-p:last-child { margin-bottom: 0; }
+.etiq { display: inline-block; font-size: 13px; font-weight: 700; padding: 8px 13px; border-radius: 99px; background: rgba(255, 255, 255, .14); border: 1px solid rgba(255, 255, 255, .24); margin-bottom: 22px; }
+.carte { border-radius: 26px; padding: 28px; background: var(--creme); }
+.carte--bord { background: #fff; border: 1px solid var(--trait); }
+.carte h3 { font-size: 22px; letter-spacing: -.025em; font-weight: 800; margin-bottom: 10px; }
+.carte p { font-size: 15.5px; line-height: 1.6; color: var(--encre-2); }
+.ico { width: 48px; height: 48px; border-radius: 14px; background: var(--voile); color: var(--f2); display: grid; place-items: center; margin-bottom: 20px; }
+.grille-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.grille-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 1100px) { .grille-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .grille-2, .grille-3 { grid-template-columns: 1fr; } }
+.pastille { display: inline-block; font-size: 13px; font-weight: 700; padding: 7px 12px; border-radius: 99px; background: var(--voile); color: var(--f1); }
+.puces { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.puces li { font-size: 13.5px; font-weight: 600; padding: 8px 13px; border-radius: 99px; background: #fff; border: 1px solid var(--trait); }
 
-.chapeau {
-  font-size: clamp(1.1rem, 1.9vw, 1.3rem);
-  line-height: 1.62;
-  color: var(--encre-douce);
-  max-width: 40ch;
-  letter-spacing: -0.008em;
-}
+.sombre { background: var(--encre); color: #fff; }
+.sombre .lead { color: #B9B2BF; }
+.sombre .carte { background: #1E1A2A; }
+.sombre .carte p { color: #B9B2BF; }
+.sombre .lien { color: var(--f3); }
 
-.prose { max-width: 62ch; color: var(--encre-douce); }
-.prose strong { color: var(--encre); font-weight: 600; }
-.prose em {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.1em;
-  color: var(--encre);
-}
-
-/* Mention discrète : petites capitales très espacées, filet bronze. */
-.eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gris);
-  margin: 0 0 1.5rem;
-}
-.eyebrow::before {
-  content: '';
-  width: 1.6rem;
-  height: 1px;
-  background: var(--bronze);
-  flex: none;
-}
-
-.chiffre {
-  font-family: var(--serif);
-  font-weight: 400;
-  font-optical-sizing: auto;
-  font-size: clamp(2.8rem, 5.6vw, 4.2rem);
-  line-height: 0.95;
-  letter-spacing: -0.028em;
-  display: block;
-}
-
-/* ---------- mise en page ---------- */
-
-.page {
-  width: min(100% - var(--gouttiere) * 2, var(--page));
-  margin-inline: auto;
-}
-
-.section { padding-block: var(--rythme); }
-.section--creux { background: var(--papier-creux); }
-
-.section--encre {
-  background: var(--encre);
-  color: var(--papier);
-  --trait: rgba(251, 249, 245, 0.15);
-  --trait-fin: rgba(251, 249, 245, 0.08);
-  --gris: #9aa2ad;
-  --encre-douce: #ccd1d8;
-  --bronze: #c79a5f;
-  --bronze-sombre: #c79a5f;
-}
-
-.filet { border: 0; height: 1px; background: var(--trait); margin: 0; }
-
-/* ---------- le liseré : filet qui s'efface, losange bronze au centre ---------- */
-
-.liseret {
-  position: relative;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--trait) 18%, var(--trait) 82%, transparent);
-}
-.liseret::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 5px;
-  height: 5px;
-  background: var(--bronze);
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-/* Numérotation d'étape. */
-.index {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.05rem;
-  color: var(--bronze-sombre);
-  letter-spacing: 0.02em;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.55rem;
-}
-.index::after {
-  content: '';
-  width: 1.8rem;
-  height: 1px;
-  background: currentColor;
-  opacity: 0.35;
-  align-self: center;
-}
-
-/* ---------- boutons ---------- */
-
-.bouton {
-  --fond: var(--encre);
-  --texte: var(--papier);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  padding: 0.95rem 1.7rem;
-  background: var(--fond);
-  color: var(--texte);
-  border: 1px solid var(--fond);
-  border-radius: 100px;
-  font-size: 0.925rem;
-  font-weight: 550;
-  letter-spacing: -0.006em;
-  text-decoration: none;
-  cursor: pointer;
-  transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.3, 1), background 0.22s, box-shadow 0.22s;
-}
-.bouton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px -14px rgba(17, 22, 28, 0.5);
-}
-.bouton:active { transform: translateY(0); }
-
-.bouton--fantome {
-  --fond: transparent;
-  --texte: var(--encre);
-  border-color: var(--trait);
-}
-.bouton--fantome:hover { background: rgba(17, 22, 28, 0.035); box-shadow: none; }
-
-.section--encre .bouton { --fond: var(--papier); --texte: var(--encre); }
-.section--encre .bouton:hover { box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.65); }
-.section--encre .bouton--fantome { --fond: transparent; --texte: var(--papier); border-color: rgba(251, 249, 245, 0.28); }
-.section--encre .bouton--fantome:hover { background: rgba(251, 249, 245, 0.07); }
-
-/* Lien fléché qui s'allonge au survol. */
-.fleche {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-weight: 550;
-  font-size: 0.925rem;
-  text-decoration: none;
-  color: inherit;
-}
-.fleche svg { transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.3, 1); }
-.fleche:hover svg { transform: translateX(5px); }
-
-/* ---------- cadre de téléphone ---------- */
-
-.tel {
-  position: relative;
-  border-radius: 32px;
-  background: var(--encre);
-  padding: 6px;
-  box-shadow: var(--ombre-haute);
-  width: 100%;
-  max-width: 268px;
-}
-.tel img { border-radius: 27px; width: 100%; height: auto; }
-.tel::after {
-  content: '';
-  position: absolute;
-  top: 15px; left: 50%;
-  transform: translateX(-50%);
-  width: 58px; height: 4px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.18);
-}
-
-/* ---------- révélation à l'arrivée dans le champ ---------- */
-
-@media (prefers-reduced-motion: no-preference) {
-  .apparait {
-    opacity: 0;
-    transform: translateY(18px);
-    animation: apparait linear both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 26%;
-  }
-  @keyframes apparait {
-    to { opacity: 1; transform: none; }
-  }
-  @supports not (animation-timeline: view()) {
-    .apparait { opacity: 1; transform: none; animation: none; }
-  }
-}
-
-/* ---------- utilitaires ---------- */
-
-.grille { display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); }
-.duo { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
-.trio { grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
-
-.centre { text-align: center; }
-.centre .chapeau, .centre .eyebrow { margin-inline: auto; }
-.centre .eyebrow { justify-content: center; }
-
-.saut-contenu {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  background: var(--encre);
-  color: var(--papier);
-  padding: 0.8rem 1.2rem;
-  border-radius: 0 0 6px 0;
-  z-index: 100;
-}
+.saut-contenu { position: absolute; left: -9999px; top: 0; z-index: 100; background: var(--encre); color: #fff; padding: 12px 18px; border-radius: 0 0 10px 0; }
 .saut-contenu:focus { left: 0; }
-
-.invisible {
-  position: absolute; width: 1px; height: 1px;
-  padding: 0; margin: -1px; overflow: hidden;
-  clip-path: inset(50%); white-space: nowrap;
-}
+.invisible { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
