@@ -1,0 +1,22 @@
+---
+import { lien, LIEN_RDV } from '../config';
+interface Props { titre: string; texte: string }
+const { titre, texte } = Astro.props;
+---
+<section class="appel">
+  <h2>{titre}</h2>
+  <p>{texte}</p>
+  <div class="boutons">
+    <a class="btn btn--plein" href={lien('/contact')}>Décrire mon projet</a>
+    {LIEN_RDV && <a class="btn btn--contour" href={LIEN_RDV} target="_blank" rel="noopener">Réserver 30 minutes</a>}
+  </div>
+</section>
+
+<style>
+  .appel { position: relative; padding: clamp(110px, 12vw, 150px) var(--gouttiere) clamp(90px, 10vw, 130px); color: #fff; text-align: center; }
+  .appel::before { content: ''; position: absolute; inset: 0; clip-path: polygon(0 18%, 100% 0, 100% 100%, 0 100%); background: radial-gradient(50% 80% at 20% 90%, var(--lueur), transparent 60%), linear-gradient(118deg, var(--f1), var(--f2) 55%, var(--f3)); }
+  .appel > * { position: relative; }
+  h2 { font-size: clamp(2.25rem, 5vw, 3.375rem); letter-spacing: -.04em; line-height: 1.04; font-weight: 800; margin: 0 auto 18px; max-width: 780px; }
+  p { font-size: 18px; line-height: 1.6; color: rgba(255,255,255,.88); max-width: 580px; margin: 0 auto 34px; }
+  .boutons { justify-content: center; }
+</style>

@@ -1,0 +1,10 @@
+---
+/** Carte d'interface flottante, reprise d'une vraie app. Décorative : l'information est dans l'écran. */
+interface Props { style?: string }
+const { style = '' } = Astro.props;
+---
+<div class="chip" style={style} aria-hidden="true"><slot /></div>
+
+<style>
+  .chip { position: absolute; z-index: 6; border-radius: 18px; padding: 14px 16px; background: #fff; color: var(--encre); font-family: var(--ui); box-shadow: 0 26px 50px -20px rgba(30,10,4,.45); display: flex; gap: 14px; align-items: center; }
+</style>

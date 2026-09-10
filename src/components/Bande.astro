@@ -1,0 +1,37 @@
+---
+/** Bandeau en biais : fond en calque (rien de ce qui déborde n'est rogné), texte blanc. */
+interface Props {
+  couleurs?: { f1: string; f2: string; f3: string; lueur: string };
+  /** Hauteur du fond sur ordinateur (la valeur de la maquette de la page). */
+  hauteur: string;
+  /** Hauteur du bord droit, en pourcentage de la hauteur du fond. */
+  biais: string;
+  /** Sous 1100 px, place laissée sous le fond pour les visuels qui débordent. */
+  reserve?: string;
+  classe?: string;
+}
+const { couleurs, hauteur, biais, reserve = '160px', classe = '' } = Astro.props;
+const vars = [
+  `--h:${hauteur}`, `--biais:${biais}`, `--reserve:${reserve}`,
+  couleurs && `--f1:${couleurs.f1};--f2:${couleurs.f2};--f3:${couleurs.f3};--lueur:${couleurs.lueur}`,
+].filter(Boolean).join(';');
+---
+<header class:list={['bande', classe]} style={vars}>
+  <slot />
+</header>
+
+<style>
+  .bande { position: relative; color: #fff; padding-top: var(--entete); }
+  .bande::before {
+    content: ''; position: absolute; inset: 0 0 auto 0; height: var(--h);
+    clip-path: polygon(0 0, 100% 0, 100% var(--biais), 0 100%);
+    background:
+      linear-gradient(118deg, transparent 49.9%, rgba(255,255,255,.14) 50%, transparent 50.15%),
+      radial-gradient(60% 90% at 90% 8%, var(--lueur), transparent 60%),
+      linear-gradient(118deg, var(--f1) 0%, var(--f2) 55%, var(--f3) 100%);
+  }
+  .bande > :global(*) { position: relative; }
+  @media (max-width: 1100px) {
+    .bande::before { height: auto; bottom: var(--reserve); clip-path: polygon(0 0, 100% 0, 100% calc(100% - 70px), 0 100%); }
+  }
+</style>

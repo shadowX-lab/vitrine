@@ -1,106 +1,49 @@
 ---
 import { lien, STUDIO } from '../config';
-
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const chemin = Astro.url.pathname.replace(/\/$/, '') || '/';
-const actuel = chemin.replace(base, '') || '/';
-
+const actuel = (Astro.url.pathname.replace(/\/$/, '') || '/').replace(base, '') || '/';
 const liens = [
   { href: '/methode', texte: 'Méthode' },
   { href: '/realisations', texte: 'Réalisations' },
   { href: '/experience', texte: 'Expérience' },
 ];
+const courant = (href: string) => (actuel.startsWith(href) ? 'page' : undefined);
 ---
-
 <header class="entete">
-  <div class="page entete__interieur">
-    <a class="marque" href={lien('/')} aria-label={`${STUDIO.nom}, accueil`}>
-      <span class="marque__nom">{STUDIO.nomCourt}</span>
-      <span class="marque__suffixe">{STUDIO.nomSuffixe}</span>
-    </a>
-
-    <nav aria-label="Navigation principale">
-      <ul>
-        {liens.map((l) => (
-          <li>
-            <a href={lien(l.href)} aria-current={actuel.startsWith(l.href) ? 'page' : undefined}>
-              {l.texte}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-
-    <a class="bouton entete__cta" href={lien('/contact')}>Parlons de votre projet</a>
-  </div>
+  <a class="logo" href={lien('/')} aria-label={`${STUDIO.nom}, accueil`} translate="no">{STUDIO.nomCourt}<span>{STUDIO.nomSuffixe}</span></a>
+  <nav aria-label="Navigation principale" class="principale">
+    <ul>{liens.map((l) => <li><a href={lien(l.href)} aria-current={courant(l.href)}>{l.texte}</a></li>)}</ul>
+  </nav>
+  <a class="cta" href={lien('/contact')}>Décrire mon projet</a>
+  <details class="menu-mobile">
+    <summary aria-label="Ouvrir le menu"><span></span></summary>
+    <ul>
+      {liens.map((l) => <li><a href={lien(l.href)} aria-current={courant(l.href)}>{l.texte}</a></li>)}
+      <li><a href={lien('/contact')}>Décrire mon projet</a></li>
+    </ul>
+  </details>
 </header>
 
 <style>
-  .entete {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: color-mix(in srgb, var(--papier) 86%, transparent);
-    backdrop-filter: blur(16px) saturate(1.5);
-    border-bottom: 1px solid var(--trait-fin);
-  }
-
-  .entete__interieur {
-    display: flex;
-    align-items: center;
-    gap: clamp(1rem, 4vw, 3rem);
-    min-height: 78px;
-  }
-
-  /* Le nom porte la marque : pas de symbole. */
-  .marque {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.6rem;
-    text-decoration: none;
-    margin-right: auto;
-  }
-  .marque__nom {
-    font-family: var(--serif);
-    font-optical-sizing: auto;
-    font-weight: 500;
-    font-size: 1.5rem;
-    letter-spacing: -0.014em;
-  }
-  .marque__suffixe {
-    font-size: 0.63rem;
-    font-weight: 600;
-    letter-spacing: 0.26em;
-    text-transform: uppercase;
-    color: var(--bronze-sombre);
-  }
-
-  nav ul {
-    display: flex;
-    gap: clamp(1rem, 2.4vw, 2.1rem);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  nav a {
-    text-decoration: none;
-    font-size: 0.925rem;
-    font-weight: 450;
-    color: var(--encre-douce);
-    padding-block: 0.4rem;
-    border-bottom: 1px solid transparent;
-    transition: color 0.16s, border-color 0.16s;
-  }
-  nav a:hover { color: var(--encre); border-bottom-color: var(--bronze); }
-  nav a[aria-current='page'] { color: var(--encre); border-bottom-color: var(--bronze); }
-
-  .entete__cta { padding: 0.62rem 1.25rem; font-size: 0.875rem; }
-
-  @media (max-width: 780px) {
-    .entete__cta { display: none; }
-    .marque__nom { font-size: 1.32rem; }
-    .marque__suffixe { display: none; }
-    nav ul { gap: 1.1rem; }
-    nav a { font-size: 0.875rem; }
+  .entete { position: absolute; inset: 0 0 auto 0; z-index: 20; height: var(--entete); display: flex; align-items: center; gap: 2.2rem; padding-inline: var(--gouttiere); color: #fff; font-size: 14.5px; }
+  .logo { font-weight: 800; font-size: 21px; letter-spacing: -.035em; margin-right: auto; }
+  .logo span { font-weight: 500; opacity: .6; margin-left: 5px; }
+  .principale ul { display: flex; gap: 2.2rem; list-style: none; margin: 0; padding: 0; }
+  .principale a { opacity: .88; padding-block: 6px; }
+  .principale a:hover { opacity: 1; }
+  .principale a[aria-current='page'] { opacity: 1; box-shadow: 0 2px 0 #fff; }
+  .cta { padding: 11px 18px; font-weight: 700; background: #fff; color: var(--f1); border-radius: 12px; }
+  .menu-mobile { display: none; position: relative; }
+  .menu-mobile summary { list-style: none; cursor: pointer; width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,.16); display: grid; place-items: center; }
+  .menu-mobile summary::-webkit-details-marker { display: none; }
+  .menu-mobile summary span, .menu-mobile summary span::before, .menu-mobile summary span::after { display: block; width: 18px; height: 2px; background: #fff; border-radius: 2px; position: relative; content: ''; }
+  .menu-mobile summary span::before { position: absolute; top: -6px; }
+  .menu-mobile summary span::after { position: absolute; top: 6px; }
+  .menu-mobile ul { position: absolute; right: 0; top: 54px; min-width: 220px; list-style: none; margin: 0; padding: 10px; background: #fff; color: var(--encre); border-radius: 18px; box-shadow: 0 30px 60px -24px rgba(21,18,31,.45); }
+  .menu-mobile li a { display: block; padding: 12px 14px; border-radius: 10px; font-weight: 600; }
+  .menu-mobile li a:hover, .menu-mobile a[aria-current='page'] { background: var(--voile); color: var(--f1); }
+  @media (max-width: 760px) {
+    .principale, .cta { display: none; }
+    .menu-mobile { display: block; }
   }
 </style>
