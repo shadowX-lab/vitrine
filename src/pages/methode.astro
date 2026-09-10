@@ -70,7 +70,7 @@ const engagements = [
     <div class="ouv w">
       <div>
         <span class="etiq">La méthode</span>
-        <h1>Quatre temps, dans cet ordre</h1>
+        <h1>Comprendre d'abord<br /><span class="leger">construire ensuite.</span></h1>
         <p class="sous">La plupart des applications qui échouent ont été très bien développées. Elles répondaient simplement aux mauvaises questions. Voilà comment on s'assure que ce ne sera pas la vôtre.</p>
       </div>
       <nav class="escalier" aria-label="Les quatre temps">
@@ -148,6 +148,9 @@ const engagements = [
 <style>
   /* ---------- ouverture : les quatre temps en escalier, qui sortent du bandeau ---------- */
   .ouv { display: grid; grid-template-columns: minmax(0, 600px) minmax(0, 1fr); gap: 40px; padding-top: 56px; }
+  /* Chaque ligne du titre tient sur une ligne : la taille suit la colonne (coefficient calé sur la plus longue ligne du texte actuel). */
+  .ouv > div:first-child { container-type: inline-size; }
+  .ouv h1 { font-size: min(clamp(2.75rem, 6vw, 4.5rem), 10cqi); }
   .escalier { position: relative; min-height: 560px; }
   .marche { position: absolute; left: calc(var(--rang) * 70px); top: calc(10px + var(--rang) * 130px); width: 330px; background: #fff; color: var(--encre); border-radius: 22px; padding: 18px 48px 18px 20px; display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: center; box-shadow: 0 30px 60px -28px rgba(30,10,4,.5); transition: transform .2s ease, box-shadow .2s ease; }
   .marche:hover { transform: translateX(6px); box-shadow: 0 34px 64px -26px rgba(30,10,4,.6); }

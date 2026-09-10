@@ -11,6 +11,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { anonymiser } from './anonymiser.mjs';
+import { retoucher } from './retouches.mjs';
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const RACINE = resolve(import.meta.dirname, '..');
@@ -24,10 +25,10 @@ const SOURCES = {
 };
 
 /** Extrait le contenu utile d'un artboard et le remonte dans un document standard. */
-function documentAutonome(source, projet) {
+function documentAutonome(source, projet, nom) {
   const lu = readFileSync(source, 'utf8');
   // Les maquettes Teamago reprennent un vrai fichier de club : personnes et club deviennent fictifs.
-  const brut = projet === 'teamago' ? anonymiser(lu) : lu;
+  const brut = retoucher(projet, nom, projet === 'teamago' ? anonymiser(lu) : lu);
   const helmet = brut.match(/<helmet>([\s\S]*?)<\/helmet>/i)?.[1] ?? '';
   const corps = brut
     .match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1]
@@ -42,9 +43,9 @@ ${helmet}
 </head><body>${corps}</body></html>`;
 }
 
-function photographier(source, destination, projet) {
+function photographier(source, destination, projet, nom) {
   const temporaire = join(dirname(source), `.rendu-${Date.now()}.html`);
-  writeFileSync(temporaire, documentAutonome(source, projet));
+  writeFileSync(temporaire, documentAutonome(source, projet, nom));
   try {
     execFileSync(CHROME, [
       '--headless=new', '--disable-gpu', '--hide-scrollbars',
@@ -62,18 +63,20 @@ function photographier(source, destination, projet) {
 }
 
 let total = 0;
-// `npm run ecrans -- teamago` ne rend que les projets nommés.
+// `npm run ecrans -- teamago pilpoil/Carte` ne rend que les projets ou les écrans nommés.
 const filtre = process.argv.slice(2);
+const retenu = (projet, nom) => !filtre.length || filtre.includes(projet) || filtre.includes(`${projet}/${nom}`);
 for (const [projet, dossier] of Object.entries(SOURCES)) {
-  if (filtre.length && !filtre.includes(projet)) continue;
+  if (filtre.length && !filtre.some((f) => f === projet || f.startsWith(`${projet}/`))) continue;
   const manifeste = JSON.parse(readFileSync(join(dossier, 'canvas.json'), 'utf8'));
   const cible = join(SORTIE, projet);
   mkdirSync(cible, { recursive: true });
 
   for (const artboard of manifeste.artboards) {
     const nom = artboard.file.replace(/\.dc\.html$/, '');
+    if (!retenu(projet, nom)) continue;
     const destination = join(cible, `${nom}.png`);
-    photographier(join(dossier, artboard.file), destination, projet);
+    photographier(join(dossier, artboard.file), destination, projet, nom);
     console.log(`  ${projet}/${nom}.png  — ${artboard.title}`);
     total++;
   }

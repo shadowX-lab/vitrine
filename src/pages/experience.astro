@@ -78,7 +78,7 @@ const outils = [
     <div class="ouv w">
       <div>
         <span class="etiq">À qui vous parlez</span>
-        <h1>Trois mots,<br /><span class="leger">c'est tout le nom</span></h1>
+        <h1>Du code au produit<br /><span class="leger">le secret de la réussite.</span></h1>
         <p class="sous"><span translate="no">{STUDIO.nom}</span> conçoit et développe des applications web et mobiles. Ce qui distingue la maison tient en une phrase : ce que je vends, c'est le temps passé à ne pas construire la mauvaise chose.</p>
       </div>
       <dl class="triade">
@@ -148,6 +148,9 @@ const outils = [
 <style>
   /* ---------- ouverture : les trois mots du nom, en cartes qui sortent du bandeau ---------- */
   .ouv { display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); gap: 70px; padding-top: 56px; }
+  /* Chaque ligne du titre tient sur une ligne : la taille suit la colonne (coefficient calé sur la plus longue ligne du texte actuel). */
+  .ouv > div:first-child { container-type: inline-size; }
+  .ouv h1 { font-size: min(clamp(2.75rem, 6vw, 4.5rem), 10.2cqi); }
   .triade { display: grid; gap: 14px; margin: 10px 0 0; }
   .mot { background: #fff; color: var(--encre); border-radius: 24px; padding: 24px 26px; display: grid; grid-template-columns: 150px 1fr; gap: 20px; box-shadow: 0 30px 60px -30px rgba(30,10,4,.5); }
   .mot dt { font-size: 36px; letter-spacing: -.04em; font-weight: 800; color: var(--f2); line-height: 1; }
