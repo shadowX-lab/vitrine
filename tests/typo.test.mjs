@@ -45,9 +45,14 @@ test('typographierHtml resserre virgule et point des h1/h2, pas des décimales',
   assert.equal(typographierHtml('<h3>Fin.</h3>'), '<h3>Fin.</h3>');
 });
 
-test('typographierHtml resserre la ponctuation d’un long titre sans casser la balise', () => {
+test('typographierHtml ne lie pas les mots des titres, qui restent sécables sur téléphone', () => {
   const sortie = typographierHtml('<h2>Six mots que tout le monde revendique, et ce qu’ils coûtent</h2>');
-  assert.equal(sortie, `<h2>Six mots que tout le monde revendique<span class="ponct">,</span> et ce${NBSP}qu’ils${NBSP}coûtent</h2>`);
+  assert.equal(sortie, '<h2>Six mots que tout le monde revendique<span class="ponct">,</span> et ce qu’ils coûtent</h2>');
+});
+
+test('typographierHtml lie la fin d’un paragraphe contenant de la ponctuation de titre', () => {
+  const sortie = typographierHtml('<li>Des comptes justes, en toute simplicité pour le club</li>');
+  assert.equal(sortie, `<li>Des comptes justes, en toute simplicité pour${NBSP}le${NBSP}club</li>`);
 });
 
 test('typographierHtml traite les entités &nbsp; comme des espaces déjà liées', () => {

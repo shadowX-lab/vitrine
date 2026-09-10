@@ -54,8 +54,10 @@ l'appel final.
 Appliquées **au rendu Astro** par un utilitaire `src/lib/typo.ts`, donc sans
 JavaScript côté client :
 
-1. **Aucun mot isolé en fin de ligne** : pour tout texte d'au moins six mots,
-   les trois derniers mots sont liés par des espaces insécables. Les textes
+1. **Aucun mot isolé en fin de ligne** : pour tout bloc de texte (paragraphe,
+   élément de liste, légende) d'au moins six mots, les trois derniers mots sont
+   liés par des espaces insécables. Les titres ne sont pas liés : en grand corps,
+   trois mots liés dépasseraient la largeur d'un téléphone ; l'équilibrage suffit. Les textes
    courts (titres, accroches, légendes, cartes) sont en
    `text-wrap: balance` ; les paragraphes longs en `text-wrap: pretty`.
 2. **Ponctuation française** : espace insécable après « et avant », avant

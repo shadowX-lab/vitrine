@@ -1,6 +1,8 @@
 /**
  * Typographie française appliquée au HTML rendu (voir src/middleware.ts).
- * 1. Les trois derniers mots d'un bloc d'au moins six mots restent ensemble.
+ * 1. Les trois derniers mots d'un bloc de texte d'au moins six mots restent ensemble. Les titres
+ *    n'en ont pas besoin (`text-wrap: balance` équilibre leurs lignes) et, en grand corps, trois mots
+ *    liés dépasseraient la largeur d'un téléphone.
  * 2. Espaces insécables autour de « », avant : ; fine insécable avant ; ! ?
  * 3. Dans les h1 et h2, virgule et point sont resserrés contre la lettre.
  */
@@ -58,8 +60,8 @@ export function ponctuationFrancaise(texte: string): string {
 }
 
 const IGNORES = new Set(['script', 'style', 'textarea', 'pre', 'code', 'svg']);
-const BLOCS_LIES = new Set(['p', 'h1', 'h2', 'h3', 'li', 'dd', 'small', 'figcaption', 'blockquote']);
-const BLOCS = new Set([...BLOCS_LIES, 'div', 'ul', 'ol', 'section', 'article', 'details', 'summary', 'h4', 'h5', 'h6', 'table', 'form', 'fieldset', 'nav', 'header', 'footer', 'main']);
+const BLOCS_LIES = new Set(['p', 'li', 'dd', 'small', 'figcaption', 'blockquote']);
+const BLOCS = new Set([...BLOCS_LIES, 'h1', 'h2', 'h3', 'div', 'ul', 'ol', 'section', 'article', 'details', 'summary', 'h4', 'h5', 'h6', 'table', 'form', 'fieldset', 'nav', 'header', 'footer', 'main']);
 const VIDES = new Set(['br', 'img', 'input', 'meta', 'link', 'hr', 'source', 'wbr', 'area', 'base', 'col', 'embed', 'track']);
 const TITRES_RESSERRES = new Set(['h1', 'h2']);
 

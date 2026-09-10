@@ -42,27 +42,36 @@ const aller = async (chemin) => { await envoi('Page.navigate', { url: RACINE + c
 let echecs = 0;
 const verdict = (ok, message) => { if (!ok) echecs++; console.log(`${ok ? '✓' : '✗'} ${message}`); };
 
-// Mot isolé : dernière ligne à 1 mot, ou à 2 mots et moins de la moitié de la plus longue ligne.
+// Mot isolé : dans chaque segment d'un bloc (un <br> ou un enfant en display:block ouvre un segment),
+// dernière ligne à 1 mot, ou à 2 mots et moins de la moitié de la plus longue ligne du segment.
 const MOTS_ISOLES = `(() => {
   const r = document.createRange(), fautes = [];
   document.querySelectorAll('p, h1, h2, h3, li, dd, blockquote, .liv').forEach((el) => {
     if (el.closest('[aria-hidden="true"], .iphone, .chip, .puces') || el.querySelector('p, li, h1, h2, h3, ul, ol, div')) return;
     if (!el.offsetParent) return;
-    const mots = [], w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const segments = [[]];
+    const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
     while (w.nextNode()) {
-      const n = w.currentNode, re = /[^\\s\\u00a0\\u202f]+/g; let m;
+      const n = w.currentNode;
+      if (n.nodeType === 1) {
+        if (n.tagName === 'BR' || getComputedStyle(n).display === 'block') segments.push([]);
+        continue;
+      }
+      const re = /[^\\s\\u00a0\\u202f]+/g; let m;
       while ((m = re.exec(n.nodeValue))) {
         r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length);
         const b = r.getClientRects()[0];
-        if (b && /[\\p{L}\\d]/u.test(m[0])) mots.push({ y: Math.round(b.top / 6), g: b.left, d: b.right });
+        if (b && /[\\p{L}\\d]/u.test(m[0])) segments.at(-1).push({ y: Math.round(b.top / 6), g: b.left, d: b.right });
       }
     }
-    const lignes = [...new Set(mots.map((m) => m.y))];
-    if (lignes.length < 2) return;
-    const largeurLigne = (y) => { const l = mots.filter((m) => m.y === y); return Math.max(...l.map((m) => m.d)) - Math.min(...l.map((m) => m.g)); };
-    const derniere = mots.filter((m) => m.y === lignes.at(-1));
-    const ratio = largeurLigne(lignes.at(-1)) / Math.max(...lignes.map(largeurLigne));
-    if (derniere.length === 1 || (derniere.length === 2 && ratio < 0.5)) fautes.push(el.textContent.trim().replace(/\\s+/g, ' ').slice(-50));
+    for (const mots of segments) {
+      const lignes = [...new Set(mots.map((m) => m.y))];
+      if (lignes.length < 2) continue;
+      const largeurLigne = (y) => { const l = mots.filter((m) => m.y === y); return Math.max(...l.map((m) => m.d)) - Math.min(...l.map((m) => m.g)); };
+      const derniere = mots.filter((m) => m.y === lignes.at(-1));
+      const ratio = largeurLigne(lignes.at(-1)) / Math.max(...lignes.map(largeurLigne));
+      if (derniere.length === 1 || (derniere.length === 2 && ratio < 0.5)) { fautes.push(el.textContent.trim().replace(/\\s+/g, ' ').slice(-50)); break; }
+    }
   });
   return fautes;
 })()`;
