@@ -1,190 +1,133 @@
 ---
 import Base from '../layouts/Base.astro';
+import Bande from '../components/Bande.astro';
 import { CLE_FORMULAIRE, LIEN_RDV, lien } from '../config';
 
 const cleManquante = CLE_FORMULAIRE.startsWith('REMPLACER');
 const retour = new URL(lien('/merci'), Astro.site).href;
 
 const etapes = [
-  { titre: 'Vous écrivez', texte: "Quelques phrases suffisent. Je ne demande pas de cahier des charges — c'est souvent le travail qu'il reste à faire." },
-  { titre: 'Je réponds sous deux jours ouvrés', texte: "Avec une première lecture de votre problème et les questions qu'il soulève." },
-  { titre: 'On se parle une heure', texte: "Gratuitement, et sans engagement. Vous repartez avec une note écrite de ce que j'ai compris." },
+  { titre: 'Vous écrivez', texte: "Quelques phrases suffisent. Aucun cahier des charges n'est demandé : c'est souvent le travail qu'il reste à faire." },
+  { titre: 'Une réponse sous deux jours ouvrés', texte: "Avec une première lecture de votre problème et les questions qu'il soulève." },
+  { titre: 'On se parle une heure', texte: 'Gratuitement, et sans engagement. Vous repartez avec une note écrite de ce qui a été compris.' },
 ];
-
-const paliers = [
-  'Je ne sais pas encore',
-  'Moins de 5 000 €',
-  '5 000 € à 15 000 €',
-  '15 000 € à 50 000 €',
-  'Plus de 50 000 €',
-];
+const natures = ['Application mobile', 'Application web', 'Les deux', 'Cadrage seul', 'Je ne sais pas encore'];
+const echeances = ['Le plus tôt possible', 'Dans les trois mois', 'Dans les six mois', 'Plus tard, je prépare'];
+const paliers = ['Je ne sais pas encore', 'Moins de 5 000 €', '5 000 € à 15 000 €', '15 000 € à 50 000 €', 'Plus de 50 000 €'];
 ---
-
-<Base
-  titre="Contact"
-  description="Décrivez votre projet. Réponse sous deux jours ouvrés, premier entretien de cadrage gratuit et sans engagement."
->
-  <section class="ouverture">
-    <div class="page ouverture__interieur">
-      <div>
-        <p class="eyebrow">Contact</p>
-        <h1>Dites-moi ce que<br />vous voulez <em>construire</em></h1>
-        <p class="chapeau">
-          Pas besoin d'un cahier des charges. Un problème, une intuition, une
-          contrainte : c'est un bon point de départ. C'est même le meilleur.
-        </p>
-
-        <ol class="parcours">
-          {etapes.map((e, i) => (
-            <li>
-              <span class="index">{String(i + 1).padStart(2, '0')}</span>
-              <div>
-                <strong>{e.titre}</strong>
-                <span>{e.texte}</span>
-              </div>
-            </li>
-          ))}
+<Base titre="Contact" description="Décrivez votre projet. Réponse sous deux jours ouvrés, premier entretien de cadrage gratuit et sans engagement.">
+  <Bande hauteur="600px" biais="70%" reserve="0px">
+    <div class="contact w">
+      <div class="colonne">
+        <div class="intro">
+          <span class="etiq">Contact</span>
+          <h1>Décrivez ce que vous voulez construire</h1>
+          <p class="sous">Pas besoin d'un cahier des charges. Un problème, une intuition, une contrainte : c'est un bon point de départ. C'est même le meilleur.</p>
+        </div>
+        <ol class="etapes">
+          {etapes.map((e, i) => <li><b>{i + 1}</b><span><strong>{e.titre}</strong><span>{e.texte}</span></span></li>)}
         </ol>
-
         {LIEN_RDV && (
-          <div class="rdv">
-            <p>Vous préférez parler tout de suite ?</p>
-            <a class="bouton bouton--fantome" href={LIEN_RDV} target="_blank" rel="noopener">
-              Réserver 30 minutes
-            </a>
-          </div>
+          <p class="rdv">Vous préférez parler tout de suite ? <a href={LIEN_RDV} target="_blank" rel="noopener">Réserver 30 minutes</a></p>
         )}
       </div>
 
-      <div class="panneau">
+      <div class="carte-form">
         {cleManquante && (
-          <p class="alerte">
-            <strong>Formulaire non branché.</strong> Renseignez votre clé
-            Web3Forms dans <code>src/config.ts</code> pour recevoir les messages.
-          </p>
+          <p class="alerte"><strong>Formulaire non branché.</strong> Renseignez votre clé Web3Forms dans <code>src/config.ts</code> pour recevoir les messages.</p>
         )}
-
-        <form action="https://web3forms.com/submit" method="POST" class="formulaire" id="brief">
+        <form action="https://web3forms.com/submit" method="POST" class="form" id="brief">
           <input type="hidden" name="access_key" value={CLE_FORMULAIRE} />
           <input type="hidden" name="subject" value="Nouveau projet — Moamind Solutions" />
           <input type="hidden" name="from_name" value="Site Moamind Solutions" />
           <input type="hidden" name="redirect" value={retour} />
-          <input type="checkbox" name="botcheck" class="invisible" tabindex="-1" autocomplete="off" />
+          <!-- Piège à robots : invisible pour tous, lecteurs d'écran compris. -->
+          <input type="checkbox" name="botcheck" hidden tabindex="-1" autocomplete="off" />
 
-          <!-- Le profil commande la question du budget, plus bas. -->
+          <h2>Votre projet</h2>
+
+          <!-- Le profil commande l'organisation et la forme du budget, plus bas. -->
           <fieldset class="champ">
-            <legend>Vous êtes <span aria-hidden="true">*</span></legend>
-            <div class="pastilles">
-              <label class="pastille">
-                <input type="radio" name="profil" value="Un particulier" required data-profil="particulier" />
-                <span>Un particulier</span>
-              </label>
-              <label class="pastille">
-                <input type="radio" name="profil" value="Un professionnel" data-profil="professionnel" />
-                <span>Un professionnel</span>
-              </label>
+            <legend>Vous êtes <em aria-hidden="true">*</em></legend>
+            <div class="choix">
+              <label><input type="radio" name="profil" value="Un particulier" required data-profil="particulier" /><span>Un particulier</span></label>
+              <label><input type="radio" name="profil" value="Un professionnel" data-profil="professionnel" /><span>Un professionnel</span></label>
             </div>
           </fieldset>
 
-          <div class="duo-champs">
+          <div class="rang">
             <p class="champ">
-              <label for="nom">Votre nom <span aria-hidden="true">*</span></label>
-              <input id="nom" name="nom" type="text" required autocomplete="name" />
+              <label for="nom">Votre nom <em aria-hidden="true">*</em></label>
+              <input class="entree" id="nom" name="nom" type="text" required autocomplete="name" placeholder="Camille Martin…" />
             </p>
             <p class="champ" id="bloc-organisation" hidden>
               <label for="organisation">Organisation</label>
-              <input id="organisation" name="organisation" type="text" autocomplete="organization" disabled />
+              <input class="entree" id="organisation" name="organisation" type="text" autocomplete="organization" placeholder="Transports Martin…" disabled />
             </p>
           </div>
 
           <p class="champ">
-            <label for="email">Adresse e-mail <span aria-hidden="true">*</span></label>
-            <input id="email" name="email" type="email" required autocomplete="email" />
+            <label for="email">Adresse e-mail <em aria-hidden="true">*</em></label>
+            <input class="entree" id="email" name="email" type="email" required autocomplete="email" spellcheck="false" placeholder="camille@exemple.fr…" />
           </p>
 
           <fieldset class="champ">
             <legend>De quoi s'agit-il ?</legend>
-            <div class="pastilles">
-              {['Application mobile', 'Application web', 'Les deux', 'Cadrage seul', 'Je ne sais pas encore'].map((v) => (
-                <label class="pastille">
-                  <input type="radio" name="nature" value={v} />
-                  <span>{v}</span>
-                </label>
-              ))}
+            <div class="choix">
+              {natures.map((v) => <label><input type="radio" name="nature" value={v} /><span>{v}</span></label>)}
             </div>
           </fieldset>
 
-          <div class="duo-champs">
+          <div class="rang">
             <p class="champ">
               <label for="echeance">Échéance souhaitée</label>
-              <select id="echeance" name="echeance">
+              <select class="entree" id="echeance" name="echeance" autocomplete="off">
                 <option value="">À définir ensemble</option>
-                <option>Le plus tôt possible</option>
-                <option>Dans les trois mois</option>
-                <option>Dans les six mois</option>
-                <option>Plus tard, je prépare</option>
+                {echeances.map((e) => <option>{e}</option>)}
               </select>
             </p>
-
             <!-- Paliers pour un professionnel, champ libre pour un particulier. -->
             <p class="champ" id="bloc-budget-pro" hidden>
               <label for="budget-pro">Budget envisagé</label>
-              <select id="budget-pro" name="budget" disabled>
+              <select class="entree" id="budget-pro" name="budget" autocomplete="off" disabled>
                 {paliers.map((p) => <option>{p}</option>)}
               </select>
             </p>
             <p class="champ" id="bloc-budget-particulier" hidden>
-              <label for="budget-particulier">Budget envisagé <span class="facultatif">facultatif</span></label>
-              <input
-                id="budget-particulier"
-                name="budget"
-                type="text"
-                placeholder="Je ne sais pas encore"
-                disabled
-              />
+              <label for="budget-particulier">Budget envisagé <small>facultatif</small></label>
+              <input class="entree" id="budget-particulier" name="budget" type="text" autocomplete="off" placeholder="Par exemple 3 000 €…" disabled />
             </p>
           </div>
 
           <p class="champ">
-            <label for="message">Votre projet <span aria-hidden="true">*</span></label>
-            <textarea
-              id="message"
-              name="message"
-              rows="6"
-              required
-              placeholder="Ce que vous faites, qui s'en sert, ce qui coince aujourd'hui. Quelques phrases suffisent."
-            ></textarea>
+            <label for="message">Votre projet <em aria-hidden="true">*</em></label>
+            <textarea class="entree zone" id="message" name="message" rows="6" required autocomplete="off" aria-describedby="aide-message"></textarea>
+            <span class="aide" id="aide-message">Ce que vous faites, qui s'en sert, ce qui coince aujourd'hui. Quelques phrases suffisent.</span>
           </p>
 
-          <button class="bouton" type="submit">Envoyer</button>
-          <p class="mention">
-            Vos informations servent uniquement à vous répondre. Elles ne sont ni
-            revendues, ni utilisées pour autre chose.
-          </p>
+          <button class="envoyer" type="submit">Envoyer mon projet</button>
+          <p class="mention">Vos informations servent uniquement à vous répondre. Elles ne sont ni revendues, ni utilisées pour autre chose.</p>
         </form>
       </div>
     </div>
-  </section>
+  </Bande>
 </Base>
 
 <script>
   // Un champ masqué reste soumis : on le désactive aussi, sinon deux valeurs
   // « budget » partiraient dans le même envoi.
-  const form = document.getElementById('brief');
+  const form = document.getElementById('brief') as HTMLFormElement | null;
   if (form) {
     const blocs = {
       organisation: document.getElementById('bloc-organisation'),
       pro: document.getElementById('bloc-budget-pro'),
       particulier: document.getElementById('bloc-budget-particulier'),
     };
-
     const basculer = (bloc: HTMLElement | null, visible: boolean) => {
       if (!bloc) return;
       bloc.hidden = !visible;
-      bloc.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select')
-        .forEach((champ) => { champ.disabled = !visible; });
+      bloc.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select').forEach((champ) => { champ.disabled = !visible; });
     };
-
     form.addEventListener('change', (evenement) => {
       const cible = evenement.target as HTMLInputElement;
       if (cible.name !== 'profil') return;
@@ -193,129 +136,67 @@ const paliers = [
       basculer(blocs.pro, pro);
       basculer(blocs.particulier, !pro);
     });
+    // Le bouton reste actif jusqu'à l'envoi, puis indique qu'il travaille.
+    form.addEventListener('submit', () => {
+      const bouton = form.querySelector<HTMLButtonElement>('button[type=submit]');
+      if (bouton) { bouton.disabled = true; bouton.textContent = 'Envoi…'; }
+    });
   }
 </script>
 
 <style>
-  .ouverture { padding-block: clamp(3rem, 7vw, 5rem) clamp(3.5rem, 8vw, 6rem); }
-  .ouverture__interieur {
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    gap: clamp(2.5rem, 6vw, 5rem);
-    align-items: start;
-  }
-  .ouverture h1 { margin-bottom: 1.5rem; font-size: clamp(2.4rem, 4.4vw, 3.6rem); }
-  .ouverture h1 em { font-style: italic; color: var(--bronze); }
+  .contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 600px); gap: 70px; padding-top: 50px; padding-bottom: 120px; align-items: start; }
+  .intro { min-height: 430px; }
+  .intro h1 { font-size: clamp(2.5rem, 5vw, 4.125rem); margin-bottom: 22px; }
+  .etapes { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; color: var(--encre); }
+  .etapes li { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; background: var(--creme); border-radius: 22px; padding: 20px 22px; }
+  .etapes b { width: 48px; height: 48px; border-radius: 50%; background: var(--encre); color: #fff; display: grid; place-items: center; font-size: 17px; }
+  .etapes strong { display: block; font-size: 17px; margin-bottom: 4px; }
+  .etapes strong + span { font-size: 15px; line-height: 1.55; color: var(--encre-2); }
+  .rdv { margin-top: 22px; color: var(--encre-2); font-size: 15px; }
+  .rdv a { color: var(--f2); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 
-  .parcours { list-style: none; margin: 2.8rem 0 0; padding: 0; display: grid; }
-  .parcours li {
-    display: grid;
-    grid-template-columns: 4rem minmax(0, 1fr);
-    gap: 1rem;
-    padding-block: 1.2rem;
-    border-top: 1px solid var(--trait);
-  }
-  .parcours li:last-child { border-bottom: 1px solid var(--trait); }
-  .parcours div { display: grid; gap: 0.25rem; }
-  .parcours strong { font-size: 1rem; font-weight: 550; }
-  .parcours span:last-child { color: var(--gris); font-size: 0.9rem; }
+  /* ---------- le formulaire : une carte blanche qui sort du bandeau ---------- */
+  .carte-form { color: var(--encre); background: #fff; border-radius: 30px; padding: 38px; box-shadow: 0 40px 90px -40px rgba(30,10,4,.55); }
+  .alerte { background: var(--voile); border-radius: 14px; padding: 14px 16px; font-size: 14px; color: var(--f1); margin-bottom: 22px; }
+  .form { display: grid; gap: 22px; }
+  .form h2 { font-size: 26px; letter-spacing: -.03em; font-weight: 800; }
+  .champ { display: grid; gap: 8px; margin: 0; border: 0; padding: 0; min-width: 0; }
+  .champ > label, .champ > legend { font-size: 14px; font-weight: 700; padding: 0; }
+  legend { margin-bottom: 8px; }
+  .champ em { font-style: normal; color: var(--f2); }
+  .champ small { font-weight: 500; color: var(--gris); margin-left: 6px; }
+  .entree { width: 100%; border: 1.5px solid var(--trait); border-radius: 14px; padding: 14px 16px; font: 500 15px var(--ui); color: var(--encre); background: #fff; outline: 2px solid transparent; transition: border-color .15s, box-shadow .15s; }
+  .entree::placeholder { color: #A39BA8; }
+  .entree:hover { border-color: #D8CFC8; }
+  .entree:focus { border-color: var(--f2); box-shadow: 0 0 0 4px rgba(194,74,38,.16); }
+  select.entree { appearance: none; cursor: pointer; padding-right: 40px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236E6674' stroke-width='1.6' fill='none'/%3E%3C/svg%3E") no-repeat right 16px center; }
+  .zone { min-height: 130px; resize: vertical; }
+  .aide { font: 500 13px/1.5 var(--ui); color: var(--gris); }
+  .choix { display: flex; flex-wrap: wrap; gap: 8px; }
+  .choix label { cursor: pointer; }
+  .choix input { position: absolute; opacity: 0; pointer-events: none; }
+  .choix span { display: inline-block; font-size: 14px; font-weight: 600; padding: 10px 15px; border-radius: 99px; border: 1.5px solid var(--trait); transition: border-color .15s, background .15s, color .15s; }
+  .choix label:hover span { border-color: var(--gris); }
+  .choix input:checked + span { background: var(--encre); border-color: var(--encre); color: #fff; }
+  .choix input:focus-visible + span { outline: 2px solid var(--f2); outline-offset: 2px; }
+  .rang { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .envoyer { justify-self: start; border: 0; cursor: pointer; font: 700 16px var(--titre); color: #fff; padding: 16px 26px; border-radius: 14px; background: linear-gradient(118deg, var(--f1), var(--f2) 60%, var(--f3)); box-shadow: 0 18px 36px -16px rgba(110,34,19,.6); transition: filter .15s, transform .15s; }
+  .envoyer:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .envoyer:disabled { opacity: .7; cursor: progress; transform: none; }
+  .mention { font: 500 13px/1.5 var(--ui); color: var(--gris); }
 
-  .rdv { margin-top: 2.2rem; display: grid; gap: 0.9rem; justify-items: start; }
-  .rdv p { color: var(--gris); font-size: 0.93rem; margin: 0; }
-
-  /* ---------- panneau ---------- */
-  .panneau {
-    background: var(--papier-pur);
-    border: 1px solid var(--trait-fin);
-    border-radius: var(--arrondi-l);
-    padding: clamp(1.5rem, 3.5vw, 2.6rem);
-    box-shadow: var(--ombre);
+  @media (max-width: 1100px) {
+    .contact { grid-template-columns: 1fr; gap: 40px; padding-bottom: 80px; }
+    /* Sur une colonne : l'intro, puis le formulaire, puis les étapes. */
+    .colonne { display: contents; }
+    .intro { min-height: 0; order: 1; }
+    .carte-form { order: 2; }
+    .etapes { order: 3; }
+    .rdv { order: 4; }
   }
-
-  .alerte {
-    background: var(--bronze-voile);
-    border: 1px solid color-mix(in srgb, var(--bronze) 32%, transparent);
-    border-radius: var(--arrondi);
-    padding: 0.9rem 1.1rem;
-    font-size: 0.87rem;
-    color: var(--bronze-sombre);
-    margin-bottom: 1.6rem;
-  }
-
-  .formulaire { display: grid; gap: 1.35rem; }
-  .formulaire [hidden] { display: none; }
-  .duo-champs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; align-items: start; }
-
-  .champ { display: grid; gap: 0.5rem; margin: 0; border: 0; padding: 0; min-width: 0; }
-  .champ > label, .champ > legend {
-    font-size: 0.76rem;
-    font-weight: 600;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--encre-douce);
-    padding: 0;
-  }
-  .champ > label > span, .champ > legend > span { color: var(--bronze); }
-  .facultatif {
-    color: var(--gris-clair) !important;
-    font-weight: 450;
-    letter-spacing: 0.04em;
-    text-transform: none;
-  }
-
-  input[type='text'], input[type='email'], select, textarea {
-    width: 100%;
-    background: var(--papier);
-    border: 1px solid var(--trait);
-    border-radius: var(--arrondi);
-    padding: 0.8rem 0.95rem;
-    font-size: 0.96rem;
-    transition: border-color 0.16s, background 0.16s, box-shadow 0.16s;
-  }
-  input:hover, select:hover, textarea:hover { border-color: var(--gris-clair); }
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--bronze);
-    background: var(--papier-pur);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--bronze) 15%, transparent);
-  }
-  textarea { resize: vertical; min-height: 8rem; font-family: inherit; }
-  select {
-    appearance: none;
-    background-image:
-      linear-gradient(45deg, transparent 50%, var(--gris) 50%),
-      linear-gradient(135deg, var(--gris) 50%, transparent 50%);
-    background-position: right 1.05rem center, right 0.75rem center;
-    background-size: 5px 5px, 5px 5px;
-    background-repeat: no-repeat;
-  }
-
-  .pastilles { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.15rem; }
-  .pastille input { position: absolute; opacity: 0; pointer-events: none; }
-  .pastille span {
-    display: inline-block;
-    padding: 0.52rem 1rem;
-    border: 1px solid var(--trait);
-    border-radius: 100px;
-    font-size: 0.87rem;
-    cursor: pointer;
-    transition: border-color 0.16s, background 0.16s, color 0.16s;
-  }
-  .pastille:hover span { border-color: var(--gris-clair); }
-  .pastille input:checked + span {
-    background: var(--encre);
-    border-color: var(--encre);
-    color: var(--papier);
-  }
-  .pastille input:focus-visible + span { outline: 1.5px solid var(--bronze); outline-offset: 2px; }
-
-  .formulaire button { justify-self: start; margin-top: 0.3rem; }
-  .mention { font-size: 0.8rem; color: var(--gris); margin: 0; }
-
-  @media (max-width: 860px) {
-    .ouverture__interieur { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 520px) {
-    .duo-champs { grid-template-columns: 1fr; }
+  @media (max-width: 700px) {
+    .rang { grid-template-columns: 1fr; }
+    .carte-form { padding: 24px; border-radius: 24px; }
   }
 </style>
