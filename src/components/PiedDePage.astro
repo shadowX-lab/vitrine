@@ -1,9 +1,9 @@
 ---
-import { lien, STUDIO } from '../config';
+import { lien, equivalent, STUDIO } from '../config';
 import commun from '../i18n/commun';
-import type { Langue, Page } from '../i18n/routes';
+import { LANGUES, NOMS_LANGUES, type Langue, type Page } from '../i18n/routes';
 interface Props { langue: Langue; page?: Page; slug?: string }
-const { langue } = Astro.props;
+const { langue, page, slug } = Astro.props;
 const c = commun[langue];
 ---
 <footer class="pied">
@@ -17,7 +17,14 @@ const c = commun[langue];
   </nav>
   <div class="bas">
     <span>© {new Date().getFullYear()} {STUDIO.nom} · {c.pied.base}</span>
-    <a href={lien('mentions', langue)}>{c.pied.mentions}</a>
+    <span class="droite">
+      <nav class="langues-pied" aria-label={c.langue.pied}>
+        {LANGUES.map((l, i) => (
+          <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={equivalent(l, page, slug)} lang={l} hreflang={l} aria-current={l === langue ? 'true' : undefined}>{NOMS_LANGUES[l]}</a></>
+        ))}
+      </nav>
+      <a href={lien('mentions', langue)}>{c.pied.mentions}</a>
+    </span>
   </div>
 </footer>
 
@@ -30,5 +37,7 @@ const c = commun[langue];
   ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; color: #DCD6E0; }
   a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
   .bas { grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,.1); padding-top: 22px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: #8F8896; font-size: 13px; }
+  .droite { display: flex; gap: 22px; flex-wrap: wrap; }
+  .langues-pied a[aria-current='true'] { color: #fff; font-weight: 700; }
   @media (max-width: 700px) { .pied { grid-template-columns: 1fr; } }
 </style>

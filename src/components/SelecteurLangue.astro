@@ -1,0 +1,28 @@
+---
+import Icone from './Icone.astro';
+import { equivalent } from '../config';
+import commun from '../i18n/commun';
+import { LANGUES, NOMS_LANGUES, type Langue, type Page } from '../i18n/routes';
+interface Props { langue: Langue; page?: Page; slug?: string }
+const { langue, page, slug } = Astro.props;
+---
+<details class="langues">
+  <summary aria-label={commun[langue].langue.choisir}><Icone nom="globe" taille={20} /></summary>
+  <ul>
+    {LANGUES.map((l) => (
+      <li><a href={equivalent(l, page, slug)} lang={l} hreflang={l} aria-current={l === langue ? 'true' : undefined}>{NOMS_LANGUES[l]}</a></li>
+    ))}
+  </ul>
+</details>
+
+<style>
+  .langues { position: relative; }
+  .langues summary { list-style: none; cursor: pointer; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; color: #fff; background: rgba(255,255,255,.16); transition: background .15s; }
+  .langues summary:hover, .langues[open] summary { background: rgba(255,255,255,.26); }
+  .langues summary::-webkit-details-marker { display: none; }
+  .langues ul { position: absolute; right: 0; top: 54px; z-index: 30; min-width: 170px; list-style: none; margin: 0; padding: 8px; background: #fff; color: var(--encre); border-radius: 16px; box-shadow: 0 30px 60px -24px rgba(21,18,31,.45); }
+  .langues a { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 10px; font-weight: 600; }
+  .langues a::before { content: ''; width: 14px; flex: none; }
+  .langues a[aria-current='true']::before { content: '✓'; color: var(--f2); }
+  .langues a:hover, .langues a[aria-current='true'] { background: var(--voile); color: var(--f1); }
+</style>
