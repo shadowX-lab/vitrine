@@ -10,16 +10,13 @@ ErrorDocument 404 /404.html
   RewriteEngine On
   # La validation des certificats (AutoSSL) lit /.well-known/ sur chaque nom : jamais de redirection.
   RewriteRule ^\.well-known/ - [L]
-  # Une seule adresse publique, sans www.
-  # EN ATTENTE DU CERTIFICAT : o2switch sert encore un certificat auto-signé. Dès que
-  # l'AutoSSL l'a remplacé, passer « http:// » en « https:// » ci-dessous et
-  # décommenter le bloc suivant.
+  # Une seule adresse publique : https://moamind-solutions.com, sans www.
   RewriteCond %{HTTP_HOST} ^www\. [NC]
-  RewriteRule ^ http://moamind-solutions.com%{REQUEST_URI} [R=302,L]
+  RewriteRule ^ https://moamind-solutions.com%{REQUEST_URI} [R=301,L]
   # Le frontal d'o2switch termine parfois le TLS lui-même : sans le second test, boucle de redirection.
-  # RewriteCond %{HTTPS} off
-  # RewriteCond %{HTTP:X-Forwarded-Proto} !https
-  # RewriteRule ^ https://moamind-solutions.com%{REQUEST_URI} [R=301,L]
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://moamind-solutions.com%{REQUEST_URI} [R=301,L]
 </IfModule>
 
 <IfModule mod_headers.c>
