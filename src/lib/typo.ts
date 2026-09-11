@@ -1,13 +1,15 @@
 /**
- * Typographie française appliquée au HTML rendu (voir src/middleware.ts).
+ * Typographie appliquée au HTML rendu (voir src/middleware.ts).
  * 1. Les trois derniers vrais mots d'un bloc de texte d'au moins six mots restent ensemble, les deux
  *    derniers d'un h3 d'au moins trois mots. Les h1 et h2 s'en remettent à `text-wrap: balance` : en
  *    grand corps, des mots liés dépasseraient la largeur d'un téléphone.
- * 2. Espaces insécables autour de « », avant : ; fine insécable avant ; ! ?
+ * 2. En français seulement : espaces insécables autour de « », avant : ; fine insécable avant ; ! ?
  * 3. Dans les h1 et h2, virgule et point sont resserrés contre la lettre.
  */
 export const NBSP = '\u00a0';
 export const FINE = '\u202f';
+
+import type { Langue } from '../i18n/routes';
 
 const MOTS_MIN = 6;
 /** Une séparation entre deux mots : suite d'espaces, retours à la ligne, insécables ou `&nbsp;`. */
@@ -86,7 +88,7 @@ const POINT = '\ue001';
 
 type Ouvert = { nom: string; debut: number; aUnBloc: boolean };
 
-export function typographierHtml(html: string): string {
+export function typographierHtml(html: string, langue: Langue = 'fr'): string {
   const jetons = html.split(/(<[^>]+>)/);
   const pile: Ouvert[] = [];
   let ignore = 0;
@@ -125,7 +127,8 @@ export function typographierHtml(html: string): string {
       return;
     }
     if (ignore > 0 || !jeton) return;
-    let texte = ponctuationFrancaise(jeton);
+    // Les espaces avant : ; ! ? et dans les guillemets sont une règle française ; en anglais, ce seraient des fautes.
+    let texte = langue === 'fr' ? ponctuationFrancaise(jeton) : jeton;
     if (pile.some((o) => TITRES_RESSERRES.has(o.nom))) {
       // Marques provisoires : la liaison des mots, faite à la fermeture du bloc, ne doit pas voir de balises.
       texte = texte.replace(/(?<=[\p{L}\d])([.,])(?!\d)/gu, (signe) => (signe === ',' ? VIRGULE : POINT));

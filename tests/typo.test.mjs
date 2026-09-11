@@ -69,3 +69,20 @@ test('typographierHtml traite les entités &nbsp; comme des espaces déjà liée
   const html = '<p>Un deux trois quatre cinq six&nbsp;sept huit</p>';
   assert.equal(typographierHtml(html), `<p>Un deux trois quatre cinq six&nbsp;sept${NBSP}huit</p>`);
 });
+
+test("en anglais, aucune espace n'est ajoutée avant la ponctuation", () => {
+  const html = '<p>Ready? Here is the plan: three steps, one call!</p>';
+  assert.ok(!typographierHtml(html, 'en').includes(FINE));
+  assert.ok(typographierHtml(html, 'en').includes('Ready? Here is the plan: three'));
+});
+
+test("en anglais, les trois derniers mots d'un paragraphe restent liés", () => {
+  assert.equal(
+    typographierHtml('<p>Nothing gets built until you say yes.</p>', 'en'),
+    `<p>Nothing gets built until you${NBSP}say${NBSP}yes.</p>`,
+  );
+});
+
+test("en anglais, virgule et point des h1 sont resserrés comme en français", () => {
+  assert.equal(typographierHtml('<h1>Product before code.</h1>', 'en'), '<h1>Product before code<span class="ponct">.</span></h1>');
+});
