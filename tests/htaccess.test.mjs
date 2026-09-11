@@ -23,9 +23,9 @@ test('la détection saute exactement les redirections de pages quand elle ne s�
   }
 });
 
-test('le français renvoie en/ vers le domaine anglais ; chaque domaine enregistre son choix de langue', () => {
-  assert.match(htaccess('fr'), /RewriteRule \^en\(\/\.\*\)\?\$ https:\/\/moamind-solutions\.com\$1 \[R=301,L\]/);
-  assert.doesNotMatch(htaccess('en'), /\^en\(/);
+test('le dossier anglais, visible sous le .fr, renvoie au .com ; chaque domaine enregistre son choix de langue', () => {
+  assert.match(htaccess('en'), /RewriteCond %\{HTTP_HOST\} !moamind-solutions\\\.com\$ \[NC\]\n {2}RewriteRule \^\(\.\*\)\$ https:\/\/moamind-solutions\.com\/\$1 \[R=301,L\]/);
+  assert.doesNotMatch(htaccess('fr'), /HTTP_HOST\} !/);
   assert.match(htaccess('fr'), /CO=langue:fr:moamind-solutions\.fr:/);
   assert.match(htaccess('en'), /CO=langue:en:moamind-solutions\.com:/);
 });

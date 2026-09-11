@@ -30,7 +30,12 @@ ErrorDocument 404 /404.html
   RewriteEngine On
   # La validation des certificats (AutoSSL) lit /.well-known/ : jamais de redirection.
   RewriteRule ^\\.well-known/ - [L]
-
+${langue === 'en' ? `
+  # Ce dossier est aussi public_html/en, donc visible sous moamind-solutions.fr/en/ : ce
+  # .htaccess y remplace celui de la racine. Tout autre nom que le .com est renvoyé au .com.
+  RewriteCond %{HTTP_HOST} !moamind-solutions\\.com$ [NC]
+  RewriteRule ^(.*)$ ${DOMAINES.en}/$1 [R=301,L]
+` : ''}
   # Une seule adresse : https://${hote}, sans www. Le frontal d'o2switch termine parfois le
   # TLS lui-même : sans le test de X-Forwarded-Proto, boucle de redirection.
   RewriteCond %{HTTP_HOST} ^www\\. [NC]
@@ -38,10 +43,7 @@ ErrorDocument 404 /404.html
   RewriteCond %{HTTPS} off
   RewriteCond %{HTTP:X-Forwarded-Proto} !https
   RewriteRule ^ ${domaine}%{REQUEST_URI} [R=301,L]
-${langue === 'fr' ? `
-  # Le dossier en/ est la racine du domaine anglais.
-  RewriteRule ^en(/.*)?$ ${DOMAINES.en}$1 [R=301,L]
-` : ''}
+
   # Choix fait avec le sélecteur de langue : ?langue=${langue} l'enregistre un an, puis l'adresse est nettoyée.
   RewriteCond %{QUERY_STRING} (^|&)langue=${langue}(&|$)
   RewriteRule ^ %{REQUEST_URI}? [CO=langue:${langue}:${hote}:525600:/:1:1,R=302,L]
