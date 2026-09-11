@@ -3,7 +3,7 @@ import '../styles/global.css';
 import jakarta from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
 import Entete from '../components/Entete.astro';
 import PiedDePage from '../components/PiedDePage.astro';
-import { lien, STUDIO } from '../config';
+import { ressource, STUDIO } from '../config';
 
 interface Props {
   titre: string;
@@ -15,7 +15,7 @@ interface Props {
 const { titre, description, suffixe = true } = Astro.props;
 const titreComplet = suffixe ? `${titre} · ${STUDIO.nom}` : titre;
 const canonique = new URL(Astro.url.pathname, Astro.site);
-const image = new URL(lien('/og.png'), Astro.site);
+const image = new URL(ressource('/og.png'), Astro.site);
 ---
 
 <!doctype html>
@@ -27,7 +27,7 @@ const image = new URL(lien('/og.png'), Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonique} />
     <meta name="theme-color" content="#6E2213" />
-    <link rel="icon" href={lien('/favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={ressource('/favicon.svg')} type="image/svg+xml" />
     <link rel="preload" href={jakarta} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content="website" />

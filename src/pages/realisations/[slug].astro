@@ -28,7 +28,7 @@ const suivant = `--s-fond:linear-gradient(118deg, ${s.palette.p1}, ${s.palette.a
     <Bande couleurs={{ f1: p.palette.p1, f2: p.palette.p2, f3: p.palette.p3, lueur: p.palette.lueur }} hauteur="800px" biais="60%" reserve="320px">
       <div class="ouv w">
         <div>
-          <nav class="fil" aria-label="Fil d'Ariane"><a href={lien('/realisations')}>Réalisations</a> / <span aria-current="page" translate="no">{p.nom}</span></nav>
+          <nav class="fil" aria-label="Fil d'Ariane"><a href={lien('realisations', 'fr')}>Réalisations</a> / <span aria-current="page" translate="no">{p.nom}</span></nav>
           <span class="etiq">Étude de cas · {p.annee}</span>
           <h1 translate="no">{p.nom}</h1>
           <p class="baseline">{p.baseline}</p>
@@ -97,7 +97,7 @@ const suivant = `--s-fond:linear-gradient(118deg, ${s.palette.p1}, ${s.palette.a
     </section>
 
     <section class="w suite-section">
-      <a class="suivant" href={lien(`/realisations/${s.slug}`)} style={suivant}>
+      <a class="suivant" href={lien('etude', 'fr', s.slug)} style={suivant}>
         <span>
           <span class="petit">Étude suivante</span>
           <span class="nom" translate="no">{s.nom}</span>

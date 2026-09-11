@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Bande from '../components/Bande.astro';
 import { CLE_FORMULAIRE, LIEN_RDV, lien } from '../config';
 
-const retour = new URL(lien('/merci'), Astro.site).href;
+const retour = new URL(lien('merci', 'fr'), Astro.site).href;
 
 const etapes = [
   { titre: 'Vous écrivez', texte: 'Avec vos mots, sans jargon technique : la traduction fait partie du travail.' },

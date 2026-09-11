@@ -31,7 +31,7 @@ const boutonClair = new Set(['teamago']);
           <p class="base">{p.baseline}</p>
           <p class="res">{p.resume}</p>
           <ul class="choix">{p.benefices.map((b) => <li>{b.titre}</li>)}</ul>
-          <a class="btn" href={lien(`/realisations/${p.slug}`)}><span>Lire l'étude de cas <span translate="no">{p.nom}</span> →</span></a>
+          <a class="btn" href={lien('etude', 'fr', p.slug)}><span>Lire l'étude de cas <span translate="no">{p.nom}</span> →</span></a>
         </div>
         <div class="scene" aria-hidden="true">
           <Iphone3D ecran={ecran(p.slug, p.heros[0].fichier)} largeur={230} haut={p.heros[0].haut} statut={p.heros[0].statut} priorite={i === 0} style="left:20px;top:-150px;transform:rotateY(22deg) rotateX(8deg) rotateZ(-8deg)" />

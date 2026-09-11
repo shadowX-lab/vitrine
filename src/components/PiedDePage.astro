@@ -3,16 +3,16 @@ import { lien, STUDIO } from '../config';
 ---
 <footer class="pied">
   <div>
-    <a class="logo" href={lien('/')} translate="no">{STUDIO.nom}</a>
+    <a class="logo" href={lien('accueil', 'fr')} translate="no">{STUDIO.nom}</a>
     <p>Votre produit est étudié, cadré et validé avant la première ligne de code.</p>
   </div>
   <nav aria-label="Navigation de pied de page" class="colonnes">
-    <div><h2>Le travail</h2><ul><li><a href={lien('/methode')}>Méthode</a></li><li><a href={lien('/realisations')}>Réalisations</a></li></ul></div>
-    <div><h2>Le studio</h2><ul><li><a href={lien('/experience')}>Expérience</a></li><li><a href={lien('/contact')}>Contact</a></li></ul></div>
+    <div><h2>Le travail</h2><ul><li><a href={lien('methode', 'fr')}>Méthode</a></li><li><a href={lien('realisations', 'fr')}>Réalisations</a></li></ul></div>
+    <div><h2>Le studio</h2><ul><li><a href={lien('experience', 'fr')}>Expérience</a></li><li><a href={lien('contact', 'fr')}>Contact</a></li></ul></div>
   </nav>
   <div class="bas">
     <span>© {new Date().getFullYear()} {STUDIO.nom} · Basé à {STUDIO.ville}, au travail partout</span>
-    <a href={lien('/mentions-legales')}>Mentions légales</a>
+    <a href={lien('mentions', 'fr')}>Mentions légales</a>
   </div>
 </footer>
 

@@ -42,8 +42,8 @@ const inclinaisons = [
         <h1>Le produit<br /><span class="leger">avant le code.</span></h1>
         <p class="sous">La plupart des applications qui échouent ont été très bien développées. Elles répondaient simplement aux mauvaises questions. On commence par celles-là.</p>
         <div class="boutons">
-          <a class="btn btn--plein" href={lien('/contact')}>Décrire mon projet</a>
-          <a class="btn btn--contour" href={lien('/realisations')}>Voir les réalisations</a>
+          <a class="btn btn--plein" href={lien('contact', 'fr')}>Décrire mon projet</a>
+          <a class="btn btn--contour" href={lien('realisations', 'fr')}>Voir les réalisations</a>
         </div>
         <ul class="preuve"><li>Réponse sous 2 jours ouvrés</li><li>Premier entretien offert</li></ul>
       </div>
@@ -90,7 +90,7 @@ const inclinaisons = [
         <h2 class="t2">Vous validez les écrans. Ensuite, on développe.</h2>
         <p class="lead">Chaque étape se termine par un document ou des écrans que vous validez. La suivante commence seulement après votre accord.</p>
       </div>
-      <a class="lien" href={lien('/methode')}>La méthode en détail →</a>
+      <a class="lien" href={lien('methode', 'fr')}>La méthode en détail →</a>
     </div>
     <ol class="etapes">
       <li class="etape">
@@ -126,7 +126,7 @@ const inclinaisons = [
         <h2 class="t2">Des produits conçus et développés ici</h2>
         <p class="lead">Des applications conçues de bout en bout, présentées avec ce qu'elles changent pour ceux qui s'en servent chaque jour.</p>
       </div>
-      <a class="lien" href={lien('/realisations')}>Voir les réalisations →</a>
+      <a class="lien" href={lien('realisations', 'fr')}>Voir les réalisations →</a>
     </div>
     <div class="rangee" aria-hidden="true">
       {rangee.map((e, i) => (
@@ -141,7 +141,7 @@ const inclinaisons = [
         <h2 class="t2">Quinze ans de projets, côté technique et côté métier</h2>
         <p class="lead">En indépendant avec des clients directs, chez des éditeurs de logiciels, et dans de grands groupes où un déploiement concerne des milliers de postes.</p>
         <p class="parcours-pro"><span>Développeur</span><i aria-hidden="true">→</i><span>Chef de projet</span><i aria-hidden="true">→</i><span>Product Owner</span><i aria-hidden="true">→</i><span>Business Analyst</span></p>
-        <a class="lien" href={lien('/experience')}>Voir le parcours →</a>
+        <a class="lien" href={lien('experience', 'fr')}>Voir le parcours →</a>
       </div>
       <ul class="nuage">{motsCles.map(([m, fort]) => <li class:list={[{ fort }]}>{m}</li>)}</ul>
     </div>
