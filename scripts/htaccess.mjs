@@ -4,6 +4,9 @@
  */
 import { ROUTES, DOMAINES, autre } from '../src/i18n/routes.ts';
 
+/** Tant que c'est vrai, chaque domaine n'affiche que sa page « Bientôt en ligne » (public/bientot.html, public/en/bientot.html). */
+export const BIENTOT = true;
+
 /** Redirections des pages de `de` vers leur équivalent sur le domaine de `vers`. */
 export function correspondances(de, vers) {
   return Object.values(ROUTES).map((route) => {
@@ -44,7 +47,11 @@ ${langue === 'en' ? `
   RewriteCond %{HTTP:X-Forwarded-Proto} !https
   RewriteRule ^ ${domaine}%{REQUEST_URI} [R=301,L]
 
-  # Choix fait avec le sélecteur de langue : ?langue=${langue} l'enregistre un an, puis l'adresse est nettoyée.
+${BIENTOT ? `  # Mise en ligne prochaine : toute adresse affiche bientot.html (repasser BIENTOT à false pour ouvrir le site).
+  RewriteCond %{REQUEST_URI} !^/(bientot\\.html|favicon\\.svg)$
+  RewriteRule ^ /bientot.html [L]
+
+` : ''}  # Choix fait avec le sélecteur de langue : ?langue=${langue} l'enregistre un an, puis l'adresse est nettoyée.
   RewriteCond %{QUERY_STRING} (^|&)langue=${langue}(&|$)
   RewriteRule ^ %{REQUEST_URI}? [CO=langue:${langue}:${hote}:525600:/:1:1,R=302,L]
 
