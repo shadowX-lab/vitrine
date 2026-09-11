@@ -1,0 +1,146 @@
+---
+import Base from '../layouts/Base.astro';
+import Bande from '../components/Bande.astro';
+import AppelFinal from '../components/AppelFinal.astro';
+import Icone from '../components/Icone.astro';
+import textes from '../i18n/experience';
+import type { Langue } from '../i18n/routes';
+
+interface Props { langue: Langue }
+const { langue } = Astro.props;
+const t = textes[langue];
+
+/* Icônes des quatre apports, dans l'ordre des items du texte. */
+const icones = ['code', 'risque', 'budget', 'audit'] as const;
+---
+<Base titre={t.meta.titre} description={t.meta.description} langue={langue} page="experience">
+  <Bande hauteur="640px" biais="52%" reserve="0px">
+    <div class="ouv w">
+      <div>
+        <span class="etiq">{t.etiquette}</span>
+        <h1 data-ajuste>{t.titre.gras}<br /><span class="leger">{t.titre.leger}</span></h1>
+        <p class="sous" set:html={t.sous} />
+      </div>
+      <dl class="triade">
+        {t.triade.map((m) => (
+          <div class="mot"><dt translate="no">{m.mot}</dt><dd set:html={m.html} /></div>
+        ))}
+      </dl>
+    </div>
+  </Bande>
+
+  <section class="sec w">
+    <div class="deux">
+      <h2 class="t2">{t.apports.titre}</h2>
+      <p class="lead">{t.apports.lead}</p>
+    </div>
+    <div class="grille-2">
+      {t.apports.items.map((a, i) => <article class="carte"><div class="ico"><Icone nom={icones[i]} /></div><h3>{a.titre}</h3><p class="long">{a.texte}</p></article>)}
+    </div>
+  </section>
+
+  <section class="sec w creme">
+    <div class="deux">
+      <h2 class="t2">{t.terrains.titre}</h2>
+      <p class="lead">{t.terrains.lead}</p>
+    </div>
+    <ul class="terrains">
+      {t.terrains.items.map((tr, i) => (
+        <li>
+          <details class="terrain" open={i === 0}>
+            <summary>
+              <span class="duree">{tr.duree ?? ''}</span>
+              <h3>{tr.milieu}</h3>
+              <span class="mots">{tr.cles.map((cle) => <span>{cle}</span>)}</span>
+              <span class="plus" aria-hidden="true"></span>
+            </summary>
+            <p class="enjeu long">{tr.enjeu}</p>
+          </details>
+        </li>
+      ))}
+    </ul>
+    <dl class="fiche">
+      {t.fiche.map((f) => <div><dt>{f.terme}</dt><dd>{f.valeur}</dd></div>)}
+    </dl>
+  </section>
+
+  <section class="sec w sombre">
+    <div class="tete"><h2 class="t2">{t.convictions.titre}</h2></div>
+    <div class="grille-3">
+      {t.convictions.items.map((cv) => <article class="carte"><h3>{cv.titre}</h3><p>{cv.texte}</p></article>)}
+    </div>
+  </section>
+
+  <section class="sec w">
+    <div class="outils">
+      <div><h2 class="t2">{t.outils.titre}</h2><p class="lead">{t.outils.lead}</p></div>
+      <div class="grille-2">
+        {t.outils.items.map((o) => <article class="carte carte--bord"><h3>{o.titre}</h3><p>{o.texte}</p></article>)}
+      </div>
+    </div>
+  </section>
+
+  <AppelFinal titre={t.appel.titre} texte={t.appel.texte} langue={langue} />
+</Base>
+
+<style>
+  /* ---------- ouverture : les trois mots du nom, en cartes qui sortent du bandeau ---------- */
+  .ouv { display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); gap: 70px; padding-top: 56px; }
+  /* Chaque ligne du titre tient sur une ligne : la taille suit la colonne (coefficient calé sur la plus longue ligne du texte actuel). */
+  .ouv > div:first-child { container-type: inline-size; }
+  .ouv h1 { font-size: min(clamp(2.75rem, 6vw, 4.5rem), 10.2cqi); }
+  .triade { display: grid; gap: 14px; margin: 10px 0 0; }
+  .mot { background: #fff; color: var(--encre); border-radius: 24px; padding: 24px 26px; display: grid; grid-template-columns: 150px 1fr; gap: 20px; box-shadow: 0 30px 60px -30px rgba(30,10,4,.5); }
+  .mot dt { font-size: 36px; letter-spacing: -.04em; font-weight: 800; color: var(--f2); line-height: 1; }
+  .mot dd { margin: 0; font-size: 15px; line-height: 1.55; color: var(--encre-2); }
+  .mot strong { color: var(--encre); }
+
+  .deux { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 56px; }
+  .deux .lead { margin: 0; }
+
+  /* ---------- terrains : mots-clés toujours visibles, récit dépliable ---------- */
+  .terrains { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .terrain { background: #fff; border: 1px solid var(--trait); border-radius: 24px; padding: 26px 30px; transition: border-color .2s, box-shadow .2s; }
+  /* Le résumé ne contient qu'un titre et du texte en ligne : le contenu permis d'un <summary>. */
+  .terrain summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 110px minmax(0, 1fr) 44px; grid-template-areas: 'duree titre plus' 'duree mots plus'; column-gap: 24px; align-items: start; }
+  .duree { grid-area: duree; }
+  .terrain h3 { grid-area: titre; }
+  .mots { grid-area: mots; display: flex; flex-wrap: wrap; gap: 8px; }
+  .mots span { font-size: 13.5px; font-weight: 600; padding: 8px 13px; border-radius: 99px; background: var(--creme); border: 1px solid var(--trait); }
+  .plus { grid-area: plus; }
+  .terrain summary::-webkit-details-marker { display: none; }
+  .terrain summary:hover .plus { border-color: var(--f2); color: var(--f2); }
+  .terrain summary:hover h3 { color: var(--f1); }
+  .duree { font-size: 14px; font-weight: 700; color: var(--f2); padding-top: 6px; }
+  .terrain h3 { font-size: 22px; letter-spacing: -.025em; font-weight: 800; margin-bottom: 14px; transition: color .15s; }
+  .plus { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--trait); display: grid; place-items: center; font-size: 20px; color: var(--gris); }
+  .plus::before { content: '+'; }
+  .terrain[open] { border-color: #F2C9B4; box-shadow: 0 20px 40px -30px rgba(110,34,19,.5); }
+  .terrain[open] .plus { background: var(--encre); color: #fff; border-color: var(--encre); }
+  .terrain[open] .plus::before { content: '−'; }
+  .enjeu { margin: 16px 0 0 134px; font-size: 16px; line-height: 1.7; color: var(--encre-2); max-width: 72ch; }
+
+  .fiche { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 40px 0 0; }
+  .fiche div { border-radius: 22px; padding: 22px 24px; background: #fff; border: 1px solid var(--trait); }
+  .fiche dt { font-size: 12.5px; font-weight: 700; color: var(--f2); margin-bottom: 6px; }
+  .fiche dd { margin: 0; font-size: 17px; font-weight: 700; }
+
+  .outils { display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px; }
+
+  /* ---------- adaptation ---------- */
+  @media (max-width: 1100px) {
+    .ouv, .deux, .outils { grid-template-columns: 1fr; gap: 32px; }
+    .deux { margin-bottom: 40px; }
+    .triade { padding-bottom: 40px; }
+    .fiche { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    .mot { grid-template-columns: 1fr; gap: 8px; }
+    .terrain { padding: 22px; }
+    .terrain h3 { font-size: 19px; }
+    .terrain summary { grid-template-columns: minmax(0, 1fr) 44px; grid-template-areas: 'duree plus' 'titre plus' 'mots mots'; column-gap: 12px; }
+    .duree { padding-top: 0; margin-bottom: 6px; }
+    .duree:empty { display: none; }
+    .enjeu { margin-left: 0; }
+  }
+</style>
