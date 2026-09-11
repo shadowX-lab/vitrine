@@ -56,11 +56,12 @@ Dans la dernière ligne, à côté du lien vers les mentions légales :
 
 ### Page 404
 
-GitHub Pages sert un seul `404.html`. La page contient les deux versions : le
-français est visible par défaut, l'anglais porte `hidden`. Un script en ligne
-de quelques lignes bascule vers l'anglais si le chemin demandé commence par
-`/vitrine/en/` (il met aussi à jour `lang` et `<title>`). Sans JavaScript, le
-français s'affiche.
+GitHub Pages sert un seul `404.html`, en français. La même vue génère aussi une
+page `/en/404/` entièrement anglaise (en-tête et pied de page compris). Un
+script en ligne, placé dans le `<head>` de la 404 racine, remplace l'adresse
+par `/vitrine/en/404/` avant tout affichage quand le chemin demandé commence
+par `/vitrine/en/`. Sans JavaScript, la 404 française s'affiche. Les deux
+pages portent `noindex` et sont exclues du sitemap.
 
 ## 4. Organisation du code
 
@@ -75,7 +76,7 @@ français s'affiche.
   Chaque fichier exporte `{ fr, en }`, typé de sorte que la version anglaise
   doive avoir exactement les clés de la française.
 - `src/pages/` et `src/pages/en/` : des routes minces qui choisissent la vue,
-  la langue et l'identifiant de page. `404.astro` reste à la racine.
+  la langue et l'identifiant de page. `404.astro` reste à la racine, `en/404.astro` en est le pendant anglais.
 
 ### Forme des textes
 
@@ -188,8 +189,10 @@ de voix, lexique, adresses.
   - la typographie anglaise n'ajoute aucune espace avant la ponctuation ;
   - les textes anglais des réalisations ne contiennent ni « I », ni « my »,
     ni « we », ni « in-house » (équivalent du test français existant).
-- `npm run verifier` parcourt les onze pages françaises et les dix pages
-  anglaises (la 404 est commune) de 320 à 1440 px : débordements, mots isolés,
+- `npm run verifier` parcourt les onze pages françaises et les onze pages
+  anglaises (404 comprise) de 320 à 1440 px : débordements, mots isolés,
   liens internes, interactions, et le sélecteur de langue (depuis chaque page,
   le lien de l'autre langue mène à son équivalent).
-- Le build échoue si une clé de texte manque dans une langue (typage).
+- `npm test` échoue si une clé de texte manque dans une langue : un test
+  compare la structure des versions française et anglaise de chaque module de
+  `src/i18n/` (le build Astro ne vérifie pas les types).
