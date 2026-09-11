@@ -24,6 +24,8 @@ const { titre, description, langue, page, slug, suffixe = true, indexer = true }
 const c = commun[langue];
 const titreComplet = suffixe ? `${titre} · ${STUDIO.nom}` : titre;
 const canonique = new URL(Astro.url.pathname, Astro.site);
+/** Adresse absolue d'une version de la page, sous la même forme que la canonique (barre finale, comme GitHub Pages la sert). */
+const version = (l: Langue) => new URL(lien(page!, l, slug).replace(/\/?$/, '/'), Astro.site);
 const image = new URL(ressource('/og.png'), Astro.site);
 ---
 
@@ -36,8 +38,8 @@ const image = new URL(ressource('/og.png'), Astro.site);
     <meta name="description" content={description} />
     {!indexer && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonique} />
-    {page && LANGUES.map((l) => <link rel="alternate" hreflang={l} href={new URL(lien(page, l, slug), Astro.site)} />)}
-    {page && <link rel="alternate" hreflang="x-default" href={new URL(lien(page, 'fr', slug), Astro.site)} />}
+    {page && LANGUES.map((l) => <link rel="alternate" hreflang={l} href={version(l)} />)}
+    {page && <link rel="alternate" hreflang="x-default" href={version('fr')} />}
     <meta name="theme-color" content="#6E2213" />
     <link rel="icon" href={ressource('/favicon.svg')} type="image/svg+xml" />
     <link rel="preload" href={jakarta} as="font" type="font/woff2" crossorigin />

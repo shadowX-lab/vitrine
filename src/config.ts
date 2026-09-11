@@ -18,7 +18,7 @@ export const STUDIO = {
 
 const base = () => import.meta.env.BASE_URL.replace(/\/$/, '');
 
-/** Adresse d'une page dans une langue, base du site comprise (nécessaire sous /vitrine). */
+/** Adresse d'une page dans une langue, base du site comprise (vide à la racine d'un domaine). */
 export function lien(page: Page, langue: Langue, slug?: string): string {
   const c = chemin(page, langue, slug);
   return c === '/' ? base() || '/' : `${base()}${c}`;

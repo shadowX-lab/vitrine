@@ -2,11 +2,11 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// Le site est publié sur GitHub Pages sous /vitrine. Pour brancher un domaine
-// propre plus tard : passer `base` à '/' et `site` au domaine.
+// Le site est publié par GitHub Pages sur son propre domaine, à la racine. Le domaine
+// est déclaré dans les réglages Pages du dépôt (un fichier CNAME serait ignoré par
+// un déploiement GitHub Actions).
 export default defineConfig({
-  site: 'https://shadowx-lab.github.io',
-  base: '/vitrine',
+  site: 'https://moamind-solutions.com',
   trailingSlash: 'ignore',
   integrations: [sitemap({ filter: (page) => !/\/404\/?$/.test(page) })],
   build: { format: 'directory' },

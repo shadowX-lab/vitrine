@@ -9,7 +9,7 @@ GitHub Pages à chaque `push` sur `main`.
 
 ```bash
 npm install
-npm run dev       # http://localhost:4321/vitrine/
+npm run dev       # http://localhost:4321/
 npm run build     # génère dist/
 npm test          # typographie, anonymisation, données des réalisations
 npm run verifier  # contrôles dans Chrome (lancer `npm run preview` avant)
@@ -79,8 +79,10 @@ tests/                      Tests `node:test`
 docs/superpowers/           Spec et plan de la refonte Braise
 ```
 
-## Changer de domaine
+## Domaine
 
-Le site est publié sous `/vitrine`. Pour un domaine propre, dans
-`astro.config.mjs` : passer `base` à `'/'` et `site` au domaine, puis ajouter un
-fichier `public/CNAME` contenant ce domaine.
+Le site est publié sur **https://moamind-solutions.com**, à la racine
+(`site` dans `astro.config.mjs`, sans `base`). Le domaine est déclaré dans les
+réglages GitHub Pages du dépôt : avec un déploiement GitHub Actions, un fichier
+`public/CNAME` serait ignoré. Pour changer de domaine : modifier `site`, puis le
+domaine personnalisé dans les réglages Pages et les enregistrements DNS.

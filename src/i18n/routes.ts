@@ -1,4 +1,4 @@
-/** Les langues du site et l'adresse de chaque page dans chacune (sans la base /vitrine). */
+/** Les langues du site et l'adresse de chaque page dans chacune (sans la base du site). */
 
 export type Langue = 'fr' | 'en';
 export const LANGUES: readonly Langue[] = ['fr', 'en'];

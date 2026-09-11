@@ -10,7 +10,7 @@ import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-const RACINE = process.env.RACINE ?? 'http://localhost:4321/vitrine';
+const RACINE = process.env.RACINE ?? 'http://localhost:4321';
 const TOUTES = [
   '/', '/methode', '/realisations', '/realisations/chargeair', '/realisations/pilpoil', '/realisations/teamago', '/experience', '/contact', '/merci', '/mentions-legales', '/404',
   '/en/', '/en/method', '/en/work', '/en/work/chargeair', '/en/work/pilpoil', '/en/work/teamago', '/en/experience', '/en/contact', '/en/thank-you', '/en/legal-notice', '/en/404',
@@ -130,7 +130,7 @@ for (const page of PAGES) {
   }
   verdict(morts.length === 0, `${page} : liens internes${morts.length ? ' morts → ' + morts.join(', ') : ''}`);
   const logo = await ev(`document.querySelector('.entete .logo')?.getAttribute('href')`);
-  const attendu = anglaise(page) ? ['/vitrine/en/'] : ['/vitrine', '/vitrine/'];
+  const attendu = anglaise(page) ? ['/en/'] : ['/'];
   verdict(attendu.includes(logo), `${page} : le logo mène à l'accueil de sa langue (${logo})`);
   const langue = await ev(`document.documentElement.lang`);
   const autreLangue = langue === 'fr' ? 'en' : 'fr';
@@ -138,7 +138,7 @@ for (const page of PAGES) {
   const ciblePied = await ev(`document.querySelector('.pied .langues-pied a[hreflang="${autreLangue}"]')?.getAttribute('href')`);
   const alternative = await ev(`document.querySelector('link[rel=alternate][hreflang="${autreLangue}"]')?.getAttribute('href') ?? null`);
   const statut = cibleEntete ? await ev(`fetch(${JSON.stringify(cibleEntete)}).then((r) => r.status)`) : 0;
-  const coherent = cibleEntete === ciblePied && (alternative === null || new URL(alternative).pathname === cibleEntete);
+  const coherent = cibleEntete === ciblePied && (alternative === null || new URL(alternative).pathname.replace(/\/$/, '') === cibleEntete.replace(/\/$/, ''));
   verdict(langue === (anglaise(page) ? 'en' : 'fr') && statut === 200 && coherent, `${page} : sélecteur vers ${cibleEntete} (${statut})`);
 }
 

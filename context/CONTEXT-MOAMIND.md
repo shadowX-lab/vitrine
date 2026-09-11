@@ -263,7 +263,8 @@ pointillés, aucun texte en dégradé.
 - **Formulaire** : Web3Forms (clé publique, aucun serveur). Clé et lien de
   rendez-vous isolés dans `src/config.ts`. Les messages arrivent sur l'adresse
   liée à la clé, qui n'apparaît nulle part sur le site ni dans ce dépôt.
-- **Déploiement** : GitHub Actions vers GitHub Pages à chaque push sur `main`.
+- **Déploiement** : GitHub Actions vers GitHub Pages à chaque push sur `main`,
+  sur le domaine https://moamind-solutions.com (racine du site, sans `/vitrine`).
 
 ## Ce qui reste à fournir
 
