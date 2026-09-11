@@ -165,7 +165,7 @@ const en: typeof fr = {
       titre: 'Scoping note',
       meta: 'Version 2 · corrected by the client',
       rubriques: ['What you do', 'Who uses it', "What's not working today"],
-      correction: '"It\'s not the customers who complain, it\'s the drivers."',
+      correction: '“It\'s not the customers who complain, it\'s the drivers.”',
     },
     tableau: {
       colonnes: [
@@ -173,7 +173,7 @@ const en: typeof fr = {
         { titre: 'Later', items: ['Subscriptions', 'Referrals'] },
         { titre: 'Never', items: ['Bill by the kWh'] },
       ],
-      pourquoi: "<b>Why \"never\":</b> billing by the kWh would require a certified meter and turn the host into an electricity reseller.",
+      pourquoi: '<b>Why “never”:</b> billing by the kWh would require a certified meter and turn the host into an electricity reseller.',
     },
     bulles: [
       'Move the total to the top?',
