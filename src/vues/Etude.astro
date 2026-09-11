@@ -35,11 +35,16 @@ const suivant = `--s-fond:linear-gradient(118deg, ${s.palette.p1}, ${s.palette.a
           <h1 translate="no">{p.nom}</h1>
           <p class="baseline">{p.baseline}</p>
           <p class="resume">{p.resume}</p>
-          <dl class="fiche">
-            <div><dt>{t.etude.fiche.domaine}</dt><dd>{p.domaine}</dd></div>
-            <div><dt>{t.etude.fiche.plateforme}</dt><dd>{p.plateforme}</dd></div>
-            <div><dt>{t.etude.fiche.code}</dt><dd>{p.depot ? <a href={p.depot} target="_blank" rel="noopener">{t.etude.fiche.depotPublic}</a> : t.etude.fiche.depotPrive}</dd></div>
-          </dl>
+          <div class="infos">
+            <dl class="fiche">
+              <div><dt>{t.etude.fiche.domaine}</dt><dd>{p.domaine}</dd></div>
+              <div><dt>{t.etude.fiche.plateforme}</dt><dd>{p.plateforme}</dd></div>
+            </dl>
+            <a class="app-store" href={p.appStore} target="_blank" rel="noopener" aria-label={t.etude.appStore.aria.replace('{nom}', p.nom)}>
+              <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.37 12.64c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.14-2.77.83-3.49.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.88 2.31 1.16-.05 1.6-.75 3-.75s1.79.75 3.02.72c1.25-.02 2.04-1.13 2.8-2.25.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.42-.93-2.44-3.69zM14.07 5.87c.64-.78 1.07-1.85.95-2.93-.92.04-2.04.61-2.7 1.39-.59.69-1.11 1.79-.97 2.85 1.03.08 2.08-.52 2.72-1.31z" /></svg>
+              <span><small>{t.etude.appStore.avant}</small><b>{t.etude.appStore.nom}</b></span>
+            </a>
+          </div>
         </div>
         <div class="scene" aria-hidden="true">
           <div class="ombre"></div>
@@ -129,7 +134,14 @@ const suivant = `--s-fond:linear-gradient(118deg, ${s.palette.p1}, ${s.palette.a
   .fiche div { font-size: 13.5px; padding: 10px 14px; border-radius: 12px; background: rgba(0,0,0,.16); border: 1px solid rgba(255,255,255,.14); }
   .fiche dt { font-size: 11px; opacity: .75; margin-bottom: 2px; }
   .fiche dd { margin: 0; }
-  .fiche a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+  .infos { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; }
+  /* Badge App Store : noir, logo Apple et deux lignes, comme le badge officiel. */
+  .app-store { display: inline-flex; align-items: center; gap: 9px; padding: 8px 16px 8px 12px; border-radius: 12px; background: #000; color: #fff; border: 1px solid rgba(255,255,255,.3); font-family: var(--ui); transition: transform .15s ease; }
+  .app-store:hover { transform: translateY(-1px); }
+  .app-store:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  .app-store svg { flex: none; margin-top: -3px; }
+  .app-store small { display: block; font-size: 10.5px; line-height: 1.15; }
+  .app-store b { display: block; font-size: 19px; line-height: 1.1; font-weight: 600; letter-spacing: -.02em; }
   .scene { position: relative; perspective: 1700px; width: 560px; height: 760px; }
   .ombre { position: absolute; left: 160px; top: 750px; width: 360px; height: 60px; border-radius: 50%; filter: blur(28px); background: color-mix(in srgb, var(--p1) 45%, transparent); }
 

@@ -26,7 +26,8 @@ export type Produit = {
   slug: string;
   nom: string;
   annee: string;
-  depot?: string;
+  /** Page de l'application sur l'App Store. */
+  appStore: string;
   palette: { p1: string; p2: string; p3: string; accent: string; voile: string; contraste: string; clair: string; fonce: string; lueur: string };
   /** Écrans du bandeau : derrière, puis devant. */
   heros: [EcranEtape, EcranEtape];
@@ -55,12 +56,15 @@ export function localiser(p: Produit, langue: Langue): ProduitLocalise {
   };
 }
 
+/** Lien fictif en attendant la publication des applications : même adresse pour les trois. */
+const APP_STORE_FICTIF = 'https://apps.apple.com/app/id0000000000';
+
 export const produits: Produit[] = [
   {
     slug: 'chargeair',
     nom: 'ChargeAir',
     annee: '2026',
-    depot: 'https://github.com/shadowX-lab/ChargeAir',
+    appStore: APP_STORE_FICTIF,
     palette: { p1: '#4A1B0F', p2: '#8E3A22', p3: '#D9794F', accent: '#AF5236', voile: '#F7E7E0', contraste: '#7A3822', clair: '#FFD9C4', fonce: '#4A1B0F', lueur: 'rgba(255,200,150,.35)' },
     heros: [{ fichier: 'Reservation', haut: '#F7F1EA' }, { fichier: 'Session', haut: '#3E5C39', statut: '#F4F1E6' }],
     ecrans: [
@@ -136,7 +140,7 @@ export const produits: Produit[] = [
     slug: 'pilpoil',
     nom: 'Pil’Poil',
     annee: '2026',
-    depot: 'https://github.com/shadowX-lab/pilpoil',
+    appStore: APP_STORE_FICTIF,
     palette: { p1: '#043B33', p2: '#0A5D50', p3: '#1FA488', accent: '#0E7C6B', voile: '#E7F3F0', contraste: '#0A5D50', clair: '#B8F2DF', fonce: '#043B33', lueur: 'rgba(170,255,220,.28)' },
     heros: [{ fichier: 'Correspondances', haut: '#F5F6F4' }, { fichier: 'Main', haut: '#F5F6F4' }],
     ecrans: [
@@ -212,6 +216,7 @@ export const produits: Produit[] = [
     slug: 'teamago',
     nom: 'Teamago',
     annee: '2026',
+    appStore: APP_STORE_FICTIF,
     palette: { p1: '#171C0B', p2: '#3A4A10', p3: '#6D8A1E', accent: '#4C6116', voile: '#EFF6D9', contraste: '#3A4A10', clair: '#D4FF4F', fonce: '#1E2410', lueur: 'rgba(212,255,79,.25)' },
     heros: [{ fichier: 'Participants', haut: '#F1F1EA' }, { fichier: 'Decompte', haut: '#F1F1EA' }],
     ecrans: [

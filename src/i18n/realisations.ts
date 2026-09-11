@@ -17,7 +17,9 @@ const fr = {
   etude: {
     filAria: "Fil d'Ariane",
     etiquette: 'Étude de cas',
-    fiche: { domaine: 'Domaine', plateforme: 'Plateforme', code: 'Code', depotPublic: 'Dépôt public ↗', depotPrive: 'Dépôt privé' },
+    fiche: { domaine: 'Domaine', plateforme: 'Plateforme' },
+    /** Badge App Store : petite ligne, grande ligne, nom accessible ({nom} = nom du produit). */
+    appStore: { avant: 'Télécharger dans', nom: "l'App Store", aria: "Télécharger {nom} dans l'App Store" },
     ecranPrincipal: 'écran principal',
     depart: 'Le point de départ',
     parcours: 'Le parcours principal, en quatre écrans',
@@ -45,7 +47,8 @@ const en: typeof fr = {
   etude: {
     filAria: 'Breadcrumb',
     etiquette: 'Case study',
-    fiche: { domaine: 'Field', plateforme: 'Platform', code: 'Code', depotPublic: 'Public repository ↗', depotPrive: 'Private repository' },
+    fiche: { domaine: 'Field', plateforme: 'Platform' },
+    appStore: { avant: 'Download on the', nom: 'App Store', aria: 'Download {nom} on the App Store' },
     ecranPrincipal: 'main screen',
     depart: 'Where it started',
     parcours: 'The main journey, in four screens',
