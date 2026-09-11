@@ -24,9 +24,15 @@ test('les nombres seuls passent au format anglais sans dictionnaire', () => {
   assert.equal(nombreAnglais('1&nbsp;234,50&nbsp;&euro;'), '&euro;1,234.50');
   assert.equal(nombreAnglais('-72,63 €'), '-&euro;72.63');
   assert.equal(nombreAnglais('0,00 €'), '&euro;0.00');
+  assert.equal(nombreAnglais('&minus; 62 &euro;'), '&minus;&euro;62');
   assert.equal(nombreAnglais('12,6'), '12.6');
   assert.equal(nombreAnglais('20:03'), '20:03');
   assert.equal(traduire('<b>581,00 €</b>', {}).html, '<b>&euro;581.00</b>');
+});
+
+test('une liste de traductions s’applique dans l’ordre d’apparition, puis en boucle', () => {
+  const jours = '<i>L</i><i>M</i><i>M</i><i>J</i>';
+  assert.equal(traduire(jours + jours, { L: 'M', M: ['T', 'W'], J: 'T' }).html, '<i>M</i><i>T</i><i>W</i><i>T</i>'.repeat(2));
 });
 
 test('traduire() signale les textes absents du dictionnaire', () => {

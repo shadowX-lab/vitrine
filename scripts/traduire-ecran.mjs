@@ -30,9 +30,9 @@ function parcourir(html, remplacer, nombre = (texte) => texte) {
  */
 export function nombreAnglais(texte) {
   const espace = texte.replace(/&nbsp;|&#8239;|[  ]/g, ' ');
-  const montant = espace.match(/^(-?)([\d ]+?)(?:,(\d+))? ?(?:€|&euro;)$/);
+  const montant = espace.match(/^(-|−|&minus;)? ?([\d ]+?)(?:,(\d+))? ?(?:€|&euro;)$/);
   if (!montant) return texte.replace(/(\d),(\d)/g, '$1.$2');
-  const [, signe, entier, decimales] = montant;
+  const [, signe = '', entier, decimales] = montant;
   const milliers = entier.replace(/ /g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   return `${signe}&euro;${milliers}${decimales ? `.${decimales}` : ''}`;
 }
@@ -44,11 +44,22 @@ export function textes(html) {
   return [...vus];
 }
 
-/** Traduit un écran ; `manquants` liste les textes absents du dictionnaire. */
+/**
+ * Traduit un écran ; `manquants` liste les textes absents du dictionnaire. Une valeur peut être une
+ * liste, appliquée dans l'ordre d'apparition puis en boucle : les jours « L M M J V S D » ont deux
+ * « M » qui deviennent « T » puis « W ».
+ */
 export function traduire(html, dictionnaire) {
   const manquants = new Set();
+  const rangs = new Map();
   const sortie = parcourir(html, (texte) => {
-    if (Object.hasOwn(dictionnaire, texte)) return dictionnaire[texte];
+    if (Object.hasOwn(dictionnaire, texte)) {
+      const valeur = dictionnaire[texte];
+      if (!Array.isArray(valeur)) return valeur;
+      const rang = rangs.get(texte) ?? 0;
+      rangs.set(texte, rang + 1);
+      return valeur[rang % valeur.length];
+    }
     manquants.add(texte);
     return texte;
   }, nombreAnglais);
