@@ -8,6 +8,8 @@ ErrorDocument 404 /404.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  # La validation des certificats (AutoSSL) lit /.well-known/ sur chaque nom : jamais de redirection.
+  RewriteRule ^\.well-known/ - [L]
   # Une seule adresse publique, sans www.
   # EN ATTENTE DU CERTIFICAT : o2switch sert encore un certificat auto-signé. Dès que
   # l'AutoSSL l'a remplacé, passer « http:// » en « https:// » ci-dessous et
