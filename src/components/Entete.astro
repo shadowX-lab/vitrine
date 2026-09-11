@@ -1,26 +1,29 @@
 ---
 import { lien, STUDIO } from '../config';
-import { chemin, type Page } from '../i18n/routes';
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const actuel = (Astro.url.pathname.replace(/\/$/, '') || '/').replace(base, '') || '/';
+import commun from '../i18n/commun';
+import type { Langue, Page } from '../i18n/routes';
+interface Props { langue: Langue; page?: Page; slug?: string }
+const { langue, page } = Astro.props;
+const c = commun[langue];
 const liens: { page: Page; texte: string }[] = [
-  { page: 'methode', texte: 'Méthode' },
-  { page: 'realisations', texte: 'Réalisations' },
-  { page: 'experience', texte: 'Expérience' },
+  { page: 'methode', texte: c.nav.methode },
+  { page: 'realisations', texte: c.nav.realisations },
+  { page: 'experience', texte: c.nav.experience },
 ];
-const courant = (href: string) => (actuel.startsWith(href) ? 'page' : undefined);
+/** Une étude de cas relève de la rubrique Réalisations. */
+const courant = (p: Page) => (p === page || (p === 'realisations' && page === 'etude') ? 'page' : undefined);
 ---
 <header class="entete">
-  <a class="logo" href={lien('accueil', 'fr')} aria-label={`${STUDIO.nom}, accueil`} translate="no">{STUDIO.nomCourt}<span>{STUDIO.nomSuffixe}</span></a>
-  <nav aria-label="Navigation principale" class="principale">
-    <ul>{liens.map((l) => <li><a href={lien(l.page, 'fr')} aria-current={courant(chemin(l.page, 'fr'))}>{l.texte}</a></li>)}</ul>
+  <a class="logo" href={lien('accueil', langue)} aria-label={`${STUDIO.nom}, ${c.accueil}`} translate="no">{STUDIO.nomCourt}<span>{STUDIO.nomSuffixe}</span></a>
+  <nav aria-label={c.nav.aria} class="principale">
+    <ul>{liens.map((l) => <li><a href={lien(l.page, langue)} aria-current={courant(l.page)}>{l.texte}</a></li>)}</ul>
   </nav>
-  <a class="cta" href={lien('contact', 'fr')}>Décrire mon projet</a>
+  <a class="cta" href={lien('contact', langue)}>{c.cta}</a>
   <details class="menu-mobile">
-    <summary aria-label="Ouvrir le menu"><span></span></summary>
+    <summary aria-label={c.nav.ouvrirMenu}><span></span></summary>
     <ul>
-      {liens.map((l) => <li><a href={lien(l.page, 'fr')} aria-current={courant(chemin(l.page, 'fr'))}>{l.texte}</a></li>)}
-      <li><a href={lien('contact', 'fr')}>Décrire mon projet</a></li>
+      {liens.map((l) => <li><a href={lien(l.page, langue)} aria-current={courant(l.page)}>{l.texte}</a></li>)}
+      <li><a href={lien('contact', langue)}>{c.cta}</a></li>
     </ul>
   </details>
 </header>

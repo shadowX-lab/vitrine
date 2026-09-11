@@ -23,7 +23,7 @@ const couleurs = [
 ].join(';');
 const suivant = `--s-fond:linear-gradient(118deg, ${s.palette.p1}, ${s.palette.accent} 60%, ${s.palette.p3});--s-clair:${s.palette.clair};--s-fonce:${s.palette.fonce}`;
 ---
-<Base titre={`${p.nom} — ${p.baseline}`} description={p.resume}>
+<Base titre={`${p.nom} — ${p.baseline}`} description={p.resume} langue="fr" page="etude" slug={p.slug}>
   <article class="etude" style={couleurs}>
     <Bande couleurs={{ f1: p.palette.p1, f2: p.palette.p2, f3: p.palette.p3, lueur: p.palette.lueur }} hauteur="800px" biais="60%" reserve="320px">
       <div class="ouv w">
@@ -111,7 +111,7 @@ const suivant = `--s-fond:linear-gradient(118deg, ${s.palette.p1}, ${s.palette.a
     </section>
   </article>
 
-  <AppelFinal titre="Un produit à cadrer ?" texte="C'est le travail que vous venez de voir, appliqué à votre projet. Le premier entretien est offert, et vous repartez avec une note écrite." />
+  <AppelFinal titre="Un produit à cadrer ?" texte="C'est le travail que vous venez de voir, appliqué à votre projet. Le premier entretien est offert, et vous repartez avec une note écrite." langue="fr" />
 </Base>
 
 <style>

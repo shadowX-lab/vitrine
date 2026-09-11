@@ -10,6 +10,7 @@ import Icone from '../components/Icone.astro';
 import { lien, STUDIO } from '../config';
 import { ecran } from '../lib/ecrans';
 import { eventail, rangee } from '../data/produits';
+import commun from '../i18n/commun';
 
 const [derriere, devant] = eventail;
 const couts = ['Son développement', '+ son retrait', "+ la confiance de ceux qui s'en servaient"];
@@ -34,7 +35,7 @@ const inclinaisons = [
   { w: 210, left: '66%', t: 'rotateY(-18deg) rotateZ(5deg) translateY(30px)' },
 ];
 ---
-<Base titre={`${STUDIO.nom} — ${STUDIO.accroche}`} description={STUDIO.description} suffixe={false}>
+<Base titre={`${STUDIO.nom} — ${commun.fr.accroche}`} description={commun.fr.description} suffixe={false} langue="fr" page="accueil">
   <Bande hauteur="780px" biais="58%" reserve="300px">
     <div class="hero w">
       <div>
@@ -154,7 +155,7 @@ const inclinaisons = [
     </div>
   </section>
 
-  <AppelFinal titre="Décrivez votre projet en quelques phrases" texte="Réponse sous 2 jours ouvrés. Le premier entretien est offert, et vous repartez avec une note écrite de votre projet, que vous donniez suite ou non." />
+  <AppelFinal titre="Décrivez votre projet en quelques phrases" texte="Réponse sous 2 jours ouvrés. Le premier entretien est offert, et vous repartez avec une note écrite de votre projet, que vous donniez suite ou non." langue="fr" />
 </Base>
 
 <style>

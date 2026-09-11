@@ -1,18 +1,23 @@
 ---
 import { lien, STUDIO } from '../config';
+import commun from '../i18n/commun';
+import type { Langue, Page } from '../i18n/routes';
+interface Props { langue: Langue; page?: Page; slug?: string }
+const { langue } = Astro.props;
+const c = commun[langue];
 ---
 <footer class="pied">
   <div>
-    <a class="logo" href={lien('accueil', 'fr')} translate="no">{STUDIO.nom}</a>
-    <p>Votre produit est étudié, cadré et validé avant la première ligne de code.</p>
+    <a class="logo" href={lien('accueil', langue)} translate="no">{STUDIO.nom}</a>
+    <p>{c.pied.phrase}</p>
   </div>
-  <nav aria-label="Navigation de pied de page" class="colonnes">
-    <div><h2>Le travail</h2><ul><li><a href={lien('methode', 'fr')}>Méthode</a></li><li><a href={lien('realisations', 'fr')}>Réalisations</a></li></ul></div>
-    <div><h2>Le studio</h2><ul><li><a href={lien('experience', 'fr')}>Expérience</a></li><li><a href={lien('contact', 'fr')}>Contact</a></li></ul></div>
+  <nav aria-label={c.pied.aria} class="colonnes">
+    <div><h2>{c.pied.travail}</h2><ul><li><a href={lien('methode', langue)}>{c.nav.methode}</a></li><li><a href={lien('realisations', langue)}>{c.nav.realisations}</a></li></ul></div>
+    <div><h2>{c.pied.studio}</h2><ul><li><a href={lien('experience', langue)}>{c.nav.experience}</a></li><li><a href={lien('contact', langue)}>{c.pied.contact}</a></li></ul></div>
   </nav>
   <div class="bas">
-    <span>© {new Date().getFullYear()} {STUDIO.nom} · Basé à {STUDIO.ville}, au travail partout</span>
-    <a href={lien('mentions', 'fr')}>Mentions légales</a>
+    <span>© {new Date().getFullYear()} {STUDIO.nom} · {c.pied.base}</span>
+    <a href={lien('mentions', langue)}>{c.pied.mentions}</a>
   </div>
 </footer>
 

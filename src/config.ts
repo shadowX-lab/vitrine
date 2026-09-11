@@ -13,10 +13,6 @@ export const STUDIO = {
   /** Les deux moitiés du nom, pour le mot-marque. */
   nomCourt: 'Moamind',
   nomSuffixe: 'Solutions',
-  accroche: 'Le produit avant le code',
-  description:
-    "Conception et développement d'applications web et mobiles. On cadre le " +
-    'problème, vous validez les écrans, rien ne se construit avant.',
   ville: 'Bordeaux',
 } as const;
 

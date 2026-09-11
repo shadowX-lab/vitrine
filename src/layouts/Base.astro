@@ -4,27 +4,37 @@ import jakarta from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-s
 import Entete from '../components/Entete.astro';
 import PiedDePage from '../components/PiedDePage.astro';
 import { ressource, STUDIO } from '../config';
+import commun from '../i18n/commun';
+import type { Langue, Page } from '../i18n/routes';
 
 interface Props {
   titre: string;
   description: string;
+  langue: Langue;
+  /** Identifiant de la page dans la table des routes ; absent pour la 404. */
+  page?: Page;
+  slug?: string;
   /** Ajouté tel quel après le titre. Laisser vide pour la page d'accueil. */
   suffixe?: boolean;
+  /** Faux pour les pages que les moteurs ne doivent pas indexer (404). */
+  indexer?: boolean;
 }
 
-const { titre, description, suffixe = true } = Astro.props;
+const { titre, description, langue, page, slug, suffixe = true, indexer = true } = Astro.props;
+const c = commun[langue];
 const titreComplet = suffixe ? `${titre} · ${STUDIO.nom}` : titre;
 const canonique = new URL(Astro.url.pathname, Astro.site);
 const image = new URL(ressource('/og.png'), Astro.site);
 ---
 
 <!doctype html>
-<html lang="fr">
+<html lang={langue}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{titreComplet}</title>
     <meta name="description" content={description} />
+    {!indexer && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonique} />
     <meta name="theme-color" content="#6E2213" />
     <link rel="icon" href={ressource('/favicon.svg')} type="image/svg+xml" />
@@ -35,7 +45,7 @@ const image = new URL(ressource('/og.png'), Astro.site);
     <meta property="og:title" content={titreComplet} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonique} />
-    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale" content={langue === 'fr' ? 'fr_FR' : 'en_US'} />
     <meta property="og:image" content={image} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -45,9 +55,9 @@ const image = new URL(ressource('/og.png'), Astro.site);
   </head>
 
   <body>
-    <a class="saut-contenu" href="#contenu">Aller au contenu</a>
-    <Entete />
+    <a class="saut-contenu" href="#contenu">{c.sautContenu}</a>
+    <Entete langue={langue} page={page} slug={slug} />
     <main id="contenu"><slot /></main>
-    <PiedDePage />
+    <PiedDePage langue={langue} page={page} slug={slug} />
   </body>
 </html>

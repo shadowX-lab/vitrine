@@ -1,14 +1,17 @@
 ---
 import { lien, LIEN_RDV } from '../config';
-interface Props { titre: string; texte: string }
-const { titre, texte } = Astro.props;
+import commun from '../i18n/commun';
+import type { Langue } from '../i18n/routes';
+interface Props { titre: string; texte: string; langue: Langue }
+const { titre, texte, langue } = Astro.props;
+const c = commun[langue];
 ---
 <section class="appel">
   <h2>{titre}</h2>
   <p>{texte}</p>
   <div class="boutons">
-    <a class="btn btn--plein" href={lien('contact', 'fr')}>Décrire mon projet</a>
-    {LIEN_RDV && <a class="btn btn--contour" href={LIEN_RDV} target="_blank" rel="noopener">Réserver 30 minutes</a>}
+    <a class="btn btn--plein" href={lien('contact', langue)}>{c.cta}</a>
+    {LIEN_RDV && <a class="btn btn--contour" href={LIEN_RDV} target="_blank" rel="noopener">{c.rdv}</a>}
   </div>
 </section>
 
