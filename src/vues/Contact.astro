@@ -1,0 +1,203 @@
+---
+import Base from '../layouts/Base.astro';
+import Bande from '../components/Bande.astro';
+import { CLE_FORMULAIRE, LIEN_RDV, lien } from '../config';
+import commun from '../i18n/commun';
+import textes from '../i18n/contact';
+import type { Langue } from '../i18n/routes';
+
+interface Props { langue: Langue }
+const { langue } = Astro.props;
+const t = textes[langue];
+const c = commun[langue];
+
+const retour = new URL(lien('merci', langue), Astro.site).href;
+---
+<Base titre={t.meta.titre} description={t.meta.description} langue={langue} page="contact">
+  <Bande hauteur="600px" biais="70%" reserve="0px">
+    <div class="contact w">
+      <div class="colonne">
+        <div class="intro">
+          <span class="etiq">{t.etiquette}</span>
+          <h1 data-ajuste>{t.titre.gras.split('|').map((g, i) => <>{i > 0 && ' '}<span class="groupe">{g}</span></>)}<br /><span class="leger">{t.titre.leger.split('|').map((g, i) => <>{i > 0 && ' '}<span class="groupe">{g}</span></>)}</span></h1>
+          <p class="sous" set:html={t.sous} />
+        </div>
+        <ol class="etapes">
+          {t.etapes.map((e, i) => <li><b>{i + 1}</b><span><strong>{e.titre}</strong><span>{e.texte}</span></span></li>)}
+        </ol>
+        {LIEN_RDV && (
+          <p class="rdv">{t.rdvQuestion} <a href={LIEN_RDV} target="_blank" rel="noopener">{c.rdv}</a></p>
+        )}
+      </div>
+
+      <div class="carte-form">
+        <form action="https://web3forms.com/submit" method="POST" class="form" id="brief">
+          <input type="hidden" name="access_key" value={CLE_FORMULAIRE} />
+          <input type="hidden" name="subject" value={t.formulaire.sujet} />
+          <input type="hidden" name="from_name" value={t.formulaire.expediteur} />
+          <input type="hidden" name="redirect" value={retour} />
+          <input type="hidden" name="langue" value={langue} />
+          <!-- Piège à robots : invisible pour tous, lecteurs d'écran compris. -->
+          <input type="checkbox" name="botcheck" hidden tabindex="-1" autocomplete="off" />
+
+          <h2>{t.formulaire.titre}</h2>
+
+          <!-- Le profil commande l'organisation et la forme du budget, plus bas. -->
+          <fieldset class="champ">
+            <legend>{t.formulaire.profil.legende} <em aria-hidden="true">*</em></legend>
+            <div class="choix">
+              <label><input type="radio" name="profil" value={t.formulaire.profil.particulier} required data-profil="particulier" /><span>{t.formulaire.profil.particulier}</span></label>
+              <label><input type="radio" name="profil" value={t.formulaire.profil.professionnel} data-profil="professionnel" /><span>{t.formulaire.profil.professionnel}</span></label>
+            </div>
+          </fieldset>
+
+          <div class="rang">
+            <p class="champ">
+              <label for="nom">{t.formulaire.nom.libelle} <em aria-hidden="true">*</em></label>
+              <input class="entree" id="nom" name="nom" type="text" required autocomplete="name" placeholder={t.formulaire.nom.exemple} />
+            </p>
+            <p class="champ" id="bloc-organisation" hidden>
+              <label for="organisation">{t.formulaire.organisation.libelle}</label>
+              <input class="entree" id="organisation" name="organisation" type="text" autocomplete="organization" placeholder={t.formulaire.organisation.exemple} disabled />
+            </p>
+          </div>
+
+          <p class="champ">
+            <label for="email">{t.formulaire.email.libelle} <em aria-hidden="true">*</em></label>
+            <input class="entree" id="email" name="email" type="email" required autocomplete="email" spellcheck="false" placeholder={t.formulaire.email.exemple} />
+          </p>
+
+          <fieldset class="champ">
+            <legend>{t.formulaire.nature.legende}</legend>
+            <div class="choix">
+              {t.formulaire.nature.choix.map((v) => <label><input type="radio" name="nature" value={v} /><span>{v}</span></label>)}
+            </div>
+          </fieldset>
+
+          <div class="rang">
+            <p class="champ">
+              <label for="echeance">{t.formulaire.echeance.libelle}</label>
+              <select class="entree" id="echeance" name="echeance" autocomplete="off">
+                <option value="">{t.formulaire.echeance.defaut}</option>
+                {t.formulaire.echeance.choix.map((e) => <option>{e}</option>)}
+              </select>
+            </p>
+            <!-- Paliers pour un professionnel, champ libre pour un particulier. -->
+            <p class="champ" id="bloc-budget-pro" hidden>
+              <label for="budget-pro">{t.formulaire.budget.libelle}</label>
+              <select class="entree" id="budget-pro" name="budget" autocomplete="off" disabled>
+                {t.formulaire.budget.paliers.map((p) => <option>{p}</option>)}
+              </select>
+            </p>
+            <p class="champ" id="bloc-budget-particulier" hidden>
+              <label for="budget-particulier">{t.formulaire.budget.libelle} <small>{t.formulaire.budget.facultatif}</small></label>
+              <input class="entree" id="budget-particulier" name="budget" type="text" autocomplete="off" placeholder={t.formulaire.budget.exemple} disabled />
+            </p>
+          </div>
+
+          <p class="champ">
+            <label for="message">{t.formulaire.message.libelle} <em aria-hidden="true">*</em></label>
+            <textarea class="entree zone" id="message" name="message" rows="6" required autocomplete="off" aria-describedby="aide-message"></textarea>
+            <span class="aide" id="aide-message">{t.formulaire.message.aide}</span>
+          </p>
+
+          <button class="envoyer" type="submit" data-envoi={t.formulaire.envoi}>{t.formulaire.envoyer}</button>
+          <p class="mention">{t.formulaire.mention}</p>
+        </form>
+      </div>
+    </div>
+  </Bande>
+</Base>
+
+<script>
+  // Un champ masqué reste soumis : on le désactive aussi, sinon deux valeurs
+  // « budget » partiraient dans le même envoi.
+  const form = document.getElementById('brief') as HTMLFormElement | null;
+  if (form) {
+    const blocs = {
+      organisation: document.getElementById('bloc-organisation'),
+      pro: document.getElementById('bloc-budget-pro'),
+      particulier: document.getElementById('bloc-budget-particulier'),
+    };
+    const basculer = (bloc: HTMLElement | null, visible: boolean) => {
+      if (!bloc) return;
+      bloc.hidden = !visible;
+      bloc.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select').forEach((champ) => { champ.disabled = !visible; });
+    };
+    form.addEventListener('change', (evenement) => {
+      const cible = evenement.target as HTMLInputElement;
+      if (cible.name !== 'profil') return;
+      const pro = cible.dataset.profil === 'professionnel';
+      basculer(blocs.organisation, pro);
+      basculer(blocs.pro, pro);
+      basculer(blocs.particulier, !pro);
+    });
+    // Le bouton reste actif jusqu'à l'envoi, puis indique qu'il travaille.
+    form.addEventListener('submit', () => {
+      const bouton = form.querySelector<HTMLButtonElement>('button[type=submit]');
+      if (bouton) { bouton.disabled = true; bouton.textContent = bouton.dataset.envoi ?? '…'; }
+    });
+  }
+</script>
+
+<style>
+  .contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 600px); gap: 70px; padding-top: 50px; padding-bottom: 120px; align-items: start; }
+  .intro { min-height: 430px; container-type: inline-size; }
+  /* Chaque ligne du titre tient sur une ligne : la taille suit la colonne (coefficient calé sur la plus longue ligne du texte actuel). */
+  .intro h1 { font-size: min(clamp(2.5rem, 5vw, 4.125rem), 8cqi); margin-bottom: 22px; }
+  .etapes { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; color: var(--encre); }
+  .etapes li { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; background: var(--creme); border-radius: 22px; padding: 20px 22px; }
+  .etapes b { width: 48px; height: 48px; border-radius: 50%; background: var(--encre); color: #fff; display: grid; place-items: center; font-size: 17px; }
+  .etapes strong { display: block; font-size: 17px; margin-bottom: 4px; }
+  .etapes strong + span { font-size: 15px; line-height: 1.55; color: var(--encre-2); }
+  .rdv { margin-top: 22px; color: var(--encre-2); font-size: 15px; }
+  .rdv a { color: var(--f2); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ---------- le formulaire : une carte blanche qui sort du bandeau ---------- */
+  .carte-form { color: var(--encre); background: #fff; border-radius: 30px; padding: 38px; box-shadow: 0 40px 90px -40px rgba(30,10,4,.55); }
+  .form { display: grid; gap: 22px; }
+  .form h2 { font-size: 26px; letter-spacing: -.03em; font-weight: 800; }
+  .champ { display: grid; gap: 8px; margin: 0; border: 0; padding: 0; min-width: 0; }
+  .champ > label, .champ > legend { font-size: 14px; font-weight: 700; padding: 0; }
+  legend { margin-bottom: 8px; }
+  .champ em { font-style: normal; color: var(--f2); }
+  .champ small { font-weight: 500; color: var(--gris); margin-left: 6px; }
+  .entree { width: 100%; border: 1.5px solid var(--trait); border-radius: 14px; padding: 14px 16px; font: 500 15px var(--ui); color: var(--encre); background: #fff; outline: 2px solid transparent; transition: border-color .15s, box-shadow .15s; }
+  .entree::placeholder { color: #A39BA8; }
+  .entree:hover { border-color: #D8CFC8; }
+  .entree:focus { border-color: var(--f2); box-shadow: 0 0 0 4px rgba(194,74,38,.16); }
+  select.entree { appearance: none; cursor: pointer; padding-right: 40px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236E6674' stroke-width='1.6' fill='none'/%3E%3C/svg%3E") no-repeat right 16px center; }
+  .zone { min-height: 130px; resize: vertical; }
+  .aide { font: 500 13px/1.5 var(--ui); color: var(--gris); }
+  .choix { display: flex; flex-wrap: wrap; gap: 8px; }
+  .choix label { cursor: pointer; }
+  .choix input { position: absolute; opacity: 0; pointer-events: none; }
+  .choix span { display: inline-block; font-size: 14px; font-weight: 600; padding: 10px 15px; border-radius: 99px; border: 1.5px solid var(--trait); transition: border-color .15s, background .15s, color .15s; }
+  .choix label:hover span { border-color: var(--gris); }
+  .choix input:checked + span { background: var(--encre); border-color: var(--encre); color: #fff; }
+  .choix input:focus-visible + span { outline: 2px solid var(--f2); outline-offset: 2px; }
+  .rang { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .envoyer { justify-self: start; border: 0; cursor: pointer; font: 700 16px var(--titre); color: #fff; padding: 16px 26px; border-radius: 14px; background: linear-gradient(118deg, var(--f1), var(--f2) 60%, var(--f3)); box-shadow: 0 18px 36px -16px rgba(110,34,19,.6); transition: filter .15s, transform .15s; }
+  .envoyer:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .envoyer:disabled { opacity: .7; cursor: progress; transform: none; }
+  .mention { font: 500 13px/1.5 var(--ui); color: var(--gris); }
+
+  /* Sous 1360 px, la colonne de gauche est trop étroite pour un titre à pleine taille : on passe sur une colonne. */
+  @media (max-width: 1360px) {
+    .contact { grid-template-columns: 1fr; gap: 40px; padding-bottom: 80px; }
+    /* Sur une colonne : l'intro, puis le formulaire, puis les étapes. */
+    .colonne { display: contents; }
+    .intro { min-height: 0; order: 1; }
+    .carte-form { order: 2; }
+    .etapes { order: 3; }
+    .rdv { order: 4; }
+  }
+  @media (max-width: 700px) {
+    /* Sur téléphone, le titre garde sa taille et se coupe aux endroits choisis, un groupe par ligne. */
+    .intro h1 { font-size: min(2.75rem, 12cqi); }
+    .intro h1 .groupe { display: block; }
+    .intro h1 br { display: none; }
+    .rang { grid-template-columns: 1fr; }
+    .carte-form { padding: 24px; border-radius: 24px; }
+  }
+</style>
