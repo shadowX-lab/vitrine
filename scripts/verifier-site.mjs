@@ -11,7 +11,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const RACINE = process.env.RACINE ?? 'http://localhost:4321/vitrine';
-const TOUTES = ['/', '/methode', '/realisations', '/realisations/chargeair', '/realisations/pilpoil', '/realisations/teamago', '/experience', '/contact', '/merci', '/mentions-legales', '/404'];
+const TOUTES = [
+  '/', '/methode', '/realisations', '/realisations/chargeair', '/realisations/pilpoil', '/realisations/teamago', '/experience', '/contact', '/merci', '/mentions-legales', '/404',
+  '/en/', '/en/method', '/en/work', '/en/work/chargeair', '/en/work/pilpoil', '/en/work/teamago', '/en/experience', '/en/contact', '/en/thank-you', '/en/legal-notice', '/en/404',
+];
+const anglaise = (page) => page.startsWith('/en/');
 const PAGES = process.argv.slice(2).length ? process.argv.slice(2) : TOUTES;
 const LARGEURS = [320, 375, 390, 768, 1024, 1440];
 const LARGEURS_TEXTE = [390, 1440];
@@ -37,7 +41,18 @@ ws.addEventListener('message', (e) => {
 const envoi = (method, params = {}) => new Promise((r) => { const n = ++id; attente.set(n, r); ws.send(JSON.stringify({ id: n, method, params })); });
 const ev = async (expression) => (await envoi('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true })).result?.value;
 const largeur = (w) => envoi('Emulation.setDeviceMetricsOverride', { width: w, height: 900, deviceScaleFactor: 1, mobile: w < 700 });
-const aller = async (chemin) => { await envoi('Page.navigate', { url: RACINE + chemin }); await attendre(1500); };
+const aller = async (chemin) => {
+  await envoi('Page.navigate', { url: RACINE + chemin });
+  const objectif = new URL(RACINE + chemin).pathname;
+  // Une machine chargée (autres processus Chrome en parallèle) peut mettre plus de 1500 ms à naviguer :
+  // on attend que l'URL et le chargement soient effectifs plutôt qu'un délai fixe, avec un filet de sécurité.
+  for (let i = 0; i < 60; i++) {
+    const [ici, pret] = await Promise.all([ev('location.pathname'), ev('document.readyState')]);
+    if (ici === objectif && pret === 'complete') break;
+    await attendre(200);
+  }
+  await attendre(300);
+};
 
 let echecs = 0;
 const verdict = (ok, message) => { if (!ok) echecs++; console.log(`${ok ? '✓' : '✗'} ${message}`); };
@@ -77,6 +92,23 @@ const MOTS_ISOLES = `(() => {
   return fautes;
 })()`;
 
+// Titre ajusté (data-ajuste) : chaque segment (entre <br> ou groupe en bloc) tient sur une seule ligne.
+const TITRE_AJUSTE = `(() => {
+  const h = document.querySelector('h1[data-ajuste]'); if (!h) return [];
+  const r = document.createRange(), segments = [[]], fautes = [];
+  const w = document.createTreeWalker(h, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+  while (w.nextNode()) {
+    const n = w.currentNode;
+    if (n.nodeType === 1) { if (n.tagName === 'BR' || getComputedStyle(n).display === 'block') segments.push([]); continue; }
+    if (!n.nodeValue.trim()) continue;
+    r.selectNodeContents(n);
+    // Deux lignes d'un titre sont séparées de toute une hauteur de ligne : un seau de 20 px absorbe les écarts de graisse.
+    for (const b of r.getClientRects()) segments.at(-1).push(Math.round(b.top / 20));
+  }
+  segments.filter((s) => new Set(s).size > 1).forEach(() => fautes.push(h.textContent.trim()));
+  return fautes;
+})()`;
+
 for (const page of PAGES) {
   for (const w of LARGEURS) {
     await largeur(w); await aller(page);
@@ -86,6 +118,8 @@ for (const page of PAGES) {
       const fautes = await ev(MOTS_ISOLES);
       verdict(fautes.length === 0, `${page} @${w}px : aucun mot isolé${fautes.length ? ' → ' + fautes.map((f) => `« …${f} »`).join(' ; ') : ''}`);
     }
+    const coupes = await ev(TITRE_AJUSTE);
+    verdict(coupes.length === 0, `${page} @${w}px : titre sans coupure imprévue${coupes.length ? ' → ' + coupes[0] : ''}`);
   }
   await largeur(1440); await aller(page);
   const liens = await ev(`[...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => h.startsWith('/'))`);
@@ -96,45 +130,61 @@ for (const page of PAGES) {
   }
   verdict(morts.length === 0, `${page} : liens internes${morts.length ? ' morts → ' + morts.join(', ') : ''}`);
   const logo = await ev(`document.querySelector('.entete .logo')?.getAttribute('href')`);
-  verdict(logo === '/vitrine' || logo === '/vitrine/', `${page} : le logo mène à l'accueil (${logo})`);
+  const attendu = anglaise(page) ? ['/vitrine/en/'] : ['/vitrine', '/vitrine/'];
+  verdict(attendu.includes(logo), `${page} : le logo mène à l'accueil de sa langue (${logo})`);
+  const langue = await ev(`document.documentElement.lang`);
+  const autreLangue = langue === 'fr' ? 'en' : 'fr';
+  const cibleEntete = await ev(`document.querySelector('.entete .langues a[hreflang="${autreLangue}"]')?.getAttribute('href')`);
+  const ciblePied = await ev(`document.querySelector('.pied .langues-pied a[hreflang="${autreLangue}"]')?.getAttribute('href')`);
+  const alternative = await ev(`document.querySelector('link[rel=alternate][hreflang="${autreLangue}"]')?.getAttribute('href') ?? null`);
+  const statut = cibleEntete ? await ev(`fetch(${JSON.stringify(cibleEntete)}).then((r) => r.status)`) : 0;
+  const coherent = cibleEntete === ciblePied && (alternative === null || new URL(alternative).pathname === cibleEntete);
+  verdict(langue === (anglaise(page) ? 'en' : 'fr') && statut === 200 && coherent, `${page} : sélecteur vers ${cibleEntete} (${statut})`);
 }
 
-// Interactions propres à certaines pages.
+// Interactions propres à certaines pages, indépendantes de la langue.
 await largeur(1440);
-if (PAGES.includes('/methode')) {
-  await aller('/methode');
-  await ev(`document.querySelector('a.marche[href="#valider"]').click()`); await attendre(1200);
-  const haut = await ev(`Math.round(document.getElementById('valider').getBoundingClientRect().top)`);
-  verdict(haut >= 0 && haut < 120, `/methode : la marche « Valider » amène à l'étape (${haut}px)`);
-}
-if (PAGES.includes('/experience')) {
-  await aller('/experience');
-  const ferme = await ev(`!document.querySelectorAll('details.terrain')[1].open`);
-  await ev(`document.querySelectorAll('details.terrain summary')[1].click()`);
-  const ouvert = await ev(`document.querySelectorAll('details.terrain')[1].open`);
-  verdict(ferme && ouvert, '/experience : un terrain se déplie au clic');
-}
-if (PAGES.includes('/contact')) {
-  await aller('/contact');
-  await ev(`document.querySelector('input[name=nom]').focus()`);
-  await envoi('Input.insertText', { text: 'Camille Martin' });
-  const nom = await ev(`document.querySelector('input[name=nom]').value`);
-  await ev(`document.querySelector('input[name=profil][value="Un particulier"]').click()`);
-  const cache = await ev(`getComputedStyle(document.getElementById('bloc-organisation')).display === 'none'`);
-  const piege = await ev(`document.querySelector('input[name=botcheck]').hidden`);
-  verdict(nom === 'Camille Martin' && cache && piege, '/contact : saisie, bascule particulier, champ anti-spam masqué');
-}
-if (PAGES.includes('/mentions-legales')) {
-  await aller('/mentions-legales');
-  await ev(`document.querySelector('.sommaire a[href="#cookies"]').click()`); await attendre(1200);
-  const actif = await ev(`document.querySelector('.sommaire a.actif')?.hash`);
-  verdict(actif === '#cookies', `/mentions-legales : le sommaire surligne la section atteinte (${actif})`);
-}
-if (PAGES.includes('/')) {
-  await largeur(390); await aller('/');
-  await ev(`document.querySelector('.menu-mobile summary').click()`);
-  const visible = await ev(`getComputedStyle(document.querySelector('.menu-mobile ul')).display !== 'none'`);
-  verdict(visible, '/ @390px : le menu mobile s’ouvre');
+for (const [methode, experience, contact, mentions, accueil] of [['/methode', '/experience', '/contact', '/mentions-legales', '/'], ['/en/method', '/en/experience', '/en/contact', '/en/legal-notice', '/en/']]) {
+  if (PAGES.includes(methode)) {
+    await aller(methode);
+    const ancre = await ev(`document.querySelectorAll('a.marche')[2].hash`);
+    await ev(`document.querySelectorAll('a.marche')[2].click()`); await attendre(1200);
+    const haut = await ev(`Math.round(document.querySelector(${JSON.stringify(ancre)}).getBoundingClientRect().top)`);
+    verdict(haut >= 0 && haut < 120, `${methode} : la troisième marche amène à son étape (${haut}px)`);
+  }
+  if (PAGES.includes(experience)) {
+    await aller(experience);
+    const ferme = await ev(`!document.querySelectorAll('details.terrain')[1].open`);
+    await ev(`document.querySelectorAll('details.terrain summary')[1].click()`);
+    const ouvert = await ev(`document.querySelectorAll('details.terrain')[1].open`);
+    verdict(ferme && ouvert, `${experience} : un terrain se déplie au clic`);
+  }
+  if (PAGES.includes(contact)) {
+    await aller(contact);
+    await ev(`document.querySelector('input[name=nom]').focus()`);
+    await envoi('Input.insertText', { text: 'Camille Martin' });
+    const nom = await ev(`document.querySelector('input[name=nom]').value`);
+    await ev(`document.querySelector('input[name=profil][data-profil=particulier]').click()`);
+    const cache = await ev(`getComputedStyle(document.getElementById('bloc-organisation')).display === 'none'`);
+    const piege = await ev(`document.querySelector('input[name=botcheck]').hidden`);
+    verdict(nom === 'Camille Martin' && cache && piege, `${contact} : saisie, bascule particulier, champ anti-spam masqué`);
+  }
+  if (PAGES.includes(mentions)) {
+    await aller(mentions);
+    const derniere = await ev(`[...document.querySelectorAll('.sommaire a')].at(-1).hash`);
+    await ev(`[...document.querySelectorAll('.sommaire a')].at(-1).click()`); await attendre(1200);
+    const actif = await ev(`document.querySelector('.sommaire a.actif')?.hash`);
+    verdict(actif === derniere, `${mentions} : le sommaire surligne la section atteinte (${actif})`);
+  }
+  if (PAGES.includes(accueil)) {
+    await largeur(390); await aller(accueil);
+    await ev(`document.querySelector('.menu-mobile summary').click()`);
+    const menu = await ev(`getComputedStyle(document.querySelector('.menu-mobile ul')).display !== 'none'`);
+    await ev(`document.querySelector('.menu-mobile summary').click(); document.querySelector('.langues summary').click()`);
+    const langues = await ev(`(() => { const b = document.querySelector('.langues ul').getBoundingClientRect(); return b.width > 0 && b.left >= 0 && b.right <= innerWidth; })()`);
+    verdict(menu && langues, `${accueil} @390px : menu mobile et mappemonde s’ouvrent dans l’écran`);
+    await largeur(1440);
+  }
 }
 
 ws.close();

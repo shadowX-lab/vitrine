@@ -195,6 +195,8 @@ const retour = new URL(lien('merci', langue), Astro.site).href;
   @media (max-width: 700px) {
     /* Sur téléphone, le titre garde sa taille et se coupe aux endroits choisis, un groupe par ligne. */
     .intro h1 { font-size: min(2.75rem, 12cqi); }
+    /* L'anglais est plus large à graisse égale (« A few sentences ») : coefficient réduit pour tenir sur une ligne. */
+    :global(html[lang='en']) .intro h1 { font-size: min(2.75rem, 10cqi); }
     .intro h1 .groupe { display: block; }
     .intro h1 br { display: none; }
     .rang { grid-template-columns: 1fr; }
