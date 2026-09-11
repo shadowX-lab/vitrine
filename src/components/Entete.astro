@@ -49,7 +49,10 @@ const courant = (p: Page) => (p === page || (p === 'realisations' && page === 'e
   .menu-mobile li a { display: block; padding: 12px 14px; border-radius: 10px; font-weight: 600; }
   .menu-mobile li a:hover, .menu-mobile a[aria-current='page'] { background: var(--voile); color: var(--f1); }
   @media (max-width: 760px) {
+    /* Mappemonde et menu côte à côte : l'écart d'ordinateur les pousserait hors de l'écran. */
+    .entete { gap: 8px; }
     .principale, .cta { display: none; }
     .menu-mobile { display: block; }
   }
+  @media (max-width: 380px) { .logo { font-size: 18px; } }
 </style>
