@@ -42,8 +42,8 @@ const boutonClair = new Set(['teamago']);
           <a class="btn" href={lien('etude', langue, p.slug)}><span>{t.lireEtude.avant} <span translate="no">{p.nom}</span> {t.lireEtude.apres}</span></a>
         </div>
         <div class="scene" aria-hidden="true">
-          <Iphone3D ecran={ecran(p.slug, p.heros[0].fichier)} largeur={230} haut={p.heros[0].haut} statut={p.heros[0].statut} priorite={i === 0} style="left:20px;top:-150px;transform:rotateY(22deg) rotateX(8deg) rotateZ(-8deg)" />
-          <Iphone3D ecran={ecran(p.slug, p.heros[1].fichier)} largeur={262} haut={p.heros[1].haut} statut={p.heros[1].statut} priorite={i === 0} style="left:220px;top:-110px;transform:rotateY(-18deg) rotateX(10deg) rotateZ(6deg);z-index:3" />
+          <Iphone3D ecran={ecran(p.slug, p.heros[0].fichier, langue)} largeur={230} haut={p.heros[0].haut} statut={p.heros[0].statut} priorite={i === 0} style="left:20px;top:-150px;transform:rotateY(22deg) rotateX(8deg) rotateZ(-8deg)" />
+          <Iphone3D ecran={ecran(p.slug, p.heros[1].fichier, langue)} largeur={262} haut={p.heros[1].haut} statut={p.heros[1].statut} priorite={i === 0} style="left:220px;top:-110px;transform:rotateY(-18deg) rotateX(10deg) rotateZ(6deg);z-index:3" />
         </div>
       </article>
     ); })}

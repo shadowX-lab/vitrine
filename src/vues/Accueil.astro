@@ -48,8 +48,8 @@ const inclinaisons = [
       </div>
       <div class="scene" aria-hidden="true">
         <div class="ombre"></div>
-        <Iphone3D ecran={ecran(derriere.projet, derriere.fichier)} largeur={236} haut={derriere.haut} priorite style="left:40px;top:10px;transform:rotateY(24deg) rotateX(8deg) rotateZ(-9deg)" />
-        <Iphone3D ecran={ecran(devant.projet, devant.fichier)} largeur={278} haut={devant.haut} statut={devant.statut} priorite style="left:230px;top:70px;transform:rotateY(-20deg) rotateX(10deg) rotateZ(6deg);z-index:3" />
+        <Iphone3D ecran={ecran(derriere.projet, derriere.fichier, langue)} largeur={236} haut={derriere.haut} priorite style="left:40px;top:10px;transform:rotateY(24deg) rotateX(8deg) rotateZ(-9deg)" />
+        <Iphone3D ecran={ecran(devant.projet, devant.fichier, langue)} largeur={278} haut={devant.haut} statut={devant.statut} priorite style="left:230px;top:70px;transform:rotateY(-20deg) rotateX(10deg) rotateZ(6deg);z-index:3" />
         <CarteFlottante classe="chip-chiens">
           <span class="rond">●</span>
           <span><b>{t.chipChiens.titre}</b><small>{t.chipChiens.sous}</small></span>
@@ -91,7 +91,7 @@ const inclinaisons = [
         <li class="etape">
           {i === 0 && <div class="vis" aria-hidden="true"><div class="doc"><b>{v.note}</b><div class="ligne" style="width:92%"></div><div class="ligne" style="width:78%"></div><div class="ligne" style="width:86%"></div><div class="ligne" style="width:60%"></div><div class="corr">✎ {v.correction}</div></div></div>}
           {i === 1 && <div class="vis" aria-hidden="true"><div class="cols"><div style="background:var(--voile)"><b>{v.v1}</b>{v.v1Items.map((s) => <span>{s}</span>)}</div><div style="background:#F3F0EE"><b>{v.plusTard}</b>{v.plusTardItems.map((s) => <span>{s}</span>)}</div></div></div>}
-          {i === 2 && <div class="vis" aria-hidden="true"><div class="mini"><Image src={ecran('teamago', 'Decompte')} alt="" width={110} densities={[1, 2]} /></div><span class="bulle" style="left:14px;top:40px">{v.remonter}</span><span class="bulle" style="right:12px;top:130px;background:#1F8A5B">✓ {v.valide}</span></div>}
+          {i === 2 && <div class="vis" aria-hidden="true"><div class="mini"><Image src={ecran('teamago', 'Decompte', langue)} alt="" width={110} densities={[1, 2]} /></div><span class="bulle" style="left:14px;top:40px">{v.remonter}</span><span class="bulle" style="right:12px;top:130px;background:#1F8A5B">✓ {v.valide}</span></div>}
           {i === 3 && <div class="vis" aria-hidden="true"><div class="tranches">{v.tranches.map((tr, k) => <div><span>{tr.nom}</span><em style={pastilles[k]}>{tr.etat}</em></div>)}</div></div>}
           <p class="delai">{e.delai}</p>
           <h3>{e.titre}</h3>
@@ -111,7 +111,7 @@ const inclinaisons = [
     </div>
     <div class="rangee" aria-hidden="true">
       {rangee.map((e, i) => (
-        <Iphone3D ecran={ecran(e.projet, e.fichier)} largeur={inclinaisons[i]!.w} haut={e.haut} statut={e.statut} style={`left:${inclinaisons[i]!.left};top:20px;transform:${inclinaisons[i]!.t}`} />
+        <Iphone3D ecran={ecran(e.projet, e.fichier, langue)} largeur={inclinaisons[i]!.w} haut={e.haut} statut={e.statut} style={`left:${inclinaisons[i]!.left};top:20px;transform:${inclinaisons[i]!.t}`} />
       ))}
     </div>
   </section>

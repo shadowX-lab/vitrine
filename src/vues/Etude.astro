@@ -43,8 +43,8 @@ const suivant = `--s-fond:linear-gradient(118deg, ${s.palette.p1}, ${s.palette.a
         </div>
         <div class="scene" aria-hidden="true">
           <div class="ombre"></div>
-          <Iphone3D ecran={ecran(p.slug, derriere.fichier)} largeur={236} haut={derriere.haut} statut={derriere.statut} priorite style="left:40px;top:20px;transform:rotateY(24deg) rotateX(8deg) rotateZ(-9deg)" />
-          <Iphone3D ecran={ecran(p.slug, devant.fichier)} largeur={280} haut={devant.haut} statut={devant.statut} priorite alt={`${p.nom}, ${t.etude.ecranPrincipal}`} style="left:236px;top:80px;transform:rotateY(-20deg) rotateX(10deg) rotateZ(6deg);z-index:3" />
+          <Iphone3D ecran={ecran(p.slug, derriere.fichier, langue)} largeur={236} haut={derriere.haut} statut={derriere.statut} priorite style="left:40px;top:20px;transform:rotateY(24deg) rotateX(8deg) rotateZ(-9deg)" />
+          <Iphone3D ecran={ecran(p.slug, devant.fichier, langue)} largeur={280} haut={devant.haut} statut={devant.statut} priorite alt={`${p.nom}, ${t.etude.ecranPrincipal}`} style="left:236px;top:80px;transform:rotateY(-20deg) rotateX(10deg) rotateZ(6deg);z-index:3" />
         </div>
       </div>
     </Bande>
@@ -67,7 +67,7 @@ const suivant = `--s-fond:linear-gradient(118deg, ${s.palette.p1}, ${s.palette.a
       <ol class="rang">
         {p.parcours.map((e) => (
           <li class="etape">
-            <div class="ecran"><Iphone3D ecran={ecran(p.slug, e.fichier)} largeur={210} haut={e.haut} statut={e.statut} alt={`${p.nom}, ${e.titre}`} style="left:50%;top:0;margin-left:-105px" /></div>
+            <div class="ecran"><Iphone3D ecran={ecran(p.slug, e.fichier, langue)} largeur={210} haut={e.haut} statut={e.statut} alt={`${p.nom}, ${e.titre}`} style="left:50%;top:0;margin-left:-105px" /></div>
             {e.suite && <span class="suite" aria-hidden="true">{e.suite}</span>}
             <h3>{e.titre}</h3>
             <p>{e.texte}</p>
@@ -107,7 +107,7 @@ const suivant = `--s-fond:linear-gradient(118deg, ${s.palette.p1}, ${s.palette.a
           <span class="aller">{t.etude.lire}</span>
         </span>
         <span class="apercu" aria-hidden="true">
-          <Iphone3D ecran={ecran(s.slug, s.heros[1].fichier)} largeur={230} haut={s.heros[1].haut} statut={s.heros[1].statut} style="left:0;top:0;transform:rotateZ(8deg)" />
+          <Iphone3D ecran={ecran(s.slug, s.heros[1].fichier, langue)} largeur={230} haut={s.heros[1].haut} statut={s.heros[1].statut} style="left:0;top:0;transform:rotateZ(8deg)" />
         </span>
       </a>
     </section>

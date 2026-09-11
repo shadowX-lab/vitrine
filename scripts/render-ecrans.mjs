@@ -6,12 +6,21 @@
  * feuilles de style dans <helmet>. On reconstruit un document propre, on l'écrit
  * à côté de l'original pour que les images relatives résolvent, et on
  * photographie la fenêtre en 390x844 avec Chrome en mode headless.
+ *
+ * Les écrans listés dans `scripts/ecrans-en/<projet>.mjs` sont aussi rendus en anglais, dans
+ * `src/assets/ecrans/en/`, avec le dictionnaire du même fichier. Un texte non traduit arrête le rendu.
+ *
+ * `npm run ecrans`                    tous les écrans, en français puis en anglais
+ * `npm run ecrans -- en pilpoil`      seulement l'anglais, seulement Pil'Poil
+ * `npm run ecrans -- pilpoil/Carte`   un seul écran
+ * `npm run ecrans -- --manquants en`  liste les textes anglais manquants, sans rien rendre
  */
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { anonymiser } from './anonymiser.mjs';
 import { retoucher } from './retouches.mjs';
+import { traduire } from './traduire-ecran.mjs';
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const RACINE = resolve(import.meta.dirname, '..');
@@ -24,11 +33,22 @@ const SOURCES = {
   teamago: join(PROJETS, 'Teamago/design'),
 };
 
-/** Extrait le contenu utile d'un artboard et le remonte dans un document standard. */
-function documentAutonome(source, projet, nom) {
+/** Écrans à rendre en anglais et leur dictionnaire, ou null si le projet n'en a pas. */
+async function versionAnglaise(projet) {
+  const fichier = join(import.meta.dirname, 'ecrans-en', `${projet}.mjs`);
+  return existsSync(fichier) ? import(fichier) : null;
+}
+
+/** Contenu de l'artboard tel qu'il sera photographié : anonymisé, retouché, traduit s'il le faut. */
+function contenu(source, projet, nom, dictionnaire) {
   const lu = readFileSync(source, 'utf8');
   // Les maquettes Teamago reprennent un vrai fichier de club : personnes et club deviennent fictifs.
   const brut = retoucher(projet, nom, projet === 'teamago' ? anonymiser(lu) : lu);
+  return dictionnaire ? traduire(brut, dictionnaire) : { html: brut, manquants: [] };
+}
+
+/** Extrait le contenu utile d'un artboard et le remonte dans un document standard. */
+function documentAutonome(brut, langue) {
   const helmet = brut.match(/<helmet>([\s\S]*?)<\/helmet>/i)?.[1] ?? '';
   const corps = brut
     .match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1]
@@ -37,15 +57,15 @@ function documentAutonome(source, projet, nom) {
     .trim() ?? '';
 
   return `<!doctype html>
-<html lang="fr"><head><meta charset="utf-8">
+<html lang="${langue}"><head><meta charset="utf-8">
 ${helmet}
 <style>html,body{margin:0;padding:0;width:390px;height:844px;overflow:hidden;background:#fff}</style>
 </head><body>${corps}</body></html>`;
 }
 
-function photographier(source, destination, projet, nom) {
+function photographier(source, destination, html, langue) {
   const temporaire = join(dirname(source), `.rendu-${Date.now()}.html`);
-  writeFileSync(temporaire, documentAutonome(source, projet, nom));
+  writeFileSync(temporaire, documentAutonome(html, langue));
   try {
     execFileSync(CHROME, [
       '--headless=new', '--disable-gpu', '--hide-scrollbars',
@@ -56,29 +76,49 @@ function photographier(source, destination, projet, nom) {
       '--virtual-time-budget=4000',
       `--screenshot=${destination}`,
       `file://${temporaire}`,
-    ], { stdio: 'pipe' });
+    // Filet de sécurité : un rendu dure quelques secondes, jamais deux minutes.
+    ], { stdio: 'pipe', timeout: 120000 });
   } finally {
     rmSync(temporaire, { force: true });
   }
 }
 
-let total = 0;
-// `npm run ecrans -- teamago pilpoil/Carte` ne rend que les projets ou les écrans nommés.
-const filtre = process.argv.slice(2);
+const options = process.argv.slice(2);
+const seulementManquants = options.includes('--manquants');
+const langues = ['fr', 'en'].filter((l) => options.includes(l));
+const filtre = options.filter((o) => !['fr', 'en', '--manquants'].includes(o));
+const rendues = langues.length ? langues : ['fr', 'en'];
 const retenu = (projet, nom) => !filtre.length || filtre.includes(projet) || filtre.includes(`${projet}/${nom}`);
+
+let total = 0;
+const manquantsParEcran = [];
 for (const [projet, dossier] of Object.entries(SOURCES)) {
   if (filtre.length && !filtre.some((f) => f === projet || f.startsWith(`${projet}/`))) continue;
   const manifeste = JSON.parse(readFileSync(join(dossier, 'canvas.json'), 'utf8'));
-  const cible = join(SORTIE, projet);
-  mkdirSync(cible, { recursive: true });
+  const anglais = await versionAnglaise(projet);
 
   for (const artboard of manifeste.artboards) {
     const nom = artboard.file.replace(/\.dc\.html$/, '');
     if (!retenu(projet, nom)) continue;
-    const destination = join(cible, `${nom}.png`);
-    photographier(join(dossier, artboard.file), destination, projet, nom);
-    console.log(`  ${projet}/${nom}.png  — ${artboard.title}`);
-    total++;
+    const source = join(dossier, artboard.file);
+    for (const langue of rendues) {
+      if (langue === 'en' && !anglais?.ecrans.includes(nom)) continue;
+      const { html, manquants } = contenu(source, projet, nom, langue === 'en' ? anglais.dictionnaire : null);
+      if (manquants.length) manquantsParEcran.push({ ecran: `${projet}/${nom}`, manquants });
+      if (seulementManquants || manquants.length) continue;
+      const cible = langue === 'fr' ? join(SORTIE, projet) : join(SORTIE, 'en', projet);
+      mkdirSync(cible, { recursive: true });
+      photographier(source, join(cible, `${nom}.png`), html, langue);
+      console.log(`  ${langue === 'en' ? 'en/' : ''}${projet}/${nom}.png  — ${artboard.title}`);
+      total++;
+    }
   }
 }
-console.log(`\n${total} écrans rendus dans src/assets/ecrans/`);
+
+for (const { ecran, manquants } of manquantsParEcran) {
+  console.log(`\n${ecran} : ${manquants.length} texte(s) sans traduction anglaise`);
+  for (const m of manquants) console.log(`  ${JSON.stringify(m)}`);
+}
+if (!seulementManquants) console.log(`\n${total} écrans rendus dans src/assets/ecrans/`);
+// Un écran anglais incomplet n'est pas rendu : l'image précédente resterait en place sans qu'on le voie.
+if (manquantsParEcran.length && !seulementManquants) process.exit(1);
