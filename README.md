@@ -2,14 +2,15 @@
 
 Site vitrine du studio **Moamind Solutions**. *Le produit avant le code.*
 
-Astro 5, statique, sans framework côté client. Publié automatiquement sur
-https://moamind-solutions.com (hébergement o2switch) à chaque `push` sur `main`.
+Astro 5, statique, sans framework côté client. Publié automatiquement chez
+o2switch à chaque `push` sur `main` : le français sur https://moamind-solutions.fr,
+l'anglais sur https://moamind-solutions.com.
 
 ## Démarrer
 
 ```bash
 npm install
-npm run dev       # http://localhost:4321/
+npm run dev       # http://localhost:4321/ (français) et /en/ (anglais)
 npm run build     # génère dist/
 npm test          # typographie, anonymisation, données des réalisations
 npm run verifier  # contrôles dans Chrome (lancer `npm run preview` avant)
@@ -81,8 +82,29 @@ docs/superpowers/           Spec et plan de la refonte Braise
 
 ## Hébergement et mise en ligne
 
-Le site est servi par **o2switch** sur **https://moamind-solutions.com**, à la
-racine (`site` dans `astro.config.mjs`, sans `base`).
+Deux domaines chez **o2switch**, déclarés dans `src/i18n/routes.ts` (`DOMAINES`) :
+
+| Domaine | Langue | Racine cPanel | Dossier de `dist/` |
+|---|---|---|---|
+| https://moamind-solutions.fr | français | `public_html` | `dist/` |
+| https://moamind-solutions.com | anglais | `public_html/en` | `dist/en/` |
+
+Les pages anglaises sont construites dans `dist/en/` avec des liens à la racine
+(`/method`, `/work`…). Après `astro build`, `scripts/preparer-domaines.mjs` y
+copie les ressources (`_astro/`, favicon, image de partage), place la 404 anglaise,
+écrit le plan du site anglais, les deux `robots.txt` et les deux `.htaccess`
+(générés depuis la table des routes par `scripts/htaccess.mjs`). En développement,
+un seul serveur sert les deux langues : l'anglais y est sous `/en/`.
+
+Chaque `.htaccess` impose `https` sans `www`, sert la 404 de sa langue, renvoie
+`moamind-solutions.fr/en/…` vers le domaine anglais, et gère la langue :
+
+- **Choix explicite** : le sélecteur (mappemonde, pied de page) mène à la page
+  équivalente de l'autre domaine avec `?langue=xx`, qui pose un cookie d'un an sur
+  ce domaine ; la détection ne s'y applique plus.
+- **Détection** : sans ce cookie, un navigateur qui n'est pas en français arrivant
+  sur le `.fr` part sur la page équivalente du `.com`, et un navigateur en français
+  arrivant sur le `.com` part sur le `.fr`. Les robots ne sont jamais redirigés.
 
 À chaque `push` sur `main`, `.github/workflows/deploy.yml` construit le site et
 envoie `dist/` dans `public_html` par FTPS : seuls les fichiers modifiés partent,
@@ -101,6 +123,3 @@ Actions) :
 Le dossier de destination vaut `public_html/`, valable pour l'identifiant
 cPanel. Pour un compte FTP dédié dont la racine est déjà `public_html`, créer la
 variable de dépôt `FTP_DOSSIER` avec la valeur `./`.
-
-`public/.htaccess` règle Apache : page 404, redirection vers
-`https://moamind-solutions.com` sans `www`, cache long des fichiers `/_astro/`.

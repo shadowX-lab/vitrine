@@ -264,8 +264,10 @@ pointillés, aucun texte en dégradé.
   rendez-vous isolés dans `src/config.ts`. Les messages arrivent sur l'adresse
   liée à la clé, qui n'apparaît nulle part sur le site ni dans ce dépôt.
 - **Déploiement** : à chaque push sur `main`, GitHub Actions construit le site
-  et l'envoie par FTPS chez o2switch, sur https://moamind-solutions.com (racine
-  du site). Détails et secrets requis dans le README.
+  et l'envoie par FTPS chez o2switch. Le français est sur
+  https://moamind-solutions.fr, l'anglais sur https://moamind-solutions.com ; la
+  langue du navigateur oriente vers le bon domaine, et le choix fait avec le
+  sélecteur est retenu. Détails dans le README.
 
 ## Ce qui reste à fournir
 

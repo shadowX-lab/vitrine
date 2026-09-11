@@ -20,7 +20,7 @@ const c = commun[langue];
     <span class="droite">
       <nav class="langues-pied" aria-label={c.langue.pied}>
         {LANGUES.map((l, i) => (
-          <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={equivalent(l, page, slug)} lang={l} hreflang={l} aria-current={l === langue ? 'true' : undefined}>{NOMS_LANGUES[l]}</a></>
+          <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={equivalent(l, langue, page, slug)} lang={l} hreflang={l} aria-current={l === langue ? 'true' : undefined}>{NOMS_LANGUES[l]}</a></>
         ))}
       </nav>
       <a href={lien('mentions', langue)}>{c.pied.mentions}</a>

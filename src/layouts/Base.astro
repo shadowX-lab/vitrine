@@ -3,9 +3,9 @@ import '../styles/global.css';
 import jakarta from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
 import Entete from '../components/Entete.astro';
 import PiedDePage from '../components/PiedDePage.astro';
-import { lien, ressource, STUDIO } from '../config';
+import { absolu, ressource, STUDIO } from '../config';
 import commun from '../i18n/commun';
-import { LANGUES, autre, type Langue, type Page } from '../i18n/routes';
+import { DOMAINES, LANGUES, autre, type Langue, type Page } from '../i18n/routes';
 
 interface Props {
   titre: string;
@@ -23,10 +23,10 @@ interface Props {
 const { titre, description, langue, page, slug, suffixe = true, indexer = true } = Astro.props;
 const c = commun[langue];
 const titreComplet = suffixe ? `${titre} · ${STUDIO.nom}` : titre;
-const canonique = new URL(Astro.url.pathname, Astro.site);
-/** Adresse absolue d'une version de la page, sous la même forme que la canonique (barre finale, comme GitHub Pages la sert). */
-const version = (l: Langue) => new URL(lien(page!, l, slug).replace(/\/?$/, '/'), Astro.site);
-const image = new URL(ressource('/og.png'), Astro.site);
+/** Adresse complète de la page dans une langue, avec la barre finale sous laquelle Apache sert un dossier. */
+const version = (l: Langue) => absolu(page!, l, slug).replace(/\/?$/, '/');
+const canonique = page ? version(langue) : undefined;
+const image = new URL(ressource('/og.png'), DOMAINES[langue]);
 ---
 
 <!doctype html>
@@ -37,7 +37,7 @@ const image = new URL(ressource('/og.png'), Astro.site);
     <title>{titreComplet}</title>
     <meta name="description" content={description} />
     {!indexer && <meta name="robots" content="noindex" />}
-    <link rel="canonical" href={canonique} />
+    {canonique && <link rel="canonical" href={canonique} />}
     {page && LANGUES.map((l) => <link rel="alternate" hreflang={l} href={version(l)} />)}
     {page && <link rel="alternate" hreflang="x-default" href={version('fr')} />}
     <meta name="theme-color" content="#6E2213" />
@@ -48,7 +48,7 @@ const image = new URL(ressource('/og.png'), Astro.site);
     <meta property="og:site_name" content={STUDIO.nom} />
     <meta property="og:title" content={titreComplet} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonique} />
+    {canonique && <meta property="og:url" content={canonique} />}
     <meta property="og:locale" content={langue === 'fr' ? 'fr_FR' : 'en_US'} />
     <meta property="og:locale:alternate" content={autre(langue) === 'fr' ? 'fr_FR' : 'en_US'} />
     <meta property="og:image" content={image} />

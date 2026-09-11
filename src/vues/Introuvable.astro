@@ -15,12 +15,6 @@ const t = textes[langue];
 const c = commun[langue];
 ---
 <Base titre={t.meta.titre} description={t.meta.description} langue={langue} indexer={false}>
-  {langue === 'fr' && (
-    <script is:inline slot="tete" define:vars={{ prefixe: lien('accueil', 'en'), cible: `${lien('accueil', 'en')}404/` }}>
-      // GitHub Pages ne sert qu'un 404.html : une adresse anglaise inconnue est renvoyée vers la 404 anglaise.
-      if (location.pathname.startsWith(prefixe) && location.pathname !== cible) location.replace(cible);
-    </script>
-  )}
   <Bande hauteur="820px" biais="64%" reserve="220px">
     <div class="perdu w">
       <div>

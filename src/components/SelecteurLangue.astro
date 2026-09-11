@@ -10,7 +10,7 @@ const { langue, page, slug } = Astro.props;
   <summary aria-label={commun[langue].langue.choisir}><Icone nom="globe" taille={20} /></summary>
   <ul>
     {LANGUES.map((l) => (
-      <li><a href={equivalent(l, page, slug)} lang={l} hreflang={l} aria-current={l === langue ? 'true' : undefined}>{NOMS_LANGUES[l]}</a></li>
+      <li><a href={equivalent(l, langue, page, slug)} lang={l} hreflang={l} aria-current={l === langue ? 'true' : undefined}>{NOMS_LANGUES[l]}</a></li>
     ))}
   </ul>
 </details>

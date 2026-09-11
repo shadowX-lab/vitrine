@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { ROUTES, LANGUES, chemin, autre } from '../src/i18n/routes.ts';
+import { ROUTES, LANGUES, DOMAINES, chemin, autre } from '../src/i18n/routes.ts';
 
 test('chaque page a une adresse dans chaque langue', () => {
   for (const [page, adresses] of Object.entries(ROUTES)) {
@@ -19,13 +19,18 @@ test('les adresses françaises actuelles ne changent pas', () => {
   assert.equal(chemin('mentions', 'fr'), '/mentions-legales');
 });
 
-test('les adresses anglaises sont sous /en/ et en anglais', () => {
-  assert.equal(chemin('accueil', 'en'), '/en/');
-  assert.equal(chemin('methode', 'en'), '/en/method');
-  assert.equal(chemin('realisations', 'en'), '/en/work');
-  assert.equal(chemin('etude', 'en', 'teamago'), '/en/work/teamago');
-  assert.equal(chemin('merci', 'en'), '/en/thank-you');
-  assert.equal(chemin('mentions', 'en'), '/en/legal-notice');
+test('les adresses anglaises sont en anglais, à la racine du domaine anglais', () => {
+  assert.equal(chemin('accueil', 'en'), '/');
+  assert.equal(chemin('methode', 'en'), '/method');
+  assert.equal(chemin('realisations', 'en'), '/work');
+  assert.equal(chemin('etude', 'en', 'teamago'), '/work/teamago');
+  assert.equal(chemin('merci', 'en'), '/thank-you');
+  assert.equal(chemin('mentions', 'en'), '/legal-notice');
+});
+
+test('chaque langue a son domaine', () => {
+  assert.equal(DOMAINES.fr, 'https://moamind-solutions.fr');
+  assert.equal(DOMAINES.en, 'https://moamind-solutions.com');
 });
 
 test('une étude de cas exige un slug', () => {

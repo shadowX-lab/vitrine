@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Bande from '../components/Bande.astro';
-import { CLE_FORMULAIRE, LIEN_RDV, lien } from '../config';
+import { CLE_FORMULAIRE, LIEN_RDV, absolu } from '../config';
 import commun from '../i18n/commun';
 import textes from '../i18n/contact';
 import type { Langue } from '../i18n/routes';
@@ -11,7 +11,7 @@ const { langue } = Astro.props;
 const t = textes[langue];
 const c = commun[langue];
 
-const retour = new URL(lien('merci', langue), Astro.site).href;
+const retour = absolu('merci', langue);
 ---
 <Base titre={t.meta.titre} description={t.meta.description} langue={langue} page="contact">
   <Bande hauteur="600px" biais="70%" reserve="0px">
