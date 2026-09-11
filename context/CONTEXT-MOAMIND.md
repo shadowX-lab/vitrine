@@ -261,15 +261,15 @@ pointillés, aucun texte en dégradé.
   `astro:assets` les sert en AVIF/WebP responsive. Le script est rejouable : on
   modifie une maquette, on relance, le site est à jour.
 - **Formulaire** : Web3Forms (clé publique, aucun serveur). Clé et lien de
-  rendez-vous isolés dans `src/config.ts`.
+  rendez-vous isolés dans `src/config.ts`. Les messages arrivent sur l'adresse
+  liée à la clé, qui n'apparaît nulle part sur le site ni dans ce dépôt.
 - **Déploiement** : GitHub Actions vers GitHub Pages à chaque push sur `main`.
 
 ## Ce qui reste à fournir
 
-- La clé d'accès Web3Forms (`src/config.ts` → `CLE_FORMULAIRE`).
 - L'URL de prise de rendez-vous Cal.com ou Calendly (`src/config.ts` → `LIEN_RDV`).
 - Les informations légales réelles (raison sociale, SIREN, hébergeur) dans
-  `src/pages/mentions-legales.astro`.
+  `src/i18n/mentions.ts` (versions française et anglaise).
 - Arbitrage à confirmer : les employeurs de la page Expérience sont décrits par
   secteur et non nommés, par cohérence avec la règle « aucune autre société ».
   À valider — les nommer renforcerait la preuve, mais exposerait l'employeur

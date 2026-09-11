@@ -1,9 +1,9 @@
-/** Réglages du site. Les deux constantes du haut sont à remplir. */
+/** Réglages du site. Seul le lien de rendez-vous reste à remplir. */
 
 import { chemin, type Langue, type Page } from './i18n/routes';
 
-/** Clé d'accès Web3Forms — https://web3forms.com (gratuit, aucun compte serveur). */
-export const CLE_FORMULAIRE = 'REMPLACER-PAR-VOTRE-CLE-WEB3FORMS';
+/** Clé d'accès Web3Forms (https://web3forms.com), liée à l'adresse qui reçoit les messages du formulaire. Publique par nature. */
+export const CLE_FORMULAIRE = '5aab8bf4-0583-44a1-a4b3-4360656005ea';
 
 /** URL de prise de rendez-vous (Cal.com, Calendly…). Laisser vide masque le bouton. */
 export const LIEN_RDV = '';
