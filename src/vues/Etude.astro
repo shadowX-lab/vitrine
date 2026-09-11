@@ -1,0 +1,197 @@
+---
+import Base from '../layouts/Base.astro';
+import Bande from '../components/Bande.astro';
+import Iphone3D from '../components/Iphone3D.astro';
+import Chiffres from '../components/Chiffres.astro';
+import AppelFinal from '../components/AppelFinal.astro';
+import Icone from '../components/Icone.astro';
+import { lien } from '../config';
+import { ecran } from '../lib/ecrans';
+import { parSlug, localiser, type Produit } from '../data/produits';
+import commun from '../i18n/commun';
+import textes from '../i18n/realisations';
+import type { Langue } from '../i18n/routes';
+
+interface Props { langue: Langue; produit: Produit }
+const { langue } = Astro.props;
+const t = textes[langue];
+const c = commun[langue];
+const p = localiser(Astro.props.produit, langue);
+const s = localiser(parSlug(p.suivant), langue);
+const [derriere, devant] = p.heros;
+const couleurs = [
+  `--p1:${p.palette.p1}`, `--p2:${p.palette.p2}`, `--p3:${p.palette.p3}`, `--p-accent:${p.palette.accent}`, `--p-voile:${p.palette.voile}`,
+  `--c1:${p.palette.voile}`, `--c3:${p.palette.voile}`, `--c-texte:${p.palette.p2}`, `--c-texte3:${p.palette.p2}`,
+].join(';');
+const suivant = `--s-fond:linear-gradient(118deg, ${s.palette.p1}, ${s.palette.accent} 60%, ${s.palette.p3});--s-clair:${s.palette.clair};--s-fonce:${s.palette.fonce}`;
+---
+<Base titre={`${p.nom} — ${p.baseline}`} description={p.resume} langue={langue} page="etude" slug={p.slug}>
+  <article class="etude" style={couleurs}>
+    <Bande couleurs={{ f1: p.palette.p1, f2: p.palette.p2, f3: p.palette.p3, lueur: p.palette.lueur }} hauteur="800px" biais="60%" reserve="320px">
+      <div class="ouv w">
+        <div>
+          <nav class="fil" aria-label={t.etude.filAria}><a href={lien('realisations', langue)}>{c.nav.realisations}</a> / <span aria-current="page" translate="no">{p.nom}</span></nav>
+          <span class="etiq">{t.etude.etiquette} · {p.annee}</span>
+          <h1 translate="no">{p.nom}</h1>
+          <p class="baseline">{p.baseline}</p>
+          <p class="resume">{p.resume}</p>
+          <dl class="fiche">
+            <div><dt>{t.etude.fiche.domaine}</dt><dd>{p.domaine}</dd></div>
+            <div><dt>{t.etude.fiche.plateforme}</dt><dd>{p.plateforme}</dd></div>
+            <div><dt>{t.etude.fiche.code}</dt><dd>{p.depot ? <a href={p.depot} target="_blank" rel="noopener">{t.etude.fiche.depotPublic}</a> : t.etude.fiche.depotPrive}</dd></div>
+          </dl>
+        </div>
+        <div class="scene" aria-hidden="true">
+          <div class="ombre"></div>
+          <Iphone3D ecran={ecran(p.slug, derriere.fichier)} largeur={236} haut={derriere.haut} statut={derriere.statut} priorite style="left:40px;top:20px;transform:rotateY(24deg) rotateX(8deg) rotateZ(-9deg)" />
+          <Iphone3D ecran={ecran(p.slug, devant.fichier)} largeur={280} haut={devant.haut} statut={devant.statut} priorite alt={`${p.nom}, ${t.etude.ecranPrincipal}`} style="left:236px;top:80px;transform:rotateY(-20deg) rotateX(10deg) rotateZ(6deg);z-index:3" />
+        </div>
+      </div>
+    </Bande>
+
+    <Chiffres elements={p.chiffres} largeur="64%" />
+
+    <section class="sec w">
+      <div class="probleme">
+        <h2 class="t2">{t.etude.depart}</h2>
+        <div class="texte long">
+          {p.probleme.map((x) => <p>{x}</p>)}
+          <p class="citation">{p.citation}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec w parcours">
+      <h2 class="t2">{t.etude.parcours}</h2>
+      <p class="lead">{p.parcoursIntro}</p>
+      <ol class="rang">
+        {p.parcours.map((e) => (
+          <li class="etape">
+            <div class="ecran"><Iphone3D ecran={ecran(p.slug, e.fichier)} largeur={210} haut={e.haut} statut={e.statut} alt={`${p.nom}, ${e.titre}`} style="left:50%;top:0;margin-left:-105px" /></div>
+            {e.suite && <span class="suite" aria-hidden="true">{e.suite}</span>}
+            <h3>{e.titre}</h3>
+            <p>{e.texte}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="sec w">
+      <div class="benefices">
+        <div class="collant">
+          <h2 class="t2">{t.etude.benefices.titre}</h2>
+          <p class="lead">{t.etude.benefices.lead}</p>
+        </div>
+        <div class="liste-benefices">
+          {p.benefices.map((b) => (
+            <article class="benefice">
+              <div class="ico"><Icone nom={b.icone} taille={26} /></div>
+              <div><h3>{b.titre}</h3><p class="long">{b.texte}</p></div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="sec w livres">
+      <h2 class="t2">{t.etude.livre}</h2>
+      <ul class="livrables">{p.livre.map((l) => <li>{l}</li>)}</ul>
+    </section>
+
+    <section class="w suite-section">
+      <a class="suivant" href={lien('etude', langue, s.slug)} style={suivant}>
+        <span>
+          <span class="petit">{t.etude.suivante}</span>
+          <span class="nom" translate="no">{s.nom}</span>
+          <span class="accroche">{s.baseline}</span>
+          <span class="aller">{t.etude.lire}</span>
+        </span>
+        <span class="apercu" aria-hidden="true">
+          <Iphone3D ecran={ecran(s.slug, s.heros[1].fichier)} largeur={230} haut={s.heros[1].haut} statut={s.heros[1].statut} style="left:0;top:0;transform:rotateZ(8deg)" />
+        </span>
+      </a>
+    </section>
+  </article>
+
+  <AppelFinal titre={t.etude.appel.titre} texte={t.etude.appel.texte} langue={langue} />
+</Base>
+
+<style>
+  /* ---------- ouverture à la couleur du produit ---------- */
+  .ouv { display: grid; grid-template-columns: minmax(0, 600px) minmax(0, 1fr); gap: 24px; padding-top: 40px; min-height: 760px; }
+  .fil { font-size: 14px; opacity: .85; margin-bottom: 26px; }
+  .fil a { text-decoration: underline; text-underline-offset: 3px; }
+  .fil span { font-weight: 600; }
+  h1 { font-size: clamp(3.5rem, 7vw, 5.25rem); line-height: .95; letter-spacing: -.05em; margin-bottom: 14px; }
+  .baseline { font-size: clamp(1.25rem, 2.2vw, 1.625rem); line-height: 1.25; font-weight: 700; letter-spacing: -.02em; margin-bottom: 18px; max-width: 480px; }
+  .resume { font-size: 18px; line-height: 1.55; color: rgba(255,255,255,.86); max-width: 500px; margin-bottom: 30px; }
+  .fiche { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; }
+  .fiche div { font-size: 13.5px; padding: 10px 14px; border-radius: 12px; background: rgba(0,0,0,.16); border: 1px solid rgba(255,255,255,.14); }
+  .fiche dt { font-size: 11px; opacity: .75; margin-bottom: 2px; }
+  .fiche dd { margin: 0; }
+  .fiche a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+  .scene { position: relative; perspective: 1700px; width: 560px; height: 760px; }
+  .ombre { position: absolute; left: 160px; top: 750px; width: 360px; height: 60px; border-radius: 50%; filter: blur(28px); background: color-mix(in srgb, var(--p1) 45%, transparent); }
+
+  /* ---------- point de départ ---------- */
+  .probleme { display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px; }
+  .texte p { font-size: 18px; line-height: 1.7; color: var(--encre-2); margin-bottom: 18px; }
+  .texte .citation { margin-top: 30px; padding: 24px 28px; border-radius: 22px; background: var(--p-voile); font-size: 21px; line-height: 1.4; font-weight: 700; letter-spacing: -.015em; color: var(--p2); }
+
+  /* ---------- parcours ---------- */
+  .parcours { background: var(--creme); }
+  .rang { list-style: none; margin: 56px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+  .etape { position: relative; }
+  .ecran { position: relative; height: 470px; perspective: 1400px; }
+  .etape h3 { font-size: 20px; font-weight: 800; letter-spacing: -.02em; margin: 22px 0 8px; }
+  .etape p { font-size: 14.5px; line-height: 1.55; color: var(--encre-2); }
+  .suite { position: absolute; top: 200px; right: -26px; z-index: 4; font: 600 11.5px var(--ui); background: var(--p-accent); color: #fff; padding: 7px 11px; border-radius: 99px; white-space: nowrap; box-shadow: 0 10px 22px -10px rgba(0,0,0,.4); }
+  .suite::after { content: ' →'; }
+
+  /* ---------- bénéfices ---------- */
+  .benefices { display: grid; grid-template-columns: 380px 1fr; gap: 80px; align-items: start; }
+  .collant { position: sticky; top: 40px; }
+  .liste-benefices { display: grid; gap: 16px; }
+  .benefice { border: 1px solid var(--trait); border-radius: 26px; padding: 32px 34px; display: grid; grid-template-columns: 56px 1fr; gap: 22px; }
+  .benefice .ico { width: 56px; height: 56px; border-radius: 16px; background: var(--p-voile); color: var(--p-accent); margin: 0; }
+  .benefice h3 { font-size: 24px; letter-spacing: -.025em; font-weight: 800; margin: 4px 0 12px; }
+  .benefice p { font-size: 16px; line-height: 1.65; color: var(--encre-2); }
+
+  /* ---------- livrables ---------- */
+  .livres { background: var(--creme); }
+  .livrables { list-style: none; margin: 44px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .livrables li { border-radius: 22px; background: #fff; border: 1px solid var(--trait); padding: 22px; font-size: 15px; font-weight: 600; line-height: 1.45; }
+  .livrables li::before { content: '✓'; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--p-accent); color: #fff; font-size: 14px; margin-bottom: 16px; }
+
+  /* ---------- étude suivante ---------- */
+  .suite-section { padding-block: 110px; }
+  .suivant { border-radius: 32px; background: var(--s-fond); color: #fff; padding: 56px 60px; display: grid; grid-template-columns: 1fr 300px; gap: 40px; position: relative; overflow: hidden; min-height: 300px; transition: transform .2s ease; }
+  .suivant:hover { transform: translateY(-3px); }
+  .suivant .petit { display: block; font-size: 13px; font-weight: 700; color: var(--s-clair); }
+  .suivant .nom { display: block; font-size: clamp(2.5rem, 5vw, 3.5rem); letter-spacing: -.045em; font-weight: 800; margin: 10px 0 8px; line-height: 1; }
+  .suivant .accroche { display: block; font-size: 19px; margin-bottom: 26px; opacity: .88; }
+  .suivant .aller { display: inline-flex; font-weight: 700; background: var(--s-clair); color: var(--s-fonce); padding: 13px 20px; border-radius: 14px; }
+  .apercu { position: relative; }
+  .apercu :global(.iphone) { top: 0; }
+
+  /* ---------- adaptation ---------- */
+  @media (max-width: 1360px) { .scene { zoom: .9; } }
+  @media (max-width: 1100px) {
+    .ouv { grid-template-columns: 1fr; min-height: 0; }
+    .scene { zoom: .8; margin: 40px auto 0; }
+    .probleme, .benefices { grid-template-columns: 1fr; gap: 40px; }
+    .collant { position: static; }
+    .rang { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 48px; }
+    .suite { display: none; }
+    .livrables { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .suivant { grid-template-columns: 1fr; }
+    .apercu { display: none; }
+  }
+  @media (max-width: 700px) {
+    .scene { zoom: .56; }
+    .rang, .livrables { grid-template-columns: 1fr; }
+    .benefice { grid-template-columns: 1fr; padding: 26px; }
+    .suivant { padding: 36px 28px; }
+  }
+  @media (max-width: 380px) { .scene { zoom: .5; } }
+</style>

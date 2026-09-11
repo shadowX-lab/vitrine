@@ -1,0 +1,88 @@
+---
+import Base from '../layouts/Base.astro';
+import Bande from '../components/Bande.astro';
+import Iphone3D from '../components/Iphone3D.astro';
+import AppelFinal from '../components/AppelFinal.astro';
+import { lien } from '../config';
+import { ecran } from '../lib/ecrans';
+import { produits, localiser } from '../data/produits';
+import commun from '../i18n/commun';
+import textes from '../i18n/realisations';
+import type { Langue } from '../i18n/routes';
+
+interface Props { langue: Langue }
+const { langue } = Astro.props;
+const t = textes[langue];
+const c = commun[langue];
+
+/** Le citron de Teamago porte les boutons ; les autres produits gardent un bouton blanc. */
+const boutonClair = new Set(['teamago']);
+---
+<Base titre={t.meta.titre} description={t.meta.description} langue={langue} page="realisations">
+  <Bande hauteur="620px" biais="62%" reserve="0px">
+    <div class="ouv w">
+      <span class="etiq">{t.etiquette}</span>
+      <h1>{t.titre.gras}<br /><span class="leger">{t.titre.leger}</span></h1>
+      <p class="sous">{t.sous}</p>
+    </div>
+  </Bande>
+
+  <div class="liste">
+    {produits.map((produit, i) => { const p = localiser(produit, langue); return (
+      <article
+        class:list={['produit', { 'produit--clair': boutonClair.has(p.slug) }]}
+        style={`--p1:${p.palette.p1};--p2:${p.palette.p2};--p3:${p.palette.p3};--accent:${p.palette.accent};--lueur:${p.palette.lueur};--c:${p.palette.contraste};--clair:${p.palette.clair};--fonce:${p.palette.fonce}`}
+      >
+        <div class="texte">
+          <span class="domaine">{p.domaine} · {p.plateforme}</span>
+          <h2 translate="no">{p.nom}</h2>
+          <p class="base">{p.baseline}</p>
+          <p class="res">{p.resume}</p>
+          <ul class="choix">{p.benefices.map((b) => <li>{b.titre}</li>)}</ul>
+          <a class="btn" href={lien('etude', langue, p.slug)}><span>{t.lireEtude.avant} <span translate="no">{p.nom}</span> {t.lireEtude.apres}</span></a>
+        </div>
+        <div class="scene" aria-hidden="true">
+          <Iphone3D ecran={ecran(p.slug, p.heros[0].fichier)} largeur={230} haut={p.heros[0].haut} statut={p.heros[0].statut} priorite={i === 0} style="left:20px;top:-150px;transform:rotateY(22deg) rotateX(8deg) rotateZ(-8deg)" />
+          <Iphone3D ecran={ecran(p.slug, p.heros[1].fichier)} largeur={262} haut={p.heros[1].haut} statut={p.heros[1].statut} priorite={i === 0} style="left:220px;top:-110px;transform:rotateY(-18deg) rotateX(10deg) rotateZ(6deg);z-index:3" />
+        </div>
+      </article>
+    ); })}
+  </div>
+
+  <AppelFinal titre={t.appel.titre} texte={t.appel.texte} langue={langue} />
+</Base>
+
+<style>
+  .ouv { padding-top: 56px; padding-bottom: 40px; }
+  .ouv h1 { max-width: 680px; }
+  .ouv .sous { max-width: 640px; }
+
+  /* Chaque produit : une grande carte dans sa couleur, dont les téléphones débordent par le haut. */
+  .liste { display: grid; gap: 120px; padding: 240px var(--gouttiere) 130px; margin-top: -110px; }
+  .produit { position: relative; border-radius: 40px; color: #fff; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 64px; min-height: 540px;
+    background: radial-gradient(60% 80% at 90% 10%, var(--lueur), transparent 60%), linear-gradient(118deg, var(--p1), var(--accent) 60%, var(--p3)); }
+  .produit:nth-child(even) .scene { order: -1; }
+  .scene { position: relative; perspective: 1700px; width: 500px; min-height: 420px; justify-self: center; }
+  .domaine { display: inline-block; font-size: 13px; font-weight: 700; padding: 8px 13px; border-radius: 99px; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.24); margin-bottom: 20px; }
+  h2 { font-size: clamp(3.25rem, 6vw, 4.5rem); letter-spacing: -.05em; font-weight: 800; line-height: .95; margin-bottom: 12px; }
+  .base { font-size: clamp(1.25rem, 2vw, 1.5rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.25; margin-bottom: 16px; }
+  .res { font-size: 17px; line-height: 1.6; color: rgba(255,255,255,.86); margin-bottom: 26px; max-width: 480px; }
+  .choix { list-style: none; margin: 0 0 32px; padding: 0; display: grid; gap: 10px; }
+  .choix li { display: flex; gap: 12px; align-items: center; font-size: 15px; font-weight: 600; }
+  .choix li::before { content: '✓'; flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.18); font-size: 12px; }
+  .btn { background: #fff; color: var(--c); box-shadow: 0 18px 40px -18px rgba(0,0,0,.5); }
+  .produit--clair .choix li::before { background: var(--clair); color: var(--fonce); }
+  .produit--clair .btn { background: var(--clair); color: var(--fonce); }
+
+  @media (max-width: 1100px) {
+    .liste { padding-top: 200px; gap: 170px; }
+    .produit { grid-template-columns: 1fr; padding: 48px 32px 40px; }
+    .scene { order: -1; zoom: .8; min-height: 330px; }
+  }
+  @media (max-width: 700px) {
+    .liste { padding-top: 170px; gap: 140px; }
+    .produit { padding: 36px 24px 32px; border-radius: 30px; }
+    .scene { zoom: .56; min-height: 300px; }
+  }
+  @media (max-width: 380px) { .scene { zoom: .46; } }
+</style>

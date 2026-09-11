@@ -1,10 +1,10 @@
 ---
-import Etude from '../../vues/Etude.astro';
-import { produits, type Produit } from '../../data/produits';
+import Etude from '../../../vues/Etude.astro';
+import { produits, type Produit } from '../../../data/produits';
 
 export function getStaticPaths() {
   return produits.map((produit) => ({ params: { slug: produit.slug }, props: { produit } }));
 }
 const { produit } = Astro.props as { produit: Produit };
 ---
-<Etude langue="fr" produit={produit} />
+<Etude langue="en" produit={produit} />
