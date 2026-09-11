@@ -2,9 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// Le site est publié par GitHub Pages sur son propre domaine, à la racine. Le domaine
-// est déclaré dans les réglages Pages du dépôt (un fichier CNAME serait ignoré par
-// un déploiement GitHub Actions).
+// Le site est servi par o2switch à la racine de son domaine (voir README, « Hébergement »).
 export default defineConfig({
   site: 'https://moamind-solutions.com',
   trailingSlash: 'ignore',

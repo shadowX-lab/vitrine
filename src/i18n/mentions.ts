@@ -31,7 +31,7 @@ const fr = {
       id: 'hebergement',
       court: 'Hébergement',
       titre: 'Hébergement',
-      paragraphes: ['Le site est hébergé par GitHub Pages, GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis.'],
+      paragraphes: ['Le site est hébergé par o2switch, SAS au capital de 100&nbsp;000&nbsp;€, RCS Clermont-Ferrand 510&nbsp;909&nbsp;807, Chemin des Pardiaux, 63000 Clermont-Ferrand, France. Téléphone&nbsp;: 04&nbsp;44&nbsp;44&nbsp;60&nbsp;40.'],
     },
     {
       id: 'propriete',
@@ -91,7 +91,7 @@ const en: typeof fr = {
       id: 'hosting',
       court: 'Hosting',
       titre: 'Hosting',
-      paragraphes: ['The site is hosted by GitHub Pages, GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, United States.'],
+      paragraphes: ['The site is hosted by o2switch, a French simplified joint-stock company (SAS) with a share capital of €100,000, registered in Clermont-Ferrand under number 510 909 807, Chemin des Pardiaux, 63000 Clermont-Ferrand, France. Phone: +33 4 44 44 60 40.'],
     },
     {
       id: 'intellectual-property',

@@ -3,7 +3,7 @@
 Site vitrine du studio **Moamind Solutions**. *Le produit avant le code.*
 
 Astro 5, statique, sans framework côté client. Publié automatiquement sur
-GitHub Pages à chaque `push` sur `main`.
+https://moamind-solutions.com (hébergement o2switch) à chaque `push` sur `main`.
 
 ## Démarrer
 
@@ -79,10 +79,28 @@ tests/                      Tests `node:test`
 docs/superpowers/           Spec et plan de la refonte Braise
 ```
 
-## Domaine
+## Hébergement et mise en ligne
 
-Le site est publié sur **https://moamind-solutions.com**, à la racine
-(`site` dans `astro.config.mjs`, sans `base`). Le domaine est déclaré dans les
-réglages GitHub Pages du dépôt : avec un déploiement GitHub Actions, un fichier
-`public/CNAME` serait ignoré. Pour changer de domaine : modifier `site`, puis le
-domaine personnalisé dans les réglages Pages et les enregistrements DNS.
+Le site est servi par **o2switch** sur **https://moamind-solutions.com**, à la
+racine (`site` dans `astro.config.mjs`, sans `base`).
+
+À chaque `push` sur `main`, `.github/workflows/deploy.yml` construit le site et
+envoie `dist/` dans `public_html` par FTPS : seuls les fichiers modifiés partent,
+et ceux qu'une publication précédente avait envoyés puis qui ont disparu sont
+supprimés. Le reste de `public_html` (par exemple `cgi-bin/`) n'est jamais touché.
+
+Le workflow lit trois secrets du dépôt (Settings → Secrets and variables →
+Actions) :
+
+| Secret | Valeur |
+|---|---|
+| `FTP_SERVEUR` | nom du serveur o2switch indiqué dans cPanel (ex. `xxxx.o2switch.net`) |
+| `FTP_UTILISATEUR` | identifiant cPanel ou d'un compte FTP dédié |
+| `FTP_MOT_DE_PASSE` | son mot de passe |
+
+Le dossier de destination vaut `public_html/`, valable pour l'identifiant
+cPanel. Pour un compte FTP dédié dont la racine est déjà `public_html`, créer la
+variable de dépôt `FTP_DOSSIER` avec la valeur `./`.
+
+`public/.htaccess` règle Apache : page 404, redirection vers
+`https://moamind-solutions.com` sans `www`, cache long des fichiers `/_astro/`.
