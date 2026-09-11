@@ -9,9 +9,16 @@ GitHub Pages à chaque `push` sur `main`.
 
 ```bash
 npm install
-npm run dev      # http://localhost:4321/vitrine/
-npm run build    # génère dist/
+npm run dev       # http://localhost:4321/vitrine/
+npm run build     # génère dist/
+npm test          # typographie, anonymisation, données des réalisations
+npm run verifier  # contrôles dans Chrome (lancer `npm run preview` avant)
 ```
+
+`npm run verifier` parcourt les onze pages à 320, 375, 390, 768, 1024 et
+1440 px : aucun défilement horizontal, aucun mot isolé en fin de ligne, liens
+internes valides, et les interactions (menu mobile, terrains dépliables,
+formulaire, ancres). Il s'arrête en erreur au moindre échec.
 
 ## À remplir avant la mise en ligne
 
@@ -31,7 +38,8 @@ Les captures de Pil'Poil, ChargeAir et Teamago ne sont pas dessinées à la main
 elles sont **rendues depuis les maquettes d'origine** des trois projets.
 
 ```bash
-npm run ecrans
+npm run ecrans            # les trois projets
+npm run ecrans -- teamago # un seul projet
 ```
 
 [`scripts/render-ecrans.mjs`](scripts/render-ecrans.mjs) lit le `canvas.json` de
@@ -43,19 +51,32 @@ chaque artboard `.dc.html` en document autonome, et le photographie en 390 × 84
 Modifiez une maquette dans le projet d'origine, relancez la commande : le site
 est à jour. Les trois dossiers projet doivent être présents à côté de celui-ci.
 
+Le rendu impose le thème clair, quelle que soit l'apparence du Mac. Les écrans
+Teamago reprennent un vrai fichier de club : au rendu,
+[`scripts/anonymiser.mjs`](scripts/anonymiser.mjs) remplace les personnes et le
+club par des équivalents fictifs. Les maquettes d'origine ne sont pas modifiées.
+
 ## Structure
 
 ```
 context/CONTEXT-MOAMIND.md  Source unique du contenu — positionnement, méthode,
                             fiche de chaque produit. À lire en premier.
 src/config.ts               Réglages du site (clés, liens, helper de base URL)
-src/data/produits.ts        Contenu des trois études de cas
-src/styles/global.css       Jetons de design, liseré, bandes d’écran
+src/data/produits.ts        Contenu des trois réalisations (données pures, testées)
+src/lib/ecrans.ts           Résolution des écrans rendus
+src/lib/typo.ts             Typographie française (mots liés, espaces insécables)
+src/middleware.ts           Applique la typographie à chaque page rendue
+src/styles/global.css       Jetons « Braise », socle, utilitaires
 src/layouts/                Gabarit de page
-src/components/             En-tête, pied de page, téléphone, appel à l'action
+src/components/             Bandeau en biais, iPhone 3D, chiffres, appel final,
+                            en-tête (menu mobile), pied de page
 src/pages/                  Une page par fichier ; realisations/[slug].astro
                             génère une étude de cas par produit
 scripts/render-ecrans.mjs   Rendu des maquettes en images
+scripts/anonymiser.mjs      Personnes et club fictifs sur les écrans Teamago
+scripts/verifier-site.mjs   Contrôles du site construit dans Chrome
+tests/                      Tests `node:test`
+docs/superpowers/           Spec et plan de la refonte Braise
 ```
 
 ## Changer de domaine

@@ -1,7 +1,7 @@
 # Moamind Solutions — Contexte du projet
 
 > Fichier de référence du site vitrine. Toute affirmation publiée sur le site
-> doit pouvoir être retrouvée ici. Mis à jour le 9 septembre 2026.
+> doit pouvoir être retrouvée ici. Mis à jour le 10 septembre 2026.
 
 ## En une phrase
 
@@ -23,14 +23,16 @@ Trois mots, et c'est tout le nom :
 Les trois mots se superposent aux temps de la méthode : écouter et cadrer (MOA),
 valider (Mind), construire (Solutions).
 
-**Aucun symbole.** Le logo est le mot-marque seul — « Moamind » en Newsreader,
-« SOLUTIONS » en petites capitales bronze. Une version antérieure à trois
+**Aucun symbole.** Le logo est le mot-marque seul : « Moamind » en Plus Jakarta
+Sans gras, « Solutions » en léger. Une version antérieure à trois
 cercles a été écartée : elle évoquait une enseigne d'optique.
 
 **Historique.** Le site a d'abord été conçu sous le nom « Cadran » (direction
 « papier et graduations », serif éditorial fin), puis sous une première version
 Moamind à trois cercles et typographie Fraunces. Le 10 septembre 2026, la
-direction devient « éditoriale » et le discours passe du portfolio au service.
+direction devient « éditoriale » et le discours passe du portfolio au service ;
+le même jour, cette direction, jugée trop proche des sites générés par IA, est
+remplacée par la direction « Braise » (voir plus bas).
 
 ## Positionnement
 
@@ -39,11 +41,10 @@ l'inverse : le temps passé à ne pas construire la mauvaise chose. L'argument
 n'est pas moral, il est économique — une fonctionnalité mal cadrée coûte le
 développement, plus le retrait, plus la confiance perdue.
 
-**Ce qui rend la promesse vérifiable :** le studio construit ses propres
-produits. Pil'Poil, ChargeAir et Teamago ne sont pas des références clients, ce
-sont des produits maison, et le site le dit explicitement. Chacun expose une
-décision de conception argumentée et les écrans qui en découlent. C'est une
-démonstration de méthode, pas un portfolio de prestations.
+**Ce qui rend la promesse vérifiable :** les réalisations. Pil'Poil, ChargeAir
+et Teamago sont présentées sans dire qui les a créées ni qu'il s'agit de projets
+personnels : chacune est racontée par son problème de départ, ce qu'elle change
+pour ceux qui s'en servent (trois bénéfices) et les écrans qui en sont sortis.
 
 ## Voix
 
@@ -55,7 +56,8 @@ Règle stricte, valable sur **toutes** les pages :
   « je construis », « je vous réponds sous deux jours ».
 - **« nous » n'est jamais employé** pour désigner le studio, et le site ne dit
   jamais combien de personnes y travaillent — ni qu'il n'y en a qu'une.
-- **Sur la page d'accueil, aucune première personne du tout.** Ni « je », ni
+- **Sur l'accueil, Réalisations, les études de cas, Contact et Message reçu,
+  aucune première personne du studio.** Ni « je », ni
   « j'ai », ni « mon ». On y emploie « on », « vous », ou des tournures sans
   sujet (« les écrans sont dessinés », « rien ne se construit avant »). Seule
   exception : « Décrire mon projet », où c'est le visiteur qui parle de son
@@ -103,6 +105,10 @@ Décidées le 10 septembre 2026, elles s'appliquent à toute évolution du site.
    net, de sorte qu'aucun écran n'est jamais donné en entier. Aucune légende,
    aucune marque. Le suspens est le moteur du clic vers les réalisations.
 
+   **Mise à jour du 10 septembre 2026 :** les écrans de l'accueil sont dans des
+   iPhone en 3D ; celui de devant, dans le hero, est visible en entier. La règle
+   « aucun nom d'application » demeure.
+
    **Piège à connaître :** certains artboards affichent le nom de leur
    application dans le contenu. `chargeair/Main` et `chargeair/Reservation`
    (« Frais de service ChargeAir ») ainsi que `pilpoil/Main` et `pilpoil/Profil`
@@ -129,6 +135,11 @@ Décidées le 10 septembre 2026, elles s'appliquent à toute évolution du site.
    `<details>` que le visiteur ouvre s'il le souhaite. Les mots-clés doivent se
    lire d'un coup d'œil, sans rien déplier.
 
+8. **Aucune personne réelle sur les écrans.** Les écrans Teamago reprennent
+   un vrai fichier de club : au rendu, `scripts/anonymiser.mjs` remplace les
+   neuf personnes par des personnes fictives et le club par « Les Hérons ». Les
+   maquettes d'origine ne sont pas modifiées.
+
 ## Structure du site
 
 | Page | Rôle |
@@ -137,7 +148,7 @@ Décidées le 10 septembre 2026, elles s'appliquent à toute évolution du site.
 | `/methode` | Les quatre temps, avec livrables, délais et engagements |
 | `/realisations` | Index des produits |
 | `/realisations/<slug>` | Étude de cas : problème, parcours en quatre écrans, décisions, livrables |
-| `/experience` | Le nom, ce que quinze ans changent, les terrains dépliables, les convictions, les outils |
+| `/experience` | Le nom, ce que quinze ans changent (développeur, chef de projet, Product Owner, Business Analyst), les terrains dépliables, les convictions, les outils |
 | `/contact` | Formulaire de brief |
 | `/merci`, `/mentions-legales`, 404 | Pages de service |
 
@@ -213,23 +224,28 @@ Accroche du produit : « Everything but the game. »
 
 ## Direction artistique du site
 
-Direction « éditoriale » : haut de gamme par la retenue et l'espace, accessible
-par la chaleur du papier. Elle doit parler autant à un particulier qu'à une
-entreprise.
+Direction « Braise », validée sur maquettes le 10 septembre 2026 (spec :
+`docs/superpowers/specs/2026-09-10-refonte-braise-design.md`). Moderne et
+premium par la retenue : aucune photo de banque d'images, aucun décor en
+pointillés, aucun texte en dégradé.
 
-- **Fond** crème `#FBF9F5`, **encre** `#11161C`, **accent** bronze `#9A6B34`
-  (bronze sombre `#7A5325` pour les petits textes, question de contraste).
-- **Typographie** : Newsreader Variable pour les titres (axe optique actif, donc
-  les grands titres se resserrent d'eux-mêmes) ; Geist Variable pour le texte.
-- **Formes** : rayons courts (8 et 14 px), boutons pilule, filets fins,
-  ombres discrètes, halo bronze très dilué derrière le hero.
-- **Signature** : le liseré — un filet qui s'efface aux extrémités, avec un
-  petit losange bronze au centre.
-- **Écrans** : toujours dans un cadre de téléphone, jamais recadrés dans
-  l'écran. Sur l'accueil ils se chevauchent ; sur les études de cas ils sont
-  entiers et alignés.
-- **Couleurs projet** : chaque étude de cas reprend l'accent de son produit
-  (teal, terracotta, citron). Le site sert d'écrin ; la couleur vient des écrans.
+- **Couleurs** : dégradé Braise `#6E2213` → `#C24A26` → `#F08A45` pour les
+  bandeaux et l'appel final ; encre `#15121F` ; texte `#4B4453` ; gris
+  `#6E6674` ; fonds crème `#FBF6F2` et voiles `#FBEDE6`, `#FFF1E3`.
+- **Typographie** : Plus Jakarta Sans pour les titres (gras sur la première
+  ligne, léger sur la seconde : « **Le produit** / avant le code. ») ; Geist
+  pour les petits éléments d'interface.
+- **Bandeau en biais** en tête de chaque page, bas plus haut à droite, fin
+  trait lumineux ; ce qui en déborde (iPhone, cartes, formulaire) n'est jamais
+  rogné.
+- **iPhone en 3D** (CSS) : épaisseur, cadre métal, Dynamic Island, barre
+  d'état, reflet ; cartes flottantes tirées des vraies apps.
+- **Cartes** très arrondies, une section sombre par page au plus.
+- **Couleurs projet** : chaque étude de cas reprend la palette de son produit
+  (terracotta, teal, olive et citron) ; le Braise reste sur l'appel à l'action.
+- **Typographie française automatique** : aucun mot isolé en fin de ligne,
+  espaces insécables avant « : ; ! ? » et dans les guillemets
+  (`src/lib/typo.ts`).
 
 ## Décisions techniques
 
@@ -237,6 +253,9 @@ entreprise.
   c'est la première preuve du discours.
 - **CSS natif avec tokens**, pas de framework utilitaire : un site d'agence qui
   ressemble à un template annule son propre argument.
+- **Vérifications** : `npm test` (typographie, anonymisation, règles de
+  contenu des réalisations) et `npm run verifier` (débordements, mots isolés,
+  liens et interactions dans Chrome, de 320 à 1440 px).
 - **Écrans en images** : `scripts/render-ecrans.mjs` rend les artboards
   `.dc.html` des trois projets en PNG @2x avec Chrome headless, puis
   `astro:assets` les sert en AVIF/WebP responsive. Le script est rejouable : on
