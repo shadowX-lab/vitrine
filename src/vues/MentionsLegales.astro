@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+import Bande from '../components/Bande.astro';
+import textes from '../i18n/mentions';
+import type { Langue } from '../i18n/routes';
+
+interface Props { langue: Langue }
+const { langue } = Astro.props;
+const t = textes[langue];
+---
+<Base titre={t.meta.titre} description={t.meta.description} langue={langue} page="mentions">
+  <Bande hauteur="430px" biais="70%" reserve="0px">
+    <div class="ouv w"><span class="etiq">{t.etiquette}</span><h1>{t.titre}</h1></div>
+  </Bande>
+
+  <div class="legal w">
+    <nav aria-label={t.sommaireAria}>
+      <ol class="sommaire">{t.blocs.map((b) => <li><a href={`#${b.id}`}>{b.court}</a></li>)}</ol>
+    </nav>
+    <div class="texte long">
+      {langue === 'en' && <p class="rappel">{t.foi}</p>}
+      <p class="rappel">{t.rappel}</p>
+
+      {t.blocs.map((b) => (
+        <section class="bloc" id={b.id}>
+          <h2>{b.titre}</h2>
+          {b.paragraphes.map((p) => <p set:html={p} />)}
+        </section>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Surligne dans le sommaire la section en cours de lecture ; en bas de page, la dernière.
+  const liens = [...document.querySelectorAll<HTMLAnchorElement>('.sommaire a')];
+  const blocs = [...document.querySelectorAll<HTMLElement>('.bloc[id]')];
+  const marquer = (id: string) => liens.forEach((l) => l.classList.toggle('actif', l.hash === `#${id}`));
+  const suivre = () => {
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) return marquer(blocs.at(-1)!.id);
+    const courant = blocs.filter((b) => b.getBoundingClientRect().top <= innerHeight * 0.3).at(-1) ?? blocs[0]!;
+    marquer(courant.id);
+  };
+  addEventListener('scroll', suivre, { passive: true });
+  liens.forEach((l) => l.addEventListener('click', () => setTimeout(() => marquer(l.hash.slice(1)), 700)));
+  suivre();
+</script>
+
+<style>
+  .ouv { padding-top: 56px; padding-bottom: 130px; }
+  .legal { display: grid; grid-template-columns: 260px minmax(0, 720px); gap: 80px; padding-block: 70px 120px; }
+  nav { position: sticky; top: 30px; align-self: start; }
+  .sommaire { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 14.5px; font-weight: 600; }
+  .sommaire a { display: block; padding: 10px 14px; border-radius: 12px; color: var(--encre-2); transition: background .15s, color .15s; }
+  .sommaire a:hover { background: var(--creme); color: var(--encre); }
+  .sommaire a.actif { background: var(--voile); color: var(--f1); }
+  .rappel { background: var(--voile); border-radius: 20px; padding: 18px 22px; font-size: 15px; line-height: 1.55; color: var(--f1); font-weight: 600; margin-bottom: 40px; }
+  .bloc { padding: 30px 0; border-top: 1px solid var(--trait); }
+  .bloc h2 { font-size: 26px; letter-spacing: -.03em; font-weight: 800; margin-bottom: 14px; }
+  .bloc p { font-size: 16.5px; line-height: 1.75; color: var(--encre-2); margin-bottom: 12px; }
+  .bloc em { font-style: normal; background: #F4EFEA; padding: 1px 7px; border-radius: 6px; color: var(--gris); }
+
+  @media (max-width: 1100px) {
+    .legal { grid-template-columns: 1fr; gap: 0; padding-top: 40px; }
+    nav { display: none; }
+  }
+</style>

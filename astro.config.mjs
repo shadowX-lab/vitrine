@@ -8,7 +8,7 @@ export default defineConfig({
   site: 'https://shadowx-lab.github.io',
   base: '/vitrine',
   trailingSlash: 'ignore',
-  integrations: [sitemap()],
+  integrations: [sitemap({ filter: (page) => !/\/404\/?$/.test(page) })],
   build: { format: 'directory' },
   image: { responsiveStyles: true },
   devToolbar: { enabled: false },
