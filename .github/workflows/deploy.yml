@@ -26,7 +26,9 @@ jobs:
       - run: npm run build
       # Envoie dist/ dans public_html par FTPS. Seuls les fichiers modifiés partent ; ceux
       # qu'une publication précédente avait envoyés et qui n'existent plus sont supprimés.
-      - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      # Action tierce qui reçoit le mot de passe FTP : figée sur le commit de sa v4.3.5,
+      # qu'une étiquette déplacée ne peut pas remplacer.
+      - uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # v4.3.5
         with:
           server: ${{ secrets.FTP_SERVEUR }}
           username: ${{ secrets.FTP_UTILISATEUR }}
