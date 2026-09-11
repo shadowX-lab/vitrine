@@ -3,7 +3,6 @@ import Base from '../layouts/Base.astro';
 import Bande from '../components/Bande.astro';
 import { CLE_FORMULAIRE, LIEN_RDV, lien } from '../config';
 
-const cleManquante = CLE_FORMULAIRE.startsWith('REMPLACER');
 const retour = new URL(lien('/merci'), Astro.site).href;
 
 const etapes = [
@@ -33,9 +32,6 @@ const paliers = ['Je ne sais pas encore', 'Moins de 5 000 €', '5 000 € à 15
       </div>
 
       <div class="carte-form">
-        {cleManquante && (
-          <p class="alerte"><strong>Formulaire non branché.</strong> Renseignez votre clé Web3Forms dans <code>src/config.ts</code> pour recevoir les messages.</p>
-        )}
         <form action="https://web3forms.com/submit" method="POST" class="form" id="brief">
           <input type="hidden" name="access_key" value={CLE_FORMULAIRE} />
           <input type="hidden" name="subject" value="Nouveau projet — Moamind Solutions" />
@@ -159,7 +155,6 @@ const paliers = ['Je ne sais pas encore', 'Moins de 5 000 €', '5 000 € à 15
 
   /* ---------- le formulaire : une carte blanche qui sort du bandeau ---------- */
   .carte-form { color: var(--encre); background: #fff; border-radius: 30px; padding: 38px; box-shadow: 0 40px 90px -40px rgba(30,10,4,.55); }
-  .alerte { background: var(--voile); border-radius: 14px; padding: 14px 16px; font-size: 14px; color: var(--f1); margin-bottom: 22px; }
   .form { display: grid; gap: 22px; }
   .form h2 { font-size: 26px; letter-spacing: -.03em; font-weight: 800; }
   .champ { display: grid; gap: 8px; margin: 0; border: 0; padding: 0; min-width: 0; }
