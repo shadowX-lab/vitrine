@@ -4,10 +4,8 @@ export const ecrans = ['Carte', 'Main', 'SignalementCouleurs', 'Correspondances'
 export const dictionnaire = {
   // Main
   "Pil'Poil": "Pil'Poil",
-  'Un animal': 'A pet',
-  'vous a trouvé.': 'found you.',
-  'Signaler un': 'Report a',
-  'animal trouvé': 'found pet',
+  'Ensemble,': 'Together,',
+  'ramenons-les à la maison.': "let's bring them home.",
   Commencer: 'Start',
   "J'ai perdu mon animal": 'I lost my pet',
   'Créer une alerte de recherche': 'Create a search alert',
