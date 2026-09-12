@@ -112,7 +112,9 @@ Décidées le 10 septembre 2026, elles s'appliquent à toute évolution du site.
    **Piège à connaître :** certains artboards affichent le nom de leur
    application dans le contenu. `chargeair/Main` et `chargeair/Reservation`
    (« Frais de service ChargeAir ») ainsi que `pilpoil/Main` et `pilpoil/Profil`
-   sont donc interdits sur l'accueil. Les occurrences de « Teamago » dans les
+   sont donc interdits sur l'accueil. Pour l'accueil, `pilpoil/MainSansNom`
+   est une variante de `pilpoil/Main` sans le nom à côté du logo (`VARIANTES`
+   dans `scripts/retouches.mjs`). Les occurrences de « Teamago » dans les
    artboards Teamago sont dans des commentaires CSS : elles ne se voient pas.
    Vérifier avant d'ajouter un écran à `eventail` ou `rangee`
    (`src/data/produits.ts`).

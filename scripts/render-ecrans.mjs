@@ -14,12 +14,15 @@
  * `npm run ecrans -- en pilpoil`      seulement l'anglais, seulement Pil'Poil
  * `npm run ecrans -- pilpoil/Carte`   un seul écran
  * `npm run ecrans -- --manquants en`  liste les textes anglais manquants, sans rien rendre
+ *
+ * Les variantes (`VARIANTES` de `scripts/retouches.mjs`) sont rendues avec leur écran source, dans les
+ * mêmes langues : `pilpoil/Main` produit aussi `pilpoil/MainSansNom.png`.
  */
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { anonymiser } from './anonymiser.mjs';
-import { retoucher } from './retouches.mjs';
+import { retoucher, variantes } from './retouches.mjs';
 import { traduire } from './traduire-ecran.mjs';
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -39,11 +42,11 @@ async function versionAnglaise(projet) {
   return existsSync(fichier) ? import(fichier) : null;
 }
 
-/** Contenu de l'artboard tel qu'il sera photographié : anonymisé, retouché, traduit s'il le faut. */
-function contenu(source, projet, nom, dictionnaire) {
+/** Contenu de l'artboard tel qu'il sera photographié : anonymisé, retouché (variante comprise), traduit s'il le faut. */
+function contenu(source, projet, nom, dictionnaire, variante = (html) => html) {
   const lu = readFileSync(source, 'utf8');
   // Les maquettes Teamago reprennent un vrai fichier de club : personnes et club deviennent fictifs.
-  const brut = retoucher(projet, nom, projet === 'teamago' ? anonymiser(lu) : lu);
+  const brut = variante(retoucher(projet, nom, projet === 'teamago' ? anonymiser(lu) : lu));
   return dictionnaire ? traduire(brut, dictionnaire) : { html: brut, manquants: [] };
 }
 
@@ -101,16 +104,18 @@ for (const [projet, dossier] of Object.entries(SOURCES)) {
     const nom = artboard.file.replace(/\.dc\.html$/, '');
     if (!retenu(projet, nom)) continue;
     const source = join(dossier, artboard.file);
-    for (const langue of rendues) {
-      if (langue === 'en' && !anglais?.ecrans.includes(nom)) continue;
-      const { html, manquants } = contenu(source, projet, nom, langue === 'en' ? anglais.dictionnaire : null);
-      if (manquants.length) manquantsParEcran.push({ ecran: `${projet}/${nom}`, manquants });
-      if (seulementManquants || manquants.length) continue;
-      const cible = langue === 'fr' ? join(SORTIE, projet) : join(SORTIE, 'en', projet);
-      mkdirSync(cible, { recursive: true });
-      photographier(source, join(cible, `${nom}.png`), html, langue);
-      console.log(`  ${langue === 'en' ? 'en/' : ''}${projet}/${nom}.png  — ${artboard.title}`);
-      total++;
+    for (const rendu of [{ nom }, ...variantes(projet, nom)]) {
+      for (const langue of rendues) {
+        if (langue === 'en' && !anglais?.ecrans.includes(nom)) continue;
+        const { html, manquants } = contenu(source, projet, nom, langue === 'en' ? anglais.dictionnaire : null, rendu.retouche);
+        if (manquants.length) manquantsParEcran.push({ ecran: `${projet}/${rendu.nom}`, manquants });
+        if (seulementManquants || manquants.length) continue;
+        const cible = langue === 'fr' ? join(SORTIE, projet) : join(SORTIE, 'en', projet);
+        mkdirSync(cible, { recursive: true });
+        photographier(source, join(cible, `${rendu.nom}.png`), html, langue);
+        console.log(`  ${langue === 'en' ? 'en/' : ''}${projet}/${rendu.nom}.png  — ${artboard.title}`);
+        total++;
+      }
     }
   }
 }

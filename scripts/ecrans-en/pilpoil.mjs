@@ -18,6 +18,7 @@ export const dictionnaire = {
   'Chien noir aperçu': 'Black dog spotted',
   'près du canal': 'near the canal',
   'à 897 m · il y a 1 h': '897 m away · 1h ago',
+  'à 6,3 km · il y a 1 h': '6.3 km away · 1h ago', // variante de l'accueil (MainSansNom)
   'Sur place': 'On site',
   'Chien gris, boite': 'Gray dog, limps',
   "d'une patte": 'on one paw',
