@@ -130,12 +130,12 @@ Décidées le 10 septembre 2026, elles s'appliquent à toute évolution du site.
    petit : la ligne de copyright du pied de page (« Basé à Bordeaux, au travail
    partout ») et la fiche de la page Expérience (« Bordeaux — les projets, eux,
    n'ont pas de frontière »). Jamais dans un titre, jamais dans le hero.
-7. **Le parcours ne se présente jamais comme un CV.** Pas de dates, pas
-   d'employeurs nommés, pas de listes de tâches. La page Expérience montre des
-   **terrains** : un milieu, sa durée quand elle dit quelque chose, ses
-   mots-clés toujours visibles, et un récit d'enjeu replié derrière un
-   `<details>` que le visiteur ouvre s'il le souhaite. Les mots-clés doivent se
-   lire d'un coup d'œil, sans rien déplier.
+7. **Le parcours ne se présente jamais comme un CV.** Pas de dates, pas de
+   durées, pas d'employeurs nommés. La page Expérience montre des
+   **terrains** : un milieu, ses mots-clés toujours visibles, et ses tâches en
+   puces courtes, au ton professionnel, repliées derrière un `<details>` que le
+   visiteur ouvre s'il le souhaite. Les mots-clés doivent se lire d'un coup
+   d'œil, sans rien déplier.
 
 8. **Aucune personne réelle sur les écrans.** Les écrans Teamago reprennent
    un vrai fichier de club : au rendu, `scripts/anonymiser.mjs` remplace les

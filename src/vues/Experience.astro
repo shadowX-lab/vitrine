@@ -49,12 +49,11 @@ const icones = ['code', 'risque', 'budget', 'audit'] as const;
         <li>
           <details class="terrain" open={i === 0}>
             <summary>
-              <span class="duree">{tr.duree ?? ''}</span>
               <h3>{tr.milieu}</h3>
               <span class="mots">{tr.cles.map((cle) => <span>{cle}</span>)}</span>
               <span class="plus" aria-hidden="true"></span>
             </summary>
-            <p class="enjeu long">{tr.enjeu}</p>
+            <ul class="taches">{tr.taches.map((tache) => <li>{tache}</li>)}</ul>
           </details>
         </li>
       ))}
@@ -98,12 +97,11 @@ const icones = ['code', 'risque', 'budget', 'audit'] as const;
   .deux { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 56px; }
   .deux .lead { margin: 0; }
 
-  /* ---------- terrains : mots-clés toujours visibles, récit dépliable ---------- */
+  /* ---------- terrains : mots-clés toujours visibles, tâches dépliables ---------- */
   .terrains { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
   .terrain { background: #fff; border: 1px solid var(--trait); border-radius: 24px; padding: 26px 30px; transition: border-color .2s, box-shadow .2s; }
   /* Le résumé ne contient qu'un titre et du texte en ligne : le contenu permis d'un <summary>. */
-  .terrain summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 110px minmax(0, 1fr) 44px; grid-template-areas: 'duree titre plus' 'duree mots plus'; column-gap: 24px; align-items: start; }
-  .duree { grid-area: duree; }
+  .terrain summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) 44px; grid-template-areas: 'titre plus' 'mots plus'; column-gap: 24px; align-items: start; }
   .terrain h3 { grid-area: titre; }
   .mots { grid-area: mots; display: flex; flex-wrap: wrap; gap: 8px; }
   .mots span { font-size: 13.5px; font-weight: 600; padding: 8px 13px; border-radius: 99px; background: var(--creme); border: 1px solid var(--trait); }
@@ -111,14 +109,15 @@ const icones = ['code', 'risque', 'budget', 'audit'] as const;
   .terrain summary::-webkit-details-marker { display: none; }
   .terrain summary:hover .plus { border-color: var(--f2); color: var(--f2); }
   .terrain summary:hover h3 { color: var(--f1); }
-  .duree { font-size: 14px; font-weight: 700; color: var(--f2); padding-top: 6px; }
   .terrain h3 { font-size: 22px; letter-spacing: -.025em; font-weight: 800; margin-bottom: 14px; transition: color .15s; }
   .plus { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--trait); display: grid; place-items: center; font-size: 20px; color: var(--gris); }
   .plus::before { content: '+'; }
   .terrain[open] { border-color: #F2C9B4; box-shadow: 0 20px 40px -30px rgba(110,34,19,.5); }
   .terrain[open] .plus { background: var(--encre); color: #fff; border-color: var(--encre); }
   .terrain[open] .plus::before { content: '−'; }
-  .enjeu { margin: 16px 0 0 134px; font-size: 16px; line-height: 1.7; color: var(--encre-2); max-width: 72ch; }
+  .taches { list-style: none; margin: 22px 0 0; padding: 20px 0 0; border-top: 1px solid var(--trait); display: grid; gap: 10px; }
+  .taches li { position: relative; max-width: 72ch; padding-left: 20px; font-size: 16px; line-height: 1.55; color: var(--encre-2); }
+  .taches li::before { content: ''; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; border-radius: 50%; background: var(--f2); }
 
   .fiche { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 40px 0 0; }
   .fiche div { border-radius: 22px; padding: 22px 24px; background: #fff; border: 1px solid var(--trait); }
@@ -138,9 +137,7 @@ const icones = ['code', 'risque', 'budget', 'audit'] as const;
     .mot { grid-template-columns: 1fr; gap: 8px; }
     .terrain { padding: 22px; }
     .terrain h3 { font-size: 19px; }
-    .terrain summary { grid-template-columns: minmax(0, 1fr) 44px; grid-template-areas: 'duree plus' 'titre plus' 'mots mots'; column-gap: 12px; }
-    .duree { padding-top: 0; margin-bottom: 6px; }
-    .duree:empty { display: none; }
-    .enjeu { margin-left: 0; }
+    .terrain summary { grid-template-areas: 'titre plus' 'mots mots'; column-gap: 12px; }
+    .taches li { font-size: 15px; }
   }
 </style>
