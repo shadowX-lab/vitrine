@@ -298,7 +298,7 @@ export const parSlug = (slug: string): Produit => {
 
 /** Hero de l'accueil : derrière, puis devant. Aucun de ces écrans ne porte le nom de son application. */
 export const eventail: [Ecran, Ecran] = [
-  { projet: 'pilpoil', fichier: 'Carte', haut: '#F4F5F4' },
+  { projet: 'pilpoil', fichier: 'Main', haut: '#F6F8F7' },
   { projet: 'chargeair', fichier: 'Session', haut: '#3E5C39', statut: '#F4F1E6' },
 ];
 
